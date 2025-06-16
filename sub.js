@@ -1,7 +1,11 @@
 <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
-  <!-- Enhanced Submission Script with Visual Feedback -->
+  <!-- Enhanced Submission Script with Visual Feedback --
+  <!-- Firebase App (Core) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<!-- Firebase Realtime Database -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBTmeDxIUhua52KDAoag23q9MuNEOQXYQg",
