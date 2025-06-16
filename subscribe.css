@@ -1,4 +1,4 @@
-    :root {
+ :root {
       --primary: #4a6bff;
       --primary-dark: #3b5bdb;
       --secondary: #ff6b6b;
@@ -371,4 +371,4 @@
       font-family: monospace;
       font-size: 0.9rem;
       border-left: 3px solid var(--primary);
-    }
+        }
