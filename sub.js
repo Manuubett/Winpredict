@@ -1,4 +1,9 @@
-const firebaseConfig = {
+<!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Enhanced Submission Script with Visual Feedback -->
+  <script>
+    const firebaseConfig = {
       apiKey: "AIzaSyBTmeDxIUhua52KDAoag23q9MuNEOQXYQg",
       authDomain: "prediction-94bf9.firebaseapp.com",
       databaseURL: "https://prediction-94bf9-default-rtdb.firebaseio.com",
@@ -191,3 +196,4 @@ const firebaseConfig = {
         updateStatus("pending", "Waiting for message...");
       }
     });
+  </script>
