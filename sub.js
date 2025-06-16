@@ -190,4 +190,4 @@ const firebaseConfig = {
       } else {
         updateStatus("pending", "Waiting for message...");
       }
-    })
+    });
