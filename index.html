@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winning Team Predictor | AI-Powered Sports Predictions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js"></script>
+    <style>
+<link rel="stylesheet" href="css/main.css">
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">WinPredict <span>Pro</span></div>
+<a href="payment.html" class="btn btn-primary" id="joinBtn">Join Us Now</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>AI-Powered Winning Team Predictions</h1>
+                <p>Our advanced virtual tool analyzes hundreds of data points to predict match outcomes with 85% accuracy. Join over 100+ satisfied users who are winning more with our predictions.</p>
+                <a href="#" class="btn" id="heroJoinBtn">Get Predictions Now !</a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose Our Prediction Tool</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Data-Driven Analysis</h3>
+                    <p>Our AI analyzes team statistics, player performance, weather conditions and historical data to make accurate predictions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>85% Accuracy Rate</h3>
+                    <p>Proven track record with consistent accurate predictions across multiple sports leagues worldwide.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Affordable Access</h3>
+                    <p>For just Ksh 49, get access to premium predictions that can help you make informed decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="stats">
+        <div class="container">
+            <h2>Our Growing Community</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>100+</h3>
+                    <p>Active Users</p>
+                </div>
+                <div class="stat-item">
+                    <h3>85%</h3>
+                    <p>Prediction Accuracy</p>
+                </div>
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p>Support Available</p>
+                </div>
+                <div class="stat-item">
+                    <h3>5+</h3>
+                    <p>Sports Covered</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Start Winning?</h2>
+            <p>Join our community of successful predictors today. For just Ksh 49, get access to our premium prediction tool and start making informed decisions.</p>
+            <a href="payment.html" class="btn" id="bottomJoinBtn">Join Now</a>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 WinPredict Pro. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Join Modal -->
+    <div class="modal" id="joinModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h3>Join WinPredict Pro</h3>
+            <p>Complete your registration to access our premium prediction tool.</p>
+            
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email (Optional)</label>
+                    <input type="email" id="email">
+                </div>
+                
+                <div class="payment-instructions">
+                    <h4>Payment Instructions:</h4>
+                    <p>1. Send Ksh 49 to MPESA Till Number: <strong>4585402</strong></p>
+                    <p>2. Use your <strong>Full Name</strong> as the reference</p>
+                    <p>3. After payment, click the "Verify Payment" button below</p>
+                </div>
+                
+                <button type="button" class="btn" id="verifyBtn">Verify Payment</button>
+                
+                <div class="verification-message" id="verificationMessage">
+                    <h4>Thank You for Your Payment!</h4>
+                    <p>Your payment is being verified by our admin. You will receive access to the prediction tool within 15 minutes.</p>
+                    <p>We'll send you a confirmation SMS once your account is activated.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBTmeDxIUhua52KDAoag23q9MuNEOQXYQg",
+            authDomain: "prediction-94bf9.firebaseapp.com",
+            databaseURL: "https://prediction-94bf9-default-rtdb.firebaseio.com",
+            projectId: "prediction-94bf9",
+            storageBucket: "prediction-94bf9.firebasestorage.app",
+            messagingSenderId: "960123689722",
+            appId: "1:960123689722:web:ca9579625439ecf2478743",
+            measurementId: "G-MTDJTB6JXG"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // DOM elements
+        const joinBtns = document.querySelectorAll('#joinBtn, #heroJoinBtn, #bottomJoinBtn');
+        const joinModal = document.getElementById('joinModal');
+        const closeModal = document.getElementById('closeModal');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const verificationMessage = document.getElementById('verificationMessage');
+        const registrationForm = document.getElementById('registrationForm');
+        
+        // Open modal when any join button is clicked
+        joinBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                joinModal.style.display = 'flex';
+            });
+        });
+        
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            joinModal.style.display = 'none';
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === joinModal) {
+                joinModal.style.display = 'none';
+            }
+        });
+        
+        // Verify payment button
+        verifyBtn.addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            
+            if (!name || !phone) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Save user data to Firebase
+            const newUserRef = database.ref('users').push();
+            newUserRef.set({
+                name: name,
+                phone: phone,
+                email: email || '',
+                paymentVerified: false,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                // Show verification message
+                verificationMessage.style.display = 'block';
+                verifyBtn.style.display = 'none';
+                
+                // Optional: You can redirect to payment confirmation page here
+                // window.location.href = 'payment-confirmation.html';
+                
+                // In a real app, you would check payment verification status periodically
+                // For demo, we'll just show the message
+            }).catch(error => {
+                console.error('Error saving user data:', error);
+                alert('There was an error processing your request. Please try again.');
+            });
+        });
+        
+        // Check if user is already verified (simplified for demo)
+        // In a real app, you would implement proper authentication and verification checks
+        function checkVerification() {
+            // This would check Firebase for verification status
+            // For demo, we're skipping this part
+        }
+    </script>
+</body>
+</html>l
