@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="subscribe.css">
+  <title>Premium Access | WinPredict Pro</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  
+
+  
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container position-relative">
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <h1 class="display-4 fw-bold mb-4">Unlock Premium Predictions</h1>
+          <p class="lead fs-4">Gain 12-hour access to our AI-powered prediction tool with proven 85% accuracy</p>
+          <div class="d-flex flex-wrap gap-3 mt-4">
+            <span class="guarantee-badge">
+              <i class="fas fa-shield-alt me-2"></i> 100% Satisfaction Guarantee
+            </span>
+            <span class="guarantee-badge">
+              <i class="fas fa-users me-2"></i> Trusted by 1000+ Users
+            </span>
+          </div>
+        </div>
+        <div class="col-lg-5 text-center mt-5 mt-lg-0">
+          <div class="bg-white rounded-circle p-4 d-inline-block floating">
+            <i class="fas fa-chart-line text-primary" style="font-size: 5rem;"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <!-- Subscription Card -->
+    <div class="subscription-card">
+      <div class="card-header">
+        <h2 class="mb-0"><i class="fas fa-crown me-2"></i>Premium Access Subscription</h2>
+      </div>
+      
+      <div class="card-body p-4 p-lg-5">
+        <div class="value-proposition">
+          <h3 class="mb-4">Why Our Subscribers Keep Winning</h3>
+          <div class="row">
+            <div class="col-md-4 mb-4">
+              <div class="feature-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <h4>AI-Powered Insights</h4>
+              <p>Advanced algorithms analyzing 100+ data points per match</p>
+            </div>
+            <div class="col-md-4 mb-4">
+              <div class="feature-icon">
+                <i class="fas fa-bolt"></i>
+              </div>
+              <h4>Real-Time Updates</h4>
+              <p>Get predictions updated as new information becomes available</p>
+            </div>
+            <div class="col-md-4 mb-4">
+              <div class="feature-icon">
+                <i class="fas fa-chart-pie"></i>
+              </div>
+              <h4>85% Accuracy</h4>
+              <p>Proven track record across multiple sports leagues</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-lg-6">
+            <h3 class="mb-4">Premium Subscription Benefits</h3>
+            
+            <ul class="benefits-list">
+              <li>
+                <div class="benefit-icon">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                  <h5>AI Prediction Engine</h5>
+                  <p class="mb-0">Access our proprietary algorithm that analyzes team stats, player performance & historical data</p>
+                </div>
+              </li>
+              <li>
+                <div class="benefit-icon">
+                  <i class="fas fa-stopwatch"></i>
+                </div>
+                <div>
+                  <h5>Time-Sensitive Insights</h5>
+                  <p class="mb-0">Get predictions delivered at optimal times for maximum impact</p>
+                </div>
+              </li>
+              <li>
+                <div class="benefit-icon">
+                  <i class="fas fa-trophy"></i>
+                </div>
+                <div>
+                  <h5>Proven Success</h5>
+                  <p class="mb-0">Join our community with an 85% accuracy rate verified by users</p>
+                </div>
+              </li>
+              <li>
+                <div class="benefit-icon">
+                  <i class="fas fa-headset"></i>
+                </div>
+                <div>
+                  <h5>Priority Support</h5>
+                  <p class="mb-0">Dedicated assistance available 24/7 for premium members</p>
+                </div>
+              </li>
+            </ul>
+            
+            <div class="payment-info mt-4">
+              <h5><i class="fas fa-info-circle me-2"></i> Payment Information</h5>
+              <p class="mb-1">Send <span class="highlight">Ksh 49</span> via <span class="highlight">M-PESA</span> to:</p>
+              <h3 class="mb-0">Phone: 25497612155</h3>
+              <p class="mt-2 mb-0">Use your name as the payment reference</p>
+            </div>
+            
+            <div class="confirmation-example mt-4">
+              <p class="mb-1"><strong>Example Message:</strong></p>
+              <p class="mb-0">TEI6763XKM Confirmed. Ksh49.00 paid to 25497612155 on 18/5/25 at 8:42 AM. New M-PESA balance is Ksh4.00. Transaction cost, Ksh0.00.</p>
+            </div>
+          </div>
+          
+          <div class="col-lg-6 mt-5 mt-lg-0">
+            <h3 class="mb-4">Complete Your Subscription</h3>
+            
+            <div class="row mb-4">
+              <div class="col-md-6 mb-3">
+                <div class="step-card">
+                  <div class="step-number">1</div>
+                  <h5>Make Payment</h5>
+                  <p class="mb-0">Send Ksh 49 via M-PESA to the number provided</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="step-card">
+                  <div class="step-number">2</div>
+                  <h5>Copy Message</h5>
+                  <p class="mb-0">After payment, copy the full M-PESA confirmation</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="step-card">
+                  <div class="step-number">3</div>
+                  <h5>Paste Below</h5>
+                  <p class="mb-0">Paste the message in the field below</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="step-card">
+                  <div class="step-number">4</div>
+                  <h5>Get Access</h5>
+                  <p class="mb-0">Submit and get instant access after verification</p>
+                </div>
+              </div>
+            </div>
+            
+            <form id="subscribeForm">
+              <div class="mb-3">
+                <label for="mpesaMessage" class="form-label fw-bold">Paste M-PESA Confirmation:</label>
+                <textarea 
+                  id="mpesaMessage" 
+                  class="form-control" 
+                  placeholder="Paste your M-PESA confirmation message here..." 
+                  required
+                ></textarea>
+              </div>
+              
+              <div id="status" class="status-indicator status-pending">
+                <i class="fas fa-info-circle"></i>
+                <span>Waiting for submission</span>
+              </div>
+              
+              <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+              </div>
+              
+              <button type="submit" id="submitBtn" class="btn btn-primary w-100 mt-3 pulse">
+                <i class="fas fa-paper-plane me-2"></i> Submit for Verification
+              </button>
+            </form>
+            
+            <div id="countdownContainer" class="text-center mt-4 d-none">
+              <p class="mb-2">Access will activate in</p>
+              <div class="countdown" id="countdown">5:00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Testimonials & Stats -->
+    <div class="row mb-5">
+      <div class="col-md-4 mb-4">
+        <div class="testimonial-card">
+          <div class="d-flex align-items-center mb-3">
+            <div class="testimonial-avatar">J</div>
+            <div>
+              <h5 class="mb-0">John M.</h5>
+              <p class="text-muted mb-0">Premium Subscriber</p>
+            </div>
+          </div>
+          <p class="mb-0">"WinPredict Pro has transformed how I approach predictions. The insights are incredibly accurate and the subscription is worth every shilling!"</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="stats-card">
+          <i class="fas fa-chart-line"></i>
+          <h3>85%</h3>
+          <p class="mb-0">Prediction Accuracy Rate</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="stats-card">
+          <i class="fas fa-users"></i>
+          <h3>1,250+</h3>
+          <p class="mb-0">Active Subscribers</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Additional Features Section -->
+    <div class="row mb-5">
+      <div class="col-lg-12 text-center mb-5">
+        <h2>What Makes Our Service Unique</h2>
+        <p class="lead">Premium features designed for maximum winning potential</p>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="step-card h-100">
+          <div class="benefit-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h4>Mobile-Optimized</h4>
+          <p>Access predictions on any device with our responsive platform</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="step-card h-100">
+          <div class="benefit-icon">
+            <i class="fas fa-lock"></i>
+          </div>
+          <h4>Secure & Private</h4>
+          <p>Bank-level security protecting your data and predictions</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="step-card h-100">
+          <div class="benefit-icon">
+            <i class="fas fa-sync-alt"></i>
+          </div>
+          <h4>Real-Time Updates</h4>
+          <p>Predictions updated as new information becomes available</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-10">
+        <div class="text-center mb-5">
+          <h2>Frequently Asked Questions</h2>
+          <p class="lead">Everything you need to know about premium access</p>
+        </div>
+        
+        <div class="accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                How long does verification take?
+              </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Verification is typically completed within 5-10 minutes. Our team works around the clock to process subscriptions as quickly as possible.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                What do I get with premium access?
+              </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Premium access gives you 12 hours of unlimited access to our prediction tools, including real-time updates, detailed analytics, and priority support.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                Can I extend my access beyond 12 hours?
+              </button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Yes! When your access is about to expire, you'll have the option to easily extend it with another payment.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                Is my payment information secure?
+              </button>
+            </h2>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Absolutely. We use industry-standard security measures to protect your information. Your M-PESA details are processed securely and never stored.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <h4>WinPredict Pro</h4>
+          <p>AI-powered prediction tools for strategic decision-making</p>
+          <div class="d-flex gap-3 mt-3">
+            <a href="#" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
+            <a href="#" class="text-white"><i class="fab fa-twitter fa-lg"></i></a>
+            <a href="#" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
+            <a href="#" class="text-white"><i class="fab fa-whatsapp fa-lg"></i></a>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5>Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Home</a></li>
+            <li><a href="#" class="text-white text-decoration-none">How It Works</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Success Stories</a></li>
+            <li><a href="#" class="text-white text-decoration-none">FAQ</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5>Contact Support</h5>
+          <p class="mb-1"><i class="fas fa-phone me-2"></i> +254 123 456 789</p>
+          <p class="mb-1"><i class="fas fa-envelope me-2"></i> support@winpredictpro.com</p>
+          <p class="mb-0"><i class="fas fa-clock me-2"></i> 24/7 Support Available</p>
+        </div>
+      </div>
+      <hr class="my-4 bg-light">
+      <div class="text-center">
+        <p class="mb-0">© 2023 WinPredict Pro. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Enhanced Submission Script with Visual Feedback -->
+  <script src="Sub.js"></script>
+</body>
+</html>
