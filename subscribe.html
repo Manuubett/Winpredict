@@ -18,6 +18,10 @@
 
 <!-- Your Custom Script -->
 <script src="Sub.js" defer></script>
+  <script>// Clean start if returning from subscribe.html
+if (document.referrer.includes('subscribe.html')) {
+  localStorage.removeItem('subscriptionCountdownEndTime');
+}</script>
   
    </head>
   
@@ -384,4 +388,4 @@
   
   
 </body>
-  </html>
+              </html>
