@@ -39,7 +39,7 @@
         </div>
     </div>
 <script>
-  const COUNTDOWN_DURATION = 10; // seconds
+  const COUNTDOWN_DURATION = 100; // seconds
   const STORAGE_KEY = 'subscriptionCountdownEndTime';
 
   function getRemainingSeconds() {
@@ -453,26 +453,4 @@
                                 const isTeam1Home = match.team1 === team1 || match.team1 === team2;
                                 const homeTeam = isTeam1Home ? match.team1 : match.team2;
                                 const awayTeam = isTeam1Home ? match.team2 : match.team1;
-                                const homeScore = isTeam1Home ? match.score1 : match.score2;
-                                const awayScore = isTeam1Home ? match.score2 : match.score1;
-                                const gg = homeScore > 0 && awayScore > 0 ? 'Yes' : 'No';
-                                const over15 = homeScore + awayScore > 1.5 ? 'Yes' : 'No';
-                                return `
-                                    <tr>
-                                        <td>${homeTeam} vs ${awayTeam}</td>
-                                        <td>${homeScore}-${awayScore}</td>
-                                        <td>${gg}</td>
-                                        <td>${over15}</td>
-                                    </tr>
-                                `;
-                            })
-                            .join('')}
-                    </tbody>
-                </table>
-            `;
-            resultsDiv.style.display = 'block';
-        }
-        updateMatchesList();
-    </script>
-</body>
-    </html>
+                     
