@@ -95,7 +95,28 @@
       </div>
     </div>
   </div>
+<script>
+  // Duration before redirect (e.g. 5 minutes = 300000 ms)
+  const countdownDuration = 1 * 60 * 1000; // adjust to 86400000 for 24 hours
 
+  // Get stored start time
+  const storedStart = localStorage.getItem("countdownStart");
+  const now = Date.now();
+
+  // If no start time or enough time has passed, start new countdown
+  if (!storedStart || now - storedStart >= countdownDuration) {
+    localStorage.setItem("countdownStart", now);
+    setTimeout(() => {
+      window.location.href = "subscribe.html";
+    }, countdownDuration);
+  } else {
+    // Resume countdown if within duration
+    const remainingTime = countdownDuration - (now - storedStart);
+    setTimeout(() => {
+      window.location.href = "subscribe.html";
+    }, remainingTime);
+  }
+</script>
   <!-- Firebase and App Logic -->
   <script>
     const firebaseConfig = {
