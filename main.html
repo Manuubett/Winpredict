@@ -44,15 +44,17 @@
             <div id="predictionOutput"></div>
         </div>
     </div>
-    
-<script>
-  // Countdown duration in seconds
-  const countdownSeconds = 600;
 
-  // Redirect to subscribe.html after countdown
-  setTimeout(() => {
-    window.location.href = "subscribe.html";
-  }, countdownSeconds * 1000);
+<script>
+  let countdown = 10; // 5 minutes
+  const interval = setInterval(() => {
+    document.getElementById("countdown").textContent = countdown;
+    if (countdown === 0) {
+      clearInterval(interval);
+      window.location.href = "subscribe.html";
+    }
+    countdown--;
+  }, 1000);
 </script>
     <script>
         // DOM elements
