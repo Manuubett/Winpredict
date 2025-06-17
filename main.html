@@ -60,30 +60,27 @@
         </div>
     </div>
     <script>
-  // Set countdown duration in milliseconds
-  const countdownDuration = 2 * 60 * 1000; // 5 minutes
+  // Duration before redirect (e.g. 5 minutes = 300000 ms)
+  const countdownDuration = 1 * 60 * 1000; // adjust to 86400000 for 24 hours
 
-  // Check if a countdown start time is already stored
+  // Get stored start time
+  const storedStart = localStorage.getItem("countdownStart");
   const now = Date.now();
-  let countdownStart = localStorage.getItem("countdownStart");
 
-  if (!countdownStart) {
-    countdownStart = now;
-    localStorage.setItem("countdownStart", countdownStart);
-  }
-
-  const timePassed = now - countdownStart;
-  const timeLeft = countdownDuration - timePassed;
-
-  if (timeLeft <= 0) {
-    window.location.href = "subscribe.html";
-  } else {
+  // If no start time or enough time has passed, start new countdown
+  if (!storedStart || now - storedStart >= countdownDuration) {
+    localStorage.setItem("countdownStart", now);
     setTimeout(() => {
       window.location.href = "subscribe.html";
-    }, timeLeft);
+    }, countdownDuration);
+  } else {
+    // Resume countdown if within duration
+    const remainingTime = countdownDuration - (now - storedStart);
+    setTimeout(() => {
+      window.location.href = "subscribe.html";
+    }, remainingTime);
   }
-</script>
-
+    </script>
     <script>
         // DOM elements
         const newMatchTextarea = document.getElementById('newMatchData');
