@@ -80,13 +80,20 @@
         const seconds = timeLeft % 60;  
         countdownElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;  
           
-        if (timeLeft <= 0) {  
-          clearInterval(countdownInterval);  
-          window.location.href = "main.html";  
-        }  
-          
-        timeLeft--;  
-      }, 1000);  
+      
+  // Simulate or trigger actual verification, then:
+  function handleVerificationComplete() {
+    // Clear previous countdown state
+    localStorage.removeItem('subscriptionCountdownEndTime');
+    localStorage.removeItem('countdownCompleted');
+
+    // Redirect to main page
+    window.location.href = 'main.html';
+  }
+
+  // Example: automatically redirect after 5 seconds (replace with real logic)
+  setTimeout(handleVerificationComplete, 5000);
+
     }  
   
     function checkVerification(id) {  
