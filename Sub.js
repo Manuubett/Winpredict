@@ -71,30 +71,37 @@
       }, 50);  
     }  
   
-    function startCountdown(seconds) {  
-      let timeLeft = seconds;  
-      countdownContainer.classList.remove("d-none");  
-        
-      countdownInterval = setInterval(() => {  
-        const minutes = Math.floor(timeLeft / 60);  
-        const seconds = timeLeft % 60;  
-        countdownElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;  
-          
-      
-  // Simulate or trigger actual verification, then:
-  function handleVerificationComplete() {
-    // Clear previous countdown state
-    localStorage.removeItem('subscriptionCountdownEndTime');
-    localStorage.removeItem('countdownCompleted');
+    function startCountdown(seconds) {
+  const existingEndTime = localStorage.getItem('subscriptionCountdownEndTime');
 
-    // Redirect to main page
-    window.location.href = 'main.html';
+  let endTime;
+  if (existingEndTime) {
+    endTime = parseInt(existingEndTime);
+  } else {
+    endTime = Date.now() + seconds * 1000;
+    localStorage.setItem('subscriptionCountdownEndTime', endTime);
   }
 
-  // Example: automatically redirect after 5 seconds (replace with real logic)
-  setTimeout(handleVerificationComplete, 5000);
+  countdownContainer.classList.remove("d-none");
 
-    }  
+  function updateCountdown() {
+    const now = Date.now();
+    const timeLeft = Math.max(0, Math.floor((endTime - now) / 1000));
+
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    countdownElement.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+    if (timeLeft <= 0) {
+      clearInterval(countdownInterval);
+      localStorage.removeItem('subscriptionCountdownEndTime');
+      window.location.href = 'index.html';
+    }
+  }
+
+  updateCountdown(); // Run immediately
+  countdownInterval = setInterval(updateCountdown, 1000);
+}
   
     function checkVerification(id) {  
       db.ref(`submissions/${id}`).once("value", snap => {  
