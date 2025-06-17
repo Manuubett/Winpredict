@@ -1,0 +1,333 @@
+
+    :root {
+      --primary-dark: #0c4b78;
+      --primary: #1a6ea0;
+      --secondary: #2d8b4e;
+      --accent: #f39c12;
+      --light-bg: #f8f9fa;
+      --dark-text: #333;
+      --light-text: #f8f9fa;
+      --success: #28a745;
+      --warning: #ffc107;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0c4b78 0%, #2d8b4e 100%);
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+      min-height: 100vh;
+      padding: 20px 0;
+    }
+    
+    .logo-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      color: white;
+      text-decoration: none;
+      padding: 10px 25px;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .logo:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .logo-icon {
+      font-size: 28px;
+      color: #f39c12;
+    }
+    
+    .logo-text {
+      font-size: 28px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: linear-gradient(to right, #fff, #f39c12);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .container-main {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border: none;
+      overflow: hidden;
+      margin-bottom: 30px;
+      background: white;
+    }
+    
+    .payment-header {
+      background: linear-gradient(90deg, var(--primary-dark) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 25px;
+      text-align: center;
+    }
+    
+    .payment-header h2 {
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 28px;
+    }
+    
+    .payment-header p {
+      opacity: 0.9;
+      font-size: 16px;
+    }
+    
+    .card-body {
+      padding: 30px;
+    }
+    
+    .step-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 15px 20px;
+      border-radius: 10px;
+      background: var(--light-bg);
+      transition: all 0.3s ease;
+    }
+    
+    .step-container.step-active {
+      background: rgba(26, 110, 160, 0.1);
+      border-left: 4px solid var(--primary);
+    }
+    
+    .step-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 20px;
+      margin-right: 20px;
+      flex-shrink: 0;
+      color: var(--dark-text);
+    }
+    
+    .step-active .step-icon {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .step-content h5 {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--primary-dark);
+    }
+    
+    .payment-details {
+      background: linear-gradient(135deg, rgba(12, 75, 120, 0.05) 0%, rgba(45, 139, 78, 0.05) 100%);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(12, 75, 120, 0.1);
+    }
+    
+    .detail-item {
+      margin-bottom: 15px;
+    }
+    
+    .detail-label {
+      font-weight: 500;
+      color: var(--primary-dark);
+      margin-bottom: 5px;
+      font-size: 15px;
+    }
+    
+    .detail-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .example-block {
+      background-color: rgba(26, 110, 160, 0.05);
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 15px;
+      margin: 15px 0;
+      color: var(--primary-dark);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      border: none;
+      padding: 12px 25px;
+      font-weight: 500;
+      font-size: 18px;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(26, 110, 160, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(90deg, var(--primary-dark) 0%, #247441 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26, 110, 160, 0.4);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .success-alert {
+      background-color: rgba(40, 167, 69, 0.1);
+      padding: 20px;
+      border: 1px solid var(--success);
+      border-left: 5px solid var(--success);
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 140px;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #ced4da;
+      width: 100%;
+      font-family: 'Poppins', sans-serif;
+      transition: border-color 0.3s;
+    }
+    
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.25rem rgba(26, 110, 160, 0.25);
+    }
+    
+    .verification-steps {
+      padding: 20px 0 0 0;
+    }
+    
+    .step-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid var(--primary);
+      transition: transform 0.3s ease;
+    }
+    
+    .step-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .step-icon-small {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    
+    .step-card h6 {
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+    
+    .step-card p {
+      color: #666;
+      font-size: 14px;
+      margin: 0;
+    }
+    
+    .payment-info-box {
+      background: rgba(243, 156, 18, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+      border: 1px dashed #f39c12;
+      text-align: center;
+    }
+    
+    .payment-info-box i {
+      color: #f39c12;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      margin-top: 30px;
+    }
+    
+    .footer a {
+      color: white;
+      text-decoration: none;
+    }
+    
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+      .step-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .step-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
+      
+      .detail-value {
+        font-size: 18px;
+      }
+      
+      .payment-header h2 {
+        font-size: 24px;
+      }
+    }
+  
