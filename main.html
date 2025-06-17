@@ -46,14 +46,23 @@
     </div>
 
 <script>
-  let countdown = 10; // 5 minutes
+  let seconds = 10; // Set countdown duration in seconds
+
+  const countdownEl = document.createElement('div');
+  countdownEl.id = 'countdown';
+  countdownEl.style.fontSize = '2rem';
+  countdownEl.style.textAlign = 'center';
+  countdownEl.style.marginTop = '50px';
+  countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
+  document.body.appendChild(countdownEl);
+
   const interval = setInterval(() => {
-    document.getElementById("countdown").textContent = countdown;
-    if (countdown === 0) {
+    seconds--;
+    countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
+    if (seconds <= 0) {
       clearInterval(interval);
-      window.location.href = "subscribe.html";
+      window.location.href = 'subscribe.html';
     }
-    countdown--;
   }, 1000);
 </script>
     <script>
