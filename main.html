@@ -9,61 +9,84 @@
 <body>
     <div class="container">
         <h1>Virtual Match Predictor (FIFO System)</h1>
-        
-        <div class="match-input">
+    <div class="match-input">
             <h3>Enter New Match (4 lines):</h3>
             <textarea id="newMatchData" placeholder="Team1&#10;Score1&#10;Score2&#10;Team2"></textarea>
             <p>Example format:<br>Everton<br>1<br>0<br>Palace</p>
             <button id="addMatchBtn">Add Match</button>
             <div id="statusMessage" class="status-message" style="display: none;"></div>
         </div>
-        
-        <div class="match-history">
+         <div class="match-history">
             <h3>Current Matches (Max 10 - Oldest auto-discarded)</h3>
             <div id="matchesList"></div>
             <button id="clearAllBtn" style="background-color: #e74c3c; margin-top: 10px;">Clear All Matches</button>
         </div>
-        
         <div class="slider-container">
             <h3>Recent Form Weight (Shift Mechanism)</h3>
             <input type="range" min="0" max="100" value="50" class="slider" id="shiftSlider">
             <div class="shift-value">Recent weight: 50%</div>
             <p>Adjust to emphasize recent matches more (right) or treat all matches equally (left)</p>
         </div>
-        
         <button id="predictBtn">Make Prediction</button>
-        
-        <div id="teamSelect" style="display: none; margin-top: 20px;">
+          <div id="teamSelect" style="display: none; margin-top: 20px;">
             <h3>Select Teams to Predict</h3>
             <select id="team1Select"></select>
             <select id="team2Select"></select>
         </div>
-        
-        <div id="results" class="results" style="display: none;">
+         <div id="results" class="results" style="display: none;">
             <h2>Prediction Results</h2>
             <div id="predictionOutput"></div>
         </div>
     </div>
-
 <script>
-  let seconds =300; // Set countdown duration in seconds
+  const COUNTDOWN_DURATION = 10; // seconds
+  const STORAGE_KEY = 'subscriptionCountdownEndTime';
 
-  const countdownEl = document.createElement('div');
-  countdownEl.id = 'countdown';
-  countdownEl.style.fontSize = '2rem';
-  countdownEl.style.textAlign = 'center';
-  countdownEl.style.marginTop = '50px';
-  countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
-  document.body.appendChild(countdownEl);
+  function getRemainingSeconds() {
+    const endTime = localStorage.getItem(STORAGE_KEY);
+    if (!endTime) return COUNTDOWN_DURATION;
 
-  const interval = setInterval(() => {
-    seconds--;
-    countdownEl.textContent = `Redirecting in ${seconds} seconds...`;
-    if (seconds <= 0) {
-      clearInterval(interval);
-      window.location.href = 'subscribe.html';
-    }
-  }, 1000);
+    const now = Date.now();
+    const remaining = Math.floor((parseInt(endTime) - now) / 1000);
+    return remaining > 0 ? remaining : 0;
+  }
+
+  function startCountdown(seconds) {
+    const countdownEl = document.createElement('div');
+    countdownEl.id = 'countdown';
+    countdownEl.style.fontSize = '1.2rem'; // Smaller font
+    countdownEl.style.textAlign = 'center';
+    countdownEl.style.marginTop = '50px';
+    countdownEl.style.color = 'red'; // Red text
+    document.body.appendChild(countdownEl);
+
+    countdownEl.textContent = `Subscription expires in ${seconds} seconds...`;
+
+    const interval = setInterval(() => {
+      seconds--;
+      if (seconds <= 0) {
+        clearInterval(interval);
+        localStorage.removeItem(STORAGE_KEY); // Clean up
+        window.location.href = 'subscribe.html';
+      } else {
+        countdownEl.textContent = `Subscription expires in ${seconds} seconds...`;
+      }
+    }, 1000);
+  }
+
+  // On load: calculate or set countdown end time
+  let endTime = localStorage.getItem(STORAGE_KEY);
+  if (!endTime) {
+    const newEndTime = Date.now() + COUNTDOWN_DURATION * 1000;
+    localStorage.setItem(STORAGE_KEY, newEndTime.toString());
+  }
+
+  const remainingSeconds = getRemainingSeconds();
+  if (remainingSeconds > 0) {
+    startCountdown(remainingSeconds);
+  } else {
+    window.location.href = 'subscribe.html';
+  }
 </script>
     <script>
         // DOM elements
@@ -81,12 +104,10 @@
         const shiftSlider = document.getElementById('shiftSlider');
         const shiftValue = document.querySelector('.shift-value');
         
-        // Data storage
         let matches = [];
         let teamStats = {};
         const MAX_MATCHES = 10;
         
-        // Update shift value display
         shiftSlider.addEventListener('input', function() {
             shiftValue.textContent = `Recent weight: ${this.value}%`;
         });
@@ -136,7 +157,6 @@
                 showStatus(`Added new match: ${team1} ${score1}-${score2} ${team2}`, 'info');
             }
             
-            // Clear input
             newMatchTextarea.value = '';
             
             // Update UI
@@ -452,7 +472,6 @@
             `;
             resultsDiv.style.display = 'block';
         }
-        
         updateMatchesList();
     </script>
 </body>
