@@ -47,7 +47,15 @@
         </div>
     </div>
     
+<script>
+  // Countdown duration in seconds
+  const countdownSeconds = 10;
 
+  // Redirect to subscribe.html after countdown
+  setTimeout(() => {
+    window.location.href = "subscribe.html";
+  }, countdownSeconds * 1000);
+</script>
     <script>
         // DOM elements
         const newMatchTextarea = document.getElementById('newMatchData');
@@ -343,26 +351,17 @@
                 [2, 1],
                 [1, 2]
             ];
-            
-            // Dedupe and filter invalid scores
             const uniqueScores = Array.from(new Set(baseScores.map(JSON.stringify))).map(JSON.parse)
                 .filter(([a, b]) => a >= 0 && b >= 0);
-            
-            // Sort by likelihood (simple heuristic)
             uniqueScores.sort((a, b) => {
                 const diffA = Math.abs(a[0] - predScore1) + Math.abs(a[1] - predScore2);
                 const diffB = Math.abs(b[0] - predScore1) + Math.abs(b[1] - predScore2);
                 return diffA - diffB;
             });
-            
-            // Take top 5
             const topScores = uniqueScores.slice(0, 5);
-            
-            // Display results
             predictionOutput.innerHTML = `
                 <div class="prediction-card">
                     <h3>${team1} vs ${team2}</h3>
-                    
                     <div class="team-stats">
                         <div class="team-stat">
                             <h4>${team1}</h4>
@@ -377,7 +376,6 @@
                             <p>Clean sheets: ${(stats2.cleanSheets * 100).toFixed(1)}%</p>
                         </div>
                     </div>
-                    
                     <h4>Most likely winner: ${predScore1 > predScore2 ? team1 : predScore2 > predScore1 ? team2 : 'Draw'}</h4>
                     <div class="prob-bar">
                         <div class="prob-fill" style="width: ${normalizedWinProb1 * 100}%">
@@ -394,25 +392,20 @@
                             ${team2}: ${(normalizedWinProb2 * 100).toFixed(1)}%
                         </div>
                     </div>
-                    
                     <h4>Both teams to score (GG): ${(ggProb * 100).toFixed(1)}%</h4>
                     <div class="prob-bar">
                         <div class="prob-fill" style="width: ${ggProb * 100}%"></div>
                     </div>
-                    
                     <h4>Over 1.5 goals: ${(over15Prob * 100).toFixed(1)}%</h4>
                     <div class="prob-bar">
                         <div class="prob-fill" style="width: ${over15Prob * 100}%"></div>
                     </div>
-                    
                     <h4>Most likely scores:</h4>
                     <ol>
                         ${topScores.map(score => `<li>${score.join('-')}</li>`).join('')}
                     </ol>
-                    
                     <h4>Predicted score: ${predScore1}-${predScore2}</h4>
                 </div>
-                
                 <h3>Recent Matches Analysis</h3>
                 <table>
                     <thead>
@@ -448,12 +441,10 @@
                     </tbody>
                 </table>
             `;
-            
             resultsDiv.style.display = 'block';
         }
         
-        // Initialize
         updateMatchesList();
     </script>
 </body>
-            </html>
+    </html>
