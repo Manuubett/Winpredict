@@ -91,43 +91,14 @@
     </footer>
     
     <!-- Join Modal -->
-    <div class="modal" id="joinModal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeModal">&times;</span>
-            <h3>Join WinPredict Pro</h3>
-            <p>Complete your registration to access our premium prediction tool.</p>
-            
-            <form id="registrationForm">
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email (Optional)</label>
-                    <input type="email" id="email">
-                </div>
-                
-                <div class="payment-instructions">
-                    <h4>Payment Instructions:</h4>
-                    <p>1. Send Ksh 49 to MPESA Till Number: <strong>4585402</strong></p>
-                    <p>2. Use your <strong>Full Name</strong> as the reference</p>
-                    <p>3. After payment, click the "Verify Payment" button below</p>
-                </div>
-                
-                <button type="button" class="btn" id="verifyBtn">Verify Payment</button>
-                
-                <div class="verification-message" id="verificationMessage">
-                    <h4>Thank You for Your Payment!</h4>
-                    <p>Your payment is being verified by our admin. You will receive access to the prediction tool within 15 minutes.</p>
-                    <p>We'll send you a confirmation SMS once your account is activated.</p>
-                </div>
-            </form>
-        </div>
-    </div>
+    <div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModalBtn">&times;</span>
+    <h3>Soccer Prediction Bot</h3>
+    <p>This bot stores data from previously played soccer matches and uses it to predict future outcomes. Would you like to try it?</p>
+    <button onclick="window.location.href='bot.html'">Try the Bot</button>
+  </div>
+</div>
     
     <script>
         // Firebase configuration
