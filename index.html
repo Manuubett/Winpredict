@@ -34,19 +34,22 @@
   font-size: 20px;
   cursor: pointer;
 }
-    button {
-  background-color: #007BFF; /* Bootstrap blue */
-  color: white;
+    .blue-button {
+  background-color: #1e88e5; /* Bright blue */
+  color: #ffffff;            /* White text */
   border: none;
-  padding: 10px 16px;
-  font-size: 16px;
-  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 12px;       /* Rounded corners */
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+.blue-button:hover {
+  background-color: #1565c0; /* Darker blue on hover */
+  transform: scale(1.03);    /* Slight zoom effect */
 }</style>
 <body>
     <header>
