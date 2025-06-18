@@ -9,12 +9,38 @@
     <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js"></script>
 <link rel="stylesheet" href="main.css">
 </head>
+    <style>.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.close {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}</style>
 <body>
     <header>
         <div class="container">
             <nav>
                 <div class="logo">WinPredict <span>Pro</span></div>
 <a href="payment.html" class="btn btn-primary" id="joinBtn">Join Us Now</a>
+                <button id="openModalBtn">Learn About the Soccer Bot</button>
             </nav>
         </div>
     </header>
@@ -99,6 +125,15 @@
     <button onclick="window.location.href='bot.html'">Try the Bot</button>
   </div>
 </div>
+    <script>
+  const modal = document.getElementById('myModal');
+  const openBtn = document.getElementById('openModalBtn');
+  const closeBtn = document.getElementById('closeModalBtn');
+
+  openBtn.onclick = () => modal.style.display = 'block';
+  closeBtn.onclick = () => modal.style.display = 'none';
+  window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; }
+    </script>
     
     <script>
         // Firebase configuration
