@@ -1,0 +1,235 @@
+
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #dc2626;
+      --light-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+    }
+    
+    body {
+      background-color: var(--light-bg);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #1e293b;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary), #0f2c61);
+      color: white;
+      padding: 1.5rem 0;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header h1 {
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .header p {
+      opacity: 0.9;
+      margin-bottom: 0;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 1.5rem;
+      background-color: var(--card-bg);
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .card-header {
+      background-color: rgba(30, 58, 138, 0.05);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+    }
+    
+    .game-title {
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    
+    .game-description {
+      color: #334155;
+      line-height: 1.6;
+    }
+    
+    .action-btn {
+      border-radius: 50px;
+      padding: 0.4rem 1rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .btn-like {
+      background-color: rgba(30, 58, 138, 0.1);
+      color: var(--primary);
+      border: none;
+    }
+    
+    .btn-like:hover, .btn-like:active {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-comment {
+      background-color: rgba(220, 38, 38, 0.1);
+      color: var(--secondary);
+      border: none;
+    }
+    
+    .btn-comment:hover, .btn-comment:active {
+      background-color: var(--secondary);
+      color: white;
+    }
+    
+    .comment-section {
+      background-color: rgba(248, 250, 252, 0.6);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+      border-left: 3px solid var(--border-color);
+    }
+    
+    .comment {
+      padding: 0.75rem 1rem;
+      background-color: white;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      border-left: 2px solid #e2e8f0;
+    }
+    
+    .reply {
+      background-color: #f8fafc;
+      border-left: 2px solid #cbd5e1;
+      padding: 0.75rem 1rem;
+      margin-left: 2rem;
+      margin-top: 0.5rem;
+      border-radius: 0 8px 8px 8px;
+    }
+    
+    .user-badge {
+      background-color: rgba(30, 58, 138, 0.1);
+      color: var(--primary);
+      border-radius: 50px;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+    
+    .like-count {
+      font-weight: 600;
+      background-color: rgba(30, 58, 138, 0.1);
+      border-radius: 50px;
+      padding: 0.1rem 0.6rem;
+      font-size: 0.85rem;
+      margin-left: 0.3rem;
+    }
+    
+    .input-group {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      border-radius: 50px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    
+    .form-control {
+      border: none;
+      padding: 0.75rem 1.25rem;
+    }
+    
+    .form-control:focus {
+      box-shadow: none;
+    }
+    
+    .btn-post {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 0 50px 50px 0;
+    }
+    
+    .btn-post:hover {
+      background-color: #0f2c61;
+    }
+    
+    .user-input-card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .timestamp {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-left: 0.5rem;
+    }
+    
+    .game-stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    
+    .stat-item {
+      display: flex;
+      align-items: center;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+    
+    .stat-icon {
+      margin-right: 0.4rem;
+      color: var(--primary);
+    }
+    
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem 0;
+      }
+      
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .card-body {
+        padding: 1.25rem;
+      }
+      
+      .reply {
+        margin-left: 1rem;
+      }
+    }
+  
