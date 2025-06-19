@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Games Community</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+  <link rel="stylesheet" href="analysis.css">
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <h1><i class="fas fa-futbol me-2"></i>Football Games Community</h1>
+          <p>Join the conversation about upcoming matches and events</p>
+        </div>
+        <div class="d-none d-md-block">
+          <i class="fas fa-users fa-3x opacity-25"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container mb-5">
+    <div class="user-input-card">
+      <h3 class="mb-3"><i class="fas fa-user-circle me-2"></i>Your Profile</h3>
+      <div class="mb-4">
+        <label for="username" class="form-label fw-medium">Display Name <span class="text-muted">(for comments and replies)</span></label>
+        <input type="text" class="form-control form-control-lg" id="username" placeholder="Enter your name (e.g., FootballFan92)">
+        <div class="form-text">This name will be visible to others when you post comments</div>
+      </div>
+    </div>
+    
+    <div id="gamesList" class="mb-4">
+      <!-- Sample game card for layout demonstration -->
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>Featured Match</div>
+          <div class="text-muted"><i class="far fa-clock me-1"></i>Just now</div>
+        </div>
+        <div class="card-body">
+          <h3 class="game-title">FC Barcelona vs Real Madrid - El Clásico</h3>
+          <p class="game-description">
+            The most anticipated match of the season is finally here! Join us at Camp Nou for an unforgettable night of football. 
+            Both teams are in top form, with Messi and Benzema leading their respective attacks. Don't miss this historic rivalry!
+          </p>
+          
+          <div class="game-stats">
+            <div class="stat-item"><i class="fas fa-calendar stat-icon"></i>Sat, Oct 28 - 20:45 CET</div>
+            <div class="stat-item"><i class="fas fa-map-marker-alt stat-icon"></i>Camp Nou, Barcelona</div>
+            <div class="stat-item"><i class="fas fa-ticket-alt stat-icon"></i>Tickets available</div>
+          </div>
+          
+          <div class="mt-4">
+            <button class="action-btn btn-like"><i class="fas fa-thumbs-up me-1"></i>Like <span class="like-count">42</span></button>
+            <button class="action-btn btn-comment"><i class="fas fa-comment me-1"></i>Comment</button>
+          </div>
+          
+          <div class="comment-section mt-4">
+            <h5 class="mb-3"><i class="fas fa-comments me-2"></i>Comments</h5>
+            
+            <div class="comment">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <span class="user-badge"><i class="fas fa-user me-1"></i>MadridFan23</span>
+                </div>
+                <div class="timestamp">2 hours ago</div>
+              </div>
+              <p class="mb-1 mt-2">Can't wait to see Benzema dominate the field! Hala Madrid!</p>
+              <button class="btn btn-sm btn-like mt-1"><i class="fas fa-thumbs-up me-1"></i>Like <span class="like-count">8</span></button>
+              
+              <div class="reply">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <span class="user-badge"><i class="fas fa-user me-1"></i>Cule4Life</span>
+                  </div>
+                  <div class="timestamp">1 hour ago</div>
+                </div>
+                <p class="mb-1 mt-2">Dream on! Messi is going to run circles around your defense!</p>
+                <button class="btn btn-sm btn-like mt-1"><i class="fas fa-thumbs-up me-1"></i>Like <span class="like-count">5</span></button>
+              </div>
+            </div>
+            
+            <div class="input-group mt-3">
+              <input type="text" class="form-control" placeholder="Write a comment..." aria-label="Comment">
+              <button class="btn btn-post">Post</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <div class="container">
+      <p>Football Games Community &copy; 2023 | Join the conversation about your favorite sport</p>
+      <p class="text-muted mt-2"><small>All match information is provided by fans and community members</small></p>
+    </div>
+  </div>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKtfTZ5j3KYvHynIV5vfNKpclbEmrU794",
+      authDomain: "community-caa4a.firebaseapp.com",
+      projectId: "community-caa4a",
+      storageBucket: "community-caa4a.appspot.com",
+      messagingSenderId: "51051822203",
+      appId: "1:51051822203:web:0cd43a4e1f23594f0a36de",
+      measurementId: "G-MC69F9YXC3",
+      databaseURL: "https://community-caa4a-default-rtdb.firebaseio.com"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function loadGames() {
+      db.ref("games").on("value", snapshot => {
+        const games = snapshot.val();
+        const listDiv = document.getElementById("gamesList");
+        listDiv.innerHTML = "";
+
+        for (let id in games) {
+          const game = games[id];
+          const likeCount = game.likes ? Object.keys(game.likes).length : 0;
+          
+          // Calculate time ago
+          const now = new Date();
+          const gameDate = new Date(game.timestamp || now.getTime() - Math.floor(Math.random() * 48*60*60*1000));
+          const diffHours = Math.floor((now - gameDate) / (1000 * 60 * 60));
+          let timeAgo = "just now";
+          if (diffHours > 0) {
+            timeAgo = `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            if (diffHours > 24) {
+              const diffDays = Math.floor(diffHours / 24);
+              timeAgo = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+            }
+          }
+
+          let commentsHtml = "";
+          if (game.comments) {
+            for (let cid in game.comments) {
+              const comment = game.comments[cid];
+              const commentDate = new Date(comment.timestamp || now.getTime() - Math.floor(Math.random() * 24*60*60*1000));
+              const commentDiffHours = Math.floor((now - commentDate) / (1000 * 60 * 60));
+              let commentTimeAgo = "just now";
+              if (commentDiffHours > 0) {
+                commentTimeAgo = `${commentDiffHours} hour${commentDiffHours > 1 ? 's' : ''} ago`;
+                if (commentDiffHours > 24) {
+                  const commentDiffDays = Math.floor(commentDiffHours / 24);
+                  commentTimeAgo = `${commentDiffDays} day${commentDiffDays > 1 ? 's' : ''} ago`;
+                }
+              }
+              
+              const replies = comment.replies || {};
+              let repliesHtml = "";
+              
+              for (let rid in replies) {
+                const reply = replies[rid];
+                const replyLikes = reply.likes ? Object.keys(reply.likes).length : 0;
+                const author = reply.author || "Anonymous";
+                
+                const replyDate = new Date(reply.timestamp || now.getTime() - Math.floor(Math.random() * 12*60*60*1000));
+                const replyDiffHours = Math.floor((now - replyDate) / (1000 * 60 * 60));
+                let replyTimeAgo = "just now";
+                if (replyDiffHours > 0) {
+                  replyTimeAgo = `${replyDiffHours} hour${replyDiffHours > 1 ? 's' : ''} ago`;
+                }
+                
+                repliesHtml += `
+                  <div class="reply">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <span class="user-badge"><i class="fas fa-user me-1"></i>${author}</span>
+                      </div>
+                      <div class="timestamp">${replyTimeAgo}</div>
+                    </div>
+                    <p class="mb-1 mt-2">${reply.text}</p>
+                    <button class="btn btn-sm btn-like mt-1" onclick="likeReply('${id}', '${cid}', '${rid}')">
+                      <i class="fas fa-thumbs-up me-1"></i>Like <span class="like-count">${replyLikes}</span>
+                    </button>
+                  </div>
+                `;
+              }
+
+              commentsHtml += `
+                <div class="comment">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <span class="user-badge"><i class="fas fa-user me-1"></i>${comment.author || "Anonymous"}</span>
+                    </div>
+                    <div class="timestamp">${commentTimeAgo}</div>
+                  </div>
+                  <p class="mb-1 mt-2">${comment.text}</p>
+                  <button class="btn btn-sm btn-like mt-1" onclick="likeComment('${id}', '${cid}')">
+                    <i class="fas fa-thumbs-up me-1"></i>Like <span class="like-count">${comment.likes ? Object.keys(comment.likes).length : 0}</span>
+                  </button>
+                  
+                  ${repliesHtml}
+                  
+                  <div class="input-group mt-3">
+                    <input type="text" class="form-control" placeholder="Write a reply..." id="reply-${id}-${cid}">
+                    <button class="btn btn-post" onclick="replyComment('${id}', '${cid}')">Reply</button>
+                  </div>
+                </div>
+              `;
+            }
+          }
+
+          listDiv.innerHTML += `
+            <div class="card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <div>${game.category || "Featured Match"}</div>
+                <div class="text-muted"><i class="far fa-clock me-1"></i>${timeAgo}</div>
+              </div>
+              <div class="card-body">
+                <h3 class="game-title">${game.title}</h3>
+                <p class="game-description">${game.description}</p>
+                
+                <div class="game-stats">
+                  <div class="stat-item"><i class="fas fa-calendar stat-icon"></i>${game.date || "Sat, Oct 28"}</div>
+                  <div class="stat-item"><i class="fas fa-map-marker-alt stat-icon"></i>${game.location || "Camp Nou"}</div>
+                  <div class="stat-item"><i class="fas fa-ticket-alt stat-icon"></i>${game.tickets || "Tickets available"}</div>
+                </div>
+                
+                <div class="mt-4">
+                  <button class="action-btn btn-like" onclick="likeGame('${id}')">
+                    <i class="fas fa-thumbs-up me-1"></i>Like <span class="like-count">${likeCount}</span>
+                  </button>
+                  <button class="action-btn btn-comment" data-bs-toggle="collapse" data-bs-target="#commentSection-${id}">
+                    <i class="fas fa-comment me-1"></i>Comment
+                  </button>
+                </div>
+                
+                <div class="comment-section mt-4" id="commentSection-${id}">
+                  <h5 class="mb-3"><i class="fas fa-comments me-2"></i>Comments</h5>
+                  
+                  ${commentsHtml || '<p class="text-muted">No comments yet. Be the first to comment!</p>'}
+                  
+                  <div class="input-group mt-3">
+                    <input type="text" class="form-control" placeholder="Write a comment..." id="comment-${id}">
+                    <button class="btn btn-post" onclick="postComment('${id}')">Post</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      });
+    }
+
+    function likeGame(gameId) {
+      const likedKey = `liked_${gameId}`;
+      if (localStorage.getItem(likedKey)) {
+        alert("You already liked this game.");
+        return;
+      }
+
+      db.ref(`games/${gameId}/likes`).push().set({
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      });
+      localStorage.setItem(likedKey, "true");
+    }
+
+    function likeComment(gameId, commentId) {
+      const key = `liked_comment_${gameId}_${commentId}`;
+      if (localStorage.getItem(key)) {
+        alert("You already liked this comment.");
+        return;
+      }
+
+      db.ref(`games/${gameId}/comments/${commentId}/likes`).push().set({
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      });
+      localStorage.setItem(key, "true");
+    }
+
+    function postComment(gameId) {
+      const input = document.getElementById(`comment-${gameId}`);
+      const text = input.value.trim();
+      const author = document.getElementById("username").value.trim() || "Anonymous";
+      if (!text) return;
+
+      db.ref(`games/${gameId}/comments`).push().set({
+        text,
+        author,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      });
+      input.value = '';
+    }
+
+    function replyComment(gameId, commentId) {
+      const input = document.getElementById(`reply-${gameId}-${commentId}`);
+      const text = input.value.trim();
+      const author = document.getElementById("username").value.trim() || "Anonymous";
+      if (!text) return;
+
+      db.ref(`games/${gameId}/comments/${commentId}/replies`).push().set({
+        text,
+        author,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      });
+      input.value = '';
+    }
+
+    function likeReply(gameId, commentId, replyId) {
+      const key = `liked_reply_${gameId}_${commentId}_${replyId}`;
+      if (localStorage.getItem(key)) {
+        alert("You already liked this reply.");
+        return;
+      }
+
+      db.ref(`games/${gameId}/comments/${commentId}/replies/${replyId}/likes`).push().set({
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      });
+      localStorage.setItem(key, "true");
+    }
+
+    window.onload = loadGames;
+  </script>
+</body>
+</html>
