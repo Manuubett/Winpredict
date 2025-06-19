@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinPredict Pro | AI-Powered Sports Predictions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="min1.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-futbol"></i>
+                    WinPredict <span>Pro</span>
+                </div>
+                <div class="nav-buttons">
+                    <a href="jack.html" class="blue-button">
+                        <i class="fas fa-trophy"></i> Jackpot Prediction
+                    </a>
+                    <a href="real.html" class="blue-button">
+                        <i class="fas fa-chart-line"></i> Real Bet Prediction
+                    </a>
+                    <a href="analysis.html" class="blue-button">
+                        <i class="fas fa-users"></i> Community Analysis
+                    </a>
+                    <a href="payment.html" class="blue-button btn-primary">
+                        <i class="fas fa-user-plus"></i> Join Us Now
+                    </a>
+                    <button id="botModalBtn" class="blue-button">
+                        <i class="fas fa-robot"></i> About Soccer Bot
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>AI-Powered Winning Team Predictions</h1>
+                <p>Our advanced virtual tool analyzes hundreds of data points to predict match outcomes with 89% accuracy. Join our community of winning predictors today.</p>
+                <a href="payment.html" class="btn" id="heroJoinBtn">Get Predictions Now!</a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose Our Prediction Tool</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-database"></i></div>
+                    <h3>Advanced Data Analysis</h3>
+                    <p>Our AI analyzes team statistics, player performance, weather conditions and historical data to make accurate predictions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>89% Accuracy Rate</h3>
+                    <p>Proven track record with consistent accurate predictions across multiple sports leagues worldwide.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-coins"></i></div>
+                    <h3>Affordable Access</h3>
+                    <p>For just Ksh 49, get access to premium predictions that can help you make informed decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="stats">
+        <div class="container">
+            <h2>Our Growing Community</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>1,200+</h3>
+                    <p>Active Users</p>
+                </div>
+                <div class="stat-item">
+                    <h3>89%</h3>
+                    <p>Prediction Accuracy</p>
+                </div>
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p>Support Available</p>
+                </div>
+                <div class="stat-item">
+                    <h3>8+</h3>
+                    <p>Sports Covered</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Start Winning?</h2>
+            <p>Join our community of successful predictors today. For just Ksh 49, get access to our premium prediction tool and start making informed decisions.</p>
+            <a href="payment.html" class="btn" id="bottomJoinBtn">Join Community Now</a>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 WinPredict Pro. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">AI-Powered Sports Predictions | Data-Driven Insights</p>
+        </div>
+    </footer>
+    
+    <!-- Bot Modal -->
+    <div id="botModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeBotModal">&times;</span>
+            <h3><i class="fas fa-robot"></i> Soccer Prediction Bot</h3>
+            <p>This advanced AI bot stores data from thousands of previously played soccer matches and uses machine learning algorithms to predict future outcomes with high accuracy.</p>
+            <p>Key features:</p>
+            <ul style="text-align: left; margin: 15px 0 20px; padding-left: 20px;">
+                <li>Real-time match analysis</li>
+                <li>Player performance metrics</li>
+                <li>Weather condition integration</li>
+                <li>Historical data comparison</li>
+                <li>89% prediction accuracy</li>
+            </ul>
+            <p>Would you like to try our prediction bot?</p>
+            <button id="tryBotBtn">Try the Prediction Bot</button>
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> Redirecting to bot interface...
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBTmeDxIUhua52KDAoag23q9MuNEOQXYQg",
+            authDomain: "prediction-94bf9.firebaseapp.com",
+            databaseURL: "https://prediction-94bf9-default-rtdb.firebaseio.com",
+            projectId: "prediction-94bf9",
+            storageBucket: "prediction-94bf9.firebasestorage.app",
+            messagingSenderId: "960123689722",
+            appId: "1:960123689722:web:ca9579625439ecf2478743",
+            measurementId: "G-MTDJTB6JXG"
+        };
+        
+        // Initialize Firebase (only if Firebase is loaded)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Firebase is available
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                console.log("Firebase initialized successfully");
+            } else {
+                console.error("Firebase is not loaded. Check your CDN links.");
+            }
+            
+            // Bot modal functionality
+            const botModal = document.getElementById('botModal');
+            const botModalBtn = document.getElementById('botModalBtn');
+            const closeBotModal = document.getElementById('closeBotModal');
+            const tryBotBtn = document.getElementById('tryBotBtn');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Open modal when bot button is clicked
+            botModalBtn.addEventListener('click', () => {
+                botModal.style.display = 'flex';
+            });
+            
+            // Close modal
+            closeBotModal.addEventListener('click', () => {
+                botModal.style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === botModal) {
+                    botModal.style.display = 'none';
+                }
+            });
+            
+            // Try Bot button functionality
+            tryBotBtn.addEventListener('click', () => {
+                // Show success message
+                successMessage.style.display = 'block';
+                
+                // Simulate a delay for UX purposes
+                setTimeout(() => {
+                    window.location.href = 'bot.html';
+                }, 1500);
+            });
+            
+            // Simulate user data saving to Firebase
+            const joinBtns = document.querySelectorAll('#heroJoinBtn, #bottomJoinBtn');
+            
+            joinBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // In a real app, this would be the user registration process
+                    console.log("User joining process initiated...");
+                    
+                    // Redirect to payment page
+                    window.location.href = 'payment.html';
+                });
+            });
+        });
+    </script>
+    
+    <!-- Load Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js"></script>
+</body>
+                                                                                          </html>
