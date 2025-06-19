@@ -135,11 +135,13 @@
     </footer>
   </div>
 <p id="timer" style="font-size: 20px; color: red; font-weight: 200; margin-top: 20px;">
+  C<p id="timer" style="font-size: 20px; color: red; font-weight: 200; margin-top: 20px;">
   Countdown for Page A: ...
 </p>
 
 <script>
-  const expiryKey = "pageAExpiry"; // Unique key for Page A
+  const pageKey = "pageAExpiry"; // Unique for this page
+  const redirectToPaymentPage = "real.html?page=pageA";
 
   function startCountdown(expiry) {
     const timerEl = document.getElementById("timer");
@@ -150,8 +152,8 @@
 
       if (distance <= 0) {
         clearInterval(interval);
-        localStorage.removeItem(expiryKey);
-        timerEl.innerText = "Countdown expired.";
+        localStorage.removeItem(pageKey);
+        window.location.href = redirectToPaymentPage;
       } else {
         const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((distance / (1000 * 60)) % 60);
@@ -162,16 +164,12 @@
   }
 
   function initCountdown() {
-    let expiry = localStorage.getItem(expiryKey);
-
-    if (!expiry) {
-      // Set a new countdown duration for this page (e.g., 5 minutes)
-      const countdownDuration = 5 * 60 * 1000; // 5 minutes in ms
-      expiry = Date.now() + countdownDuration;
-      localStorage.setItem(expiryKey, expiry);
+    const expiry = localStorage.getItem(pageKey);
+    if (!expiry || Date.now() > parseInt(expiry)) {
+      window.location.href = redirectToPaymentPage;
+    } else {
+      startCountdown(parseInt(expiry));
     }
-
-    startCountdown(parseInt(expiry, 10));
   }
 
   initCountdown();
