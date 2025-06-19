@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Bet Prediction Bot | Premium Access</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="real.css">
+</head>
+<body>
+  <!-- Floating dice elements -->
+  <div class="dice">6</div>
+  <div class="dice">3</div>
+  <div class="dice">1</div>
+  <div class="dice">5</div>
+  
+  <!-- Poker chips -->
+  <div class="chips">$</div>
+  <div class="chips">€</div>
+  <div class="chips">£</div>
+  
+  <div class="container">
+    <div class="hero">
+      <div class="security-badge">
+        <i class="fas fa-shield-alt"></i> Secure Payment
+      </div>
+      
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h1>Real Bet Bot</h1>
+      </div>
+      
+      <h2>Premium Betting Prediction Tools</h2>
+      <p>Access our advanced AI algorithms for the most accurate betting predictions.</p>
+      
+      <ul class="features">
+        <li><i class="fas fa-check-circle"></i> 96.3% prediction accuracy rate</li>
+        <li><i class="fas fa-check-circle"></i> Real-time odds analysis</li>
+        <li><i class="fas fa-check-circle"></i> Value bet identification</li>
+        <li><i class="fas fa-check-circle"></i> Bankroll management tools</li>
+        <li><i class="fas fa-check-circle"></i> 24/7 live match coverage</li>
+      </ul>
+      
+      <div class="testimonial">
+        <p>"With Real Bet Bot, I've increased my winnings by 450% in just 3 months. The predictions are incredibly accurate!"</p>
+        <div class="author">- Michael T., Premium User</div>
+      </div>
+    </div>
+    
+    <div class="payment-form">
+      <div class="form-header">
+        <h2>Premium Access</h2>
+        <p>Unlock Real Bet Bot for only Ksh 35</p>
+      </div>
+      
+      <div class="payment-card">
+        <div class="payment-title">
+          <h3>Subscription Fee</h3>
+          <div class="price-tag">Ksh 35</div>
+        </div>
+        
+        <ul class="payment-steps">
+          <li>
+            <div class="step-number">1</div>
+            <div>
+              <strong>Dial *234*1#</strong>
+              <p>Go to M-Pesa menu</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-number">2</div>
+            <div>
+              <strong>Select "Lipa na M-Pesa"</strong>
+              <p>Choose payment option</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-number">3</div>
+            <div>
+              <strong>Enter Till Number: 4585402</strong>
+              <p>Confirm the payment</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-number">4</div>
+            <div>
+              <strong>Enter Amount: 35 Ksh</strong>
+              <p>Complete transaction</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="form-group">
+        <label for="name">Your Full Name</label>
+        <input type="text" id="name" class="form-control" placeholder="Enter your name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="code">M-Pesa Transaction Code</label>
+        <div class="code-input-container">
+          <input type="text" id="code" class="form-control" placeholder="Enter M-Pesa code" required>
+          <div class="code-validity" id="codeValidity">
+            <i class="fas fa-check-circle valid"></i>
+            <i class="fas fa-times-circle invalid"></i>
+          </div>
+        </div>
+        <div class="used-code-warning" id="usedCodeWarning">
+          <i class="fas fa-exclamation-triangle"></i> This M-Pesa code has already been used
+        </div>
+      </div>
+      
+      <button class="btn btn-primary" id="submitBtn" onclick="submitPayment()">
+        <i class="fas fa-lock"></i> Submit for Verification
+      </button>
+      
+      <div class="verification-status" id="verificationStatus">
+        <div class="status-icon success">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="status-icon warning">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="status-icon danger">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <div class="status-title" id="statusTitle">Verification Status</div>
+        <div class="status-message" id="statusMessage">Checking your payment status...</div>
+      </div>
+      
+      <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>Verifying your payment...</p>
+      </div>
+      
+      <div class="payment-methods">
+        <div class="method">
+          <i class="fab fa-cc-mastercard fa-2x" style="color: #0061A8;"></i>
+        </div>
+        <div class="method">
+          <i class="fab fa-cc-visa fa-2x" style="color: #1434CB;"></i>
+        </div>
+        <div class="method">
+          <i class="fas fa-mobile-alt fa-2x" style="color: #00B300;"></i>
+        </div>
+      </div>
+      
+      <div class="guarantee">
+        <i class="fas fa-shield-alt"></i> Secure payment · 24/7 support · Instant access
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBTmeDxIUhua52KDAoag23q9MuNEOQXYQg",
+      authDomain: "prediction-94bf9.firebaseapp.com",
+      databaseURL: "https://prediction-94bf9-default-rtdb.firebaseio.com",
+      projectId: "prediction-94bf9",
+      storageBucket: "prediction-94bf9.appspot.com",
+      messagingSenderId: "960123689722",
+      appId: "1:960123689722:web:ca9579625439ecf2478743",
+      measurementId: "G-MTDJTB6JXG"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const paymentsRef = db.ref("payments_real");
+    
+    // Elements
+    const loading = document.getElementById("loading");
+    const submitBtn = document.getElementById("submitBtn");
+    const codeInput = document.getElementById("code");
+    const codeValidity = document.getElementById("codeValidity");
+    const usedCodeWarning = document.getElementById("usedCodeWarning");
+    const verificationStatus = document.getElementById("verificationStatus");
+    const statusTitle = document.getElementById("statusTitle");
+    const statusMessage = document.getElementById("statusMessage");
+    
+    // Track used M-Pesa codes
+    const usedCodes = new Set();
+    
+    // Initialize the app
+    function initApp() {
+      // Load existing payments to track used codes
+      paymentsRef.once('value', (snapshot) => {
+        snapshot.forEach(child => {
+          const payment = child.val();
+          if (payment.mpesaCode) {
+            usedCodes.add(payment.mpesaCode);
+          }
+        });
+      });
+      
+      // Auto check on page load
+      const savedCode = localStorage.getItem("mpesaCode_real");
+      const savedName = localStorage.getItem("name_real");
+      if (savedCode && savedName) {
+        document.getElementById("name").value = savedName;
+        document.getElementById("code").value = savedCode;
+        checkVerification(savedName, savedCode);
+      }
+      
+      // Setup code validation
+      codeInput.addEventListener('input', validateMpesaCode);
+    }
+    
+    // Validate M-Pesa code format and check if used
+    function validateMpesaCode() {
+      const code = codeInput.value.trim();
+      const validFormat = /^[A-Z0-9]{10}$/.test(code);
+      
+      if (code.length === 0) {
+        codeValidity.className = 'code-validity';
+        usedCodeWarning.style.display = 'none';
+        return;
+      }
+      
+      if (!validFormat) {
+        codeValidity.className = 'code-validity invalid';
+        usedCodeWarning.style.display = 'none';
+        return;
+      }
+      
+      // Check if code has been used
+      if (usedCodes.has(code)) {
+        codeValidity.className = 'code-validity invalid';
+        usedCodeWarning.style.display = 'block';
+      } else {
+        codeValidity.className = 'code-validity valid';
+        usedCodeWarning.style.display = 'none';
+      }
+    }
+    
+    // Update verification status display
+    function updateStatus(type, title, message) {
+      // Hide all status icons
+      document.querySelectorAll('.status-icon').forEach(icon => {
+        icon.style.display = 'none';
+      });
+      
+      // Show verification status container
+      verificationStatus.style.display = 'block';
+      
+      // Show the appropriate icon
+      const statusIcon = verificationStatus.querySelector(`.status-icon.${type}`);
+      if (statusIcon) statusIcon.style.display = 'block';
+      
+      // Set title and message
+      statusTitle.textContent = title;
+      statusMessage.textContent = message;
+    }
+    
+    // Submit payment for verification
+    function submitPayment() {
+      const name = document.getElementById("name").value.trim();
+      const code = document.getElementById("code").value.trim();
+      
+      // Validate input
+      if (!name || !code) {
+        updateStatus('danger', 'Error', 'Please enter both name and M-Pesa code.');
+        return;
+      }
+      
+      // Validate code format
+      if (!/^[A-Z0-9]{10}$/.test(code)) {
+        updateStatus('danger', 'Invalid Code', 'Please enter a valid M-Pesa code (10 characters, letters and numbers).');
+        return;
+      }
+      
+      // Check if code has been used
+      if (usedCodes.has(code)) {
+        updateStatus('danger', 'Code Already Used', 'This M-Pesa code has already been used. Please use a different code.');
+        return;
+      }
+      
+      // Show loading
+      loading.style.display = "block";
+      verificationStatus.style.display = "none";
+      submitBtn.disabled = true;
+      
+      const data = {
+        name: name,
+        mpesaCode: code,
+        timestamp: new Date().toISOString(),
+        verified: false
+      };
+      
+      // Save to Firebase
+      paymentsRef.push(data)
+        .then(() => {
+          // Add to used codes
+          usedCodes.add(code);
+          
+          // Save locally
+          localStorage.setItem("name_real", name);
+          localStorage.setItem("mpesaCode_real", code);
+          
+          // Open WhatsApp
+          const wa = `https://wa.me/254704518130?text=${encodeURIComponent(
+            `Hello, I have paid Ksh 35 for Real Bet Bot.\nName: ${name}\nM-Pesa Code: ${code}`
+          )}`;
+          window.open(wa, "_blank");
+          
+          // Update status
+          updateStatus('warning', 'Pending Verification', 'Your payment has been submitted. Please wait for admin verification.');
+          loading.style.display = "none";
+          submitBtn.disabled = false;
+          
+          // Start verification polling
+          pollForVerification(name, code);
+        })
+        .catch(error => {
+          updateStatus('danger', 'Error', 'Failed to save payment: ' + error.message);
+          loading.style.display = "none";
+          submitBtn.disabled = false;
+        });
+    }
+    
+    // Check verification status
+    function checkVerification(name, code) {
+      loading.style.display = "block";
+      verificationStatus.style.display = "none";
+      
+      paymentsRef.orderByChild("mpesaCode").equalTo(code).once("value", snapshot => {
+        if (snapshot.exists()) {
+          let found = false;
+          snapshot.forEach(child => {
+            const entry = child.val();
+            if (entry.name === name && entry.mpesaCode === code) {
+              found = true;
+              if (entry.verified) {
+                grantAccess();
+              } else {
+                updateStatus('warning', 'Pending Verification', 'Your payment is awaiting admin approval.');
+                // Start polling for verification
+                pollForVerification(name, code);
+              }
+            }
+          });
+          
+          if (!found) {
+            updateStatus('danger', 'Record Not Found', 'No matching payment found. Please resubmit.');
+          }
+        } else {
+          updateStatus('danger', 'Record Not Found', 'No matching payment found. Please resubmit.');
+        }
+        
+        loading.style.display = "none";
+      });
+    }
+    
+    // Poll for verification status
+    function pollForVerification(name, code) {
+      const checkInterval = setInterval(() => {
+        paymentsRef.orderByChild("mpesaCode").equalTo(code).once("value", snapshot => {
+          if (snapshot.exists()) {
+            snapshot.forEach(child => {
+              const entry = child.val();
+              if (entry.name === name && entry.mpesaCode === code && entry.verified) {
+                clearInterval(checkInterval);
+                grantAccess();
+              }
+            });
+          }
+        });
+      }, 5000); // Check every 5 seconds
+    }
+    
+    // Grant access to Real Bet tools
+    function grantAccess() {
+      // ✅ Reset 24-hour access countdown
+      const oneDayMs = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+      const expiresAt = new Date().getTime() + oneDayMs;
+      localStorage.setItem("accessExpiresAt_real", expiresAt.toString());
+      
+      // Show success status
+      updateStatus('success', 'Access Granted', 'Redirecting to Real Bet Bot...');
+      
+      // ➡️ Redirect to Real Bet tools after 2 seconds
+      setTimeout(() => {
+        window.location.href = "real.html";
+      }, 2000);
+    }
+    
+    // Initialize the app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
