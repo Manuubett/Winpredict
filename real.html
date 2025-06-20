@@ -154,35 +154,8 @@
       </div>
     </div>
   </div>
-<script>
-  // Simulate payment verification
-  function simulatePayment() {
-    // Extract `page` from URL
-    const params = new URLSearchParams(window.location.search);
-    const page = params.get("page"); // e.g. 'pageA'
 
-    if (!page) {
-      alert("Missing page identifier.");
-      return;
-    }
 
-    // Set a new countdown (e.g. 10 minutes)
-    const duration = 10 * 60 * 1000; // 10 minutes
-    const newExpiry = Date.now() + duration;
-    const pageKey = page + "Expiry";
-
-    // Store new expiry
-    localStorage.setItem(pageKey, newExpiry);
-
-    // Redirect back to the page
-    window.location.href = page + ".html";
-  }
-
-  // Simulate async payment verification after 2 seconds
-  setTimeout(simulatePayment, 2000);
-</script>
-
-<h2>Processing Payment... Please wait.</h2>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBTmeDxIUhua52KDAoag23q9MuNEOQXYQg",
