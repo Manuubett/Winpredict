@@ -371,23 +371,35 @@
         });
       }, 5000); // Check every 5 seconds
     }
-    
-    // Grant access to Real Bet tools
-    function grantAccess() {
-      // ✅ Reset 24-hour access countdown
-      const oneDayMs = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-      const expiresAt = new Date().getTime() + oneDayMs;
-      localStorage.setItem("accessExpiresAt_real", expiresAt.toString());
-      
-      // Show success status
-      updateStatus('success', 'Access Granted', 'Redirecting to Real Bet Bot...');
-      
-      // ➡️ Redirect to Real Bet tools after 2 seconds
-      setTimeout(() => {
-        window.location.href = "realbet-bot.html";
-      }, 2000);
+
+    <script>
+  function grantAccess() {
+    const params = new URLSearchParams(window.location.search);
+    const page = params.get("page");
+
+    if (!page) {
+      alert("Page missing");
+      return;
     }
-    
+
+    const oneDayMs = 24 * 60 * 60 * 1000; // 24h
+    const expiresAt = Date.now() + oneDayMs;
+    localStorage.setItem(`accessExpiresAt_${page}`, expiresAt.toString());
+
+    // Optional UI feedback
+    document.body.innerHTML = `<h2 style="color: green;">Access Granted for ${page}! Redirecting...</h2>`;
+
+    // Redirect after short delay
+    setTimeout(() => {
+      window.location.href = `${page}.html`;
+    }, 2000);
+  }
+
+  // Simulate payment success
+  setTimeout(grantAccess, 2000); // Replace with real payment callback
+</script>
+
+<h2>Processing Payment... Please wait.</h2>
     // Initialize the app when DOM is loaded
     document.addEventListener('DOMContentLoaded', initApp);
   </script>
