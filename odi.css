@@ -1,0 +1,34 @@
+
+    body { background-color: #f8f9fa; }
+    textarea { height: 180px; font-family: monospace; }
+    pre {
+      background-color: #fff;
+      padding: 1rem;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .badge-counter {
+      font-size: 1rem;
+      padding: 0.4em 0.7em;
+      background-color: #0d6efd;
+    }
+    .prediction-card {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      margin-bottom: 1.5rem;
+    }
+    .progress {
+      height: 25px;
+      margin-bottom: 10px;
+    }
+    .team-logo {
+      font-size: 2rem;
+      margin-right: 10px;
+    }
+  
