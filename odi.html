@@ -109,6 +109,34 @@
 
   <pre id="output">No analysis yet.</pre>
 </div>
+  <div id="countdown" class="text-end text-muted small mt-2 me-2"></div>
+  <script>
+  const tool = "jack"; // Update this for other tools
+  const countdownEl = document.getElementById("countdown");
+  const expiresAt = parseInt(localStorage.getItem(`accessExpiresAt_${tool}`), 10);
+
+  function redirectToVerification() {
+    alert("Your access has expired. Please verify again.");
+    window.location.href = "index.html"; // or use your specific verification page
+  }
+
+  function updateCountdown() {
+    const now = Date.now();
+    const remaining = expiresAt - now;
+
+    if (isNaN(expiresAt) || remaining <= 0) {
+      redirectToVerification();
+      return;
+    }
+
+    const mins = Math.floor(remaining / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000);
+    countdownEl.textContent = `Access expires in ${mins}:${secs.toString().padStart(2, '0')}`;
+
+    setTimeout(updateCountdown, 1000);
+  }
+
+  updateCountdown();
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
