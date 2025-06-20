@@ -373,17 +373,17 @@
     }
 
     
+  <script>
   function grantAccess() {
-    const page = params.get("page") || "realbet-bot.html";
     const params = new URLSearchParams(window.location.search);
-    const page = params.get("page");
+    const page = params.get("page") || "realbet-bot"; // Default to 'realbet-bot' if 'page' param is missing
 
     if (!page) {
       alert("Page missing");
       return;
     }
 
-    const oneDayMs = 24 * 60 * 60 * 1000; // 24h
+    const oneDayMs = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
     const expiresAt = Date.now() + oneDayMs;
     localStorage.setItem(`accessExpiresAt_${page}`, expiresAt.toString());
 
@@ -398,8 +398,12 @@
 
   // Simulate payment success
   setTimeout(grantAccess, 2000); // Replace with real payment callback
-
-
+  
+  // Initialize the app when DOM is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    // If there's any initialization logic to run when the DOM is ready, put it here
+  });
+</script>
 
     // Initialize the app when DOM is loaded
     document.addEventListener('DOMContentLoaded', initApp);
