@@ -104,43 +104,38 @@
       </div>
     </div>
   </div>
+  <div id="countdown" class="text-end text-muted small mt-2 me-2"></div>
   <p id="timer" style="font-size: 20px; color: red; font-weight: 200; margin-top: 20px;">
   Subscription ends in: ...
   </p>
   <script>
-  const expiryKey = "accessExpiresAt";
+  const tool = "jack"; // Update this for other tools
+  const countdownEl = document.getElementById("countdown");
+  const expiresAt = parseInt(localStorage.getItem(`accessExpiresAt_${tool}`), 10);
 
-  function startCountdown(expiry) {
-    const timerEl = document.getElementById("timer");
-
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = expiry - now;
-
-      if (distance <= 0) {
-        clearInterval(interval);
-        localStorage.removeItem(expiryKey);
-        window.location.href = "subscribe.html"; // expired → go pay again
-      } else {
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        timerEl.innerText = `Time Remaining: ${hours}h ${minutes}m ${seconds}s`;
-      }
-    }, 1000);
+  function redirectToVerification() {
+    alert("Your access has expired. Please verify again.");
+    window.location.href = "index.html"; // or use your specific verification page
   }
 
-  function checkAccess() {
-    const expiry = localStorage.getItem(expiryKey);
-    if (!expiry || new Date().getTime() > parseInt(expiry)) {
-      window.location.href = "subscribe.html";
-    } else {
-      startCountdown(parseInt(expiry));
+  function updateCountdown() {
+    const now = Date.now();
+    const remaining = expiresAt - now;
+
+    if (isNaN(expiresAt) || remaining <= 0) {
+      redirectToVerification();
+      return;
     }
+
+    const mins = Math.floor(remaining / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000);
+    countdownEl.textContent = `Access expires in ${mins}:${secs.toString().padStart(2, '0')}`;
+
+    setTimeout(updateCountdown, 1000);
   }
 
-  checkAccess();
-                                  </script>
+  updateCountdown();
+  </script>
 
   <script>
     let matchIndex = 0;
