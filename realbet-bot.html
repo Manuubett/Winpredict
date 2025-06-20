@@ -134,12 +134,12 @@
       <p>© 2023 Soccer Predictor Pro | Advanced match forecasting using Poisson distribution</p>
     </footer>
   </div>
-<p id="timer" style="font-size: 20px; color: red; font-weight: 200; margin-top: 20px;">
-  C<p id="timer" style="font-size: 20px; color: red; font-weight: 200; margin-top: 20px;">
-  Countdown for Page A: ...
-</p>
+<div id="timer" style="font-weight: bold; margin-top: 10px; color: red;">
+  Checking access...
+</div>
+
 <script>
-  // ✅ Dynamically extract page ID from URL (e.g. "realbet-bot" from realbet-bot.html)
+  // Get current page ID (from filename)
   const pageId = window.location.pathname.split("/").pop().replace(".html", "");
   const expiryKey = `accessExpiresAt_${pageId}`;
 
@@ -167,13 +167,12 @@
     if (!expiry || Date.now() > parseInt(expiry)) {
       window.location.href = `real.html?page=${pageId}`;
     } else {
-      startCountdown(parseInt(expiry, 10));
+      startCountdown(parseInt(expiry));
     }
   }
 
   checkAccess();
 </script>
-
   <script>
     let matchCount = 0;
     const matchesContainer = document.getElementById('matches');
