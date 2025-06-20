@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Virtual Soccer Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="payment.css">
+</head>
+<body class="py-4">
+<div class="container">
+  <h1 class="mb-4 text-primary">⚽ Virtual Soccer Analyzer</h1>
+
+  <!-- New Prediction Section -->
+  <div class="prediction-section mb-4">
+    <h3 class="mb-3">Match Prediction</h3>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="homeSelect" class="form-label">Home Team</label>
+        <select class="form-select" id="homeSelect"></select>
+      </div>
+      <div class="col-md-4">
+        <label for="awaySelect" class="form-label">Away Team</label>
+        <select class="form-select" id="awaySelect"></select>
+      </div>
+      <div class="col-md-4 d-flex align-items-end">
+        <button class="btn btn-success w-100" onclick="predictMatch()">Predict Winner</button>
+      </div>
+    </div>
+    
+    <div id="predictionResult" class="prediction-card" style="display: none;">
+      <h4 class="text-center mb-3">Prediction Result</h4>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <span class="team-logo">🔴</span>
+          <span id="predictionHomeTeam"></span>
+        </div>
+        <span>vs</span>
+        <div>
+          <span class="team-logo">🟠</span>
+          <span id="predictionAwayTeam"></span>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <div class="d-flex justify-content-between mb-1">
+          <span>Home Win Probability</span>
+          <span id="homeProb">0%</span>
+        </div>
+        <div class="progress">
+          <div id="homeProgress" class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <div class="d-flex justify-content-between mb-1">
+          <span>Draw Probability</span>
+          <span id="drawProb">0%</span>
+        </div>
+        <div class="progress">
+          <div id="drawProgress" class="progress-bar bg-warning" role="progressbar" style="width: 0%"></div>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <div class="d-flex justify-content-between mb-1">
+          <span>Away Win Probability</span>
+          <span id="awayProb">0%</span>
+        </div>
+        <div class="progress">
+          <div id="awayProgress" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+        </div>
+      </div>
+      
+      <div class="alert alert-info mb-0">
+        <strong>Prediction:</strong> <span id="finalPrediction"></span>
+      </div>
+    </div>
+  </div>
+  <!-- End Prediction Section -->
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="fixtures" class="form-label">Fixtures and Odds</label>
+      <textarea class="form-control" id="fixtures" placeholder="Paste fixtures here..."></textarea>
+    </div>
+    <div class="col-md-6">
+      <label for="results" class="form-label">Match Results</label>
+      <textarea class="form-control" id="results" placeholder="Paste results here..."></textarea>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <button class="btn btn-primary" onclick="analyzeAndSave()">Analyze & Save</button>
+    <button class="btn btn-warning" onclick="clearInputs()">Clear Inputs</button>
+    <button class="btn btn-danger" onclick="clearStored()">Clear Stored Data</button>
+  </div>
+
+  <div class="mb-3">
+    <label for="search" class="form-label">Search Results</label>
+    <input type="text" class="form-control" id="search" placeholder="Search team, result, odds..." oninput="searchResults()">
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h4 class="mb-0">Match Analysis</h4>
+    <span class="badge text-bg-primary badge-counter">Matches: <span id="matchCount">0</span></span>
+  </div>
+
+  <pre id="output">No analysis yet.</pre>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+let allMatches = JSON.parse(localStorage.getItem("allMatches") || "[]");
+
+function parseFixtures(raw) {
+  const lines = raw.trim().split("\n").filter(l => l.trim() !== "");
+  const fixtures = [];
+  for (let i = 0; i < lines.length; i += 8) {
+    fixtures.push({
+      home: lines[i],
+      away: lines[i + 1],
+      odds: {
+        "1": parseFloat(lines[i + 3]),
+        "X": parseFloat(lines[i + 5]),
+        "2": parseFloat(lines[i + 7])
+      }
+    });
+  }
+  return fixtures;
+}
+
+function parseResults(raw) {
+  const lines = raw.trim().split("\n").filter(l => l.trim() !== "");
+  const results = [];
+  for (let i = 0; i < lines.length; i += 4) {
+    results.push({
+      home: lines[i],
+      homeScore: parseInt(lines[i + 1]),
+      awayScore: parseInt(lines[i + 2]),
+      away: lines[i + 3]
+    });
+  }
+  return results;
+}
+
+function analyzeAndSave() {
+  const fixtureText = document.getElementById("fixtures").value;
+  const resultText = document.getElementById("results").value;
+
+  localStorage.setItem("fixtures", fixtureText);
+  localStorage.setItem("results", resultText);
+
+  const fixtures = parseFixtures(fixtureText);
+  const results = parseResults(resultText);
+  const storedMatchKeys = new Set(allMatches.map(m => `${m.home}-${m.away}-${m.result}`));
+  const newMatches = [];
+
+  fixtures.forEach(fix => {
+    const res = results.find(r =>
+      r.home.toLowerCase() === fix.home.toLowerCase() &&
+      r.away.toLowerCase() === fix.away.toLowerCase()
+    );
+
+    if (!res) return;
+
+    let outcome = '';
+    if (res.homeScore > res.awayScore) outcome = '1';
+    else if (res.homeScore < res.awayScore) outcome = '2';
+    else outcome = 'X';
+
+    const matchKey = `${fix.home}-${fix.away}-${res.homeScore}-${res.awayScore}`;
+    if (!storedMatchKeys.has(matchKey)) {
+      const matchString = `🏟️ ${fix.home} vs ${fix.away}
+➡️ Result: ${res.homeScore} - ${res.awayScore}
+✅ Outcome: ${outcome}
+🔢 Odds: 1 @ ${fix.odds["1"]}, X @ ${fix.odds["X"]}, 2 @ ${fix.odds["2"]}
+-----------------------------`;
+
+      const matchData = {
+        home: fix.home,
+        away: fix.away,
+        outcome,
+        result: `${res.homeScore}-${res.awayScore}`,
+        odds: fix.odds,
+        raw: matchString
+      };
+
+      allMatches.push(matchData);
+      newMatches.push(matchData);
+    }
+  });
+
+  localStorage.setItem("allMatches", JSON.stringify(allMatches));
+  document.getElementById("output").textContent = allMatches.map(m => m.raw).join("\n") || "No analysis yet.";
+  document.getElementById("matchCount").textContent = allMatches.length;
+  
+  // Update team dropdowns after adding new matches
+  populateTeamDropdowns();
+}
+
+function searchResults() {
+  const term = document.getElementById("search").value.toLowerCase();
+  const filtered = allMatches.filter(m =>
+    (m.home + m.away + m.result + m.outcome + JSON.stringify(m.odds)).toLowerCase().includes(term)
+  );
+  const display = filtered.map(m => m.raw).join("\n");
+  document.getElementById("output").textContent = display || "No matches found.";
+  document.getElementById("matchCount").textContent = filtered.length;
+}
+
+function clearInputs() {
+  if (!confirm("Clear just the input fields?")) return;
+  document.getElementById("fixtures").value = "";
+  document.getElementById("results").value = "";
+  document.getElementById("search").value = "";
+  const savedFixtures = localStorage.getItem("fixtures");
+  const savedResults = localStorage.getItem("results");
+  if (savedFixtures) document.getElementById("fixtures").value = savedFixtures;
+  if (savedResults) document.getElementById("results").value = savedResults;
+  document.getElementById("output").textContent = allMatches.map(m => m.raw).join("\n") || "No analysis yet.";
+  document.getElementById("matchCount").textContent = allMatches.length;
+}
+
+function clearStored() {
+  if (!confirm("Clear everything including stored match history?")) return;
+  localStorage.removeItem("fixtures");
+  localStorage.removeItem("results");
+  localStorage.removeItem("allMatches");
+  document.getElementById("fixtures").value = "";
+  document.getElementById("results").value = "";
+  document.getElementById("search").value = "";
+  document.getElementById("output").textContent = "No analysis yet.";
+  document.getElementById("matchCount").textContent = "0";
+  allMatches = [];
+  populateTeamDropdowns();
+}
+
+// New function to populate team dropdowns
+function populateTeamDropdowns() {
+  const homeSelect = document.getElementById('homeSelect');
+  const awaySelect = document.getElementById('awaySelect');
+  
+  // Clear existing options
+  homeSelect.innerHTML = '';
+  awaySelect.innerHTML = '';
+  
+  // Get all unique teams
+  const teams = new Set();
+  allMatches.forEach(match => {
+    teams.add(match.home);
+    teams.add(match.away);
+  });
+  
+  // Convert to array and sort alphabetically
+  const sortedTeams = Array.from(teams).sort();
+  
+  // Add options to dropdowns
+  sortedTeams.forEach(team => {
+    const homeOption = document.createElement('option');
+    homeOption.value = team;
+    homeOption.textContent = team;
+    homeSelect.appendChild(homeOption);
+    
+    const awayOption = document.createElement('option');
+    awayOption.value = team;
+    awayOption.textContent = team;
+    awaySelect.appendChild(awayOption);
+  });
+  
+  // Set initial values for example
+  if (teams.has('Liverpool') && teams.has('Wolves')) {
+    homeSelect.value = 'Liverpool';
+    awaySelect.value = 'Wolves';
+  }
+}
+
+// New function to predict match outcome
+function predictMatch() {
+  const homeTeam = document.getElementById('homeSelect').value;
+  const awayTeam = document.getElementById('awaySelect').value;
+  
+  if (!homeTeam || !awayTeam) {
+    alert("Please select both teams");
+    return;
+  }
+  
+  // Get all matches for these teams
+  const homeMatches = allMatches.filter(m => 
+    m.home === homeTeam || m.away === homeTeam
+  );
+  
+  const awayMatches = allMatches.filter(m => 
+    m.home === awayTeam || m.away === awayTeam
+  );
+  
+  // Get head-to-head matches
+  const directMatches = allMatches.filter(m => 
+    (m.home === homeTeam && m.away === awayTeam) || 
+    (m.home === awayTeam && m.away === homeTeam)
+  );
+  
+  // Calculate historical performance
+  const homeStats = calculateTeamStats(homeMatches, homeTeam);
+  const awayStats = calculateTeamStats(awayMatches, awayTeam);
+  const directStats = calculateDirectStats(directMatches, homeTeam, awayTeam);
+  
+  // Calculate probabilities using scientific model
+  const probabilities = calculateProbabilities(homeStats, awayStats, directStats);
+  
+  // Display results
+  showPredictionResults(homeTeam, awayTeam, probabilities);
+}
+
+// Calculate team statistics
+function calculateTeamStats(matches, team) {
+  let wins = 0;
+  let draws = 0;
+  let losses = 0;
+  let goalsFor = 0;
+  let goalsAgainst = 0;
+  
+  matches.forEach(match => {
+    const isHome = match.home === team;
+    const homeScore = parseInt(match.result.split('-')[0]);
+    const awayScore = parseInt(match.result.split('-')[1]);
+    
+    if (isHome) {
+      goalsFor += homeScore;
+      goalsAgainst += awayScore;
+      
+      if (match.outcome === '1') wins++;
+      else if (match.outcome === 'X') draws++;
+      else losses++;
+    } else {
+      goalsFor += awayScore;
+      goalsAgainst += homeScore;
+      
+      if (match.outcome === '2') wins++;
+      else if (match.outcome === 'X') draws++;
+      else losses++;
+    }
+  });
+  
+  const totalMatches = matches.length || 1; // Avoid division by zero
+  
+  return {
+    winRate: wins / totalMatches,
+    drawRate: draws / totalMatches,
+    lossRate: losses / totalMatches,
+    avgGoalsFor: goalsFor / totalMatches,
+    avgGoalsAgainst: goalsAgainst / totalMatches,
+    totalMatches
+  };
+}
+
+// Calculate head-to-head statistics
+function calculateDirectStats(matches, homeTeam, awayTeam) {
+  let homeWins = 0;
+  let draws = 0;
+  let awayWins = 0;
+  
+  matches.forEach(match => {
+    const isHome = match.home === homeTeam;
+    
+    if (isHome) {
+      if (match.outcome === '1') homeWins++;
+      else if (match.outcome === 'X') draws++;
+      else awayWins++;
+    } else {
+      if (match.outcome === '2') homeWins++;
+      else if (match.outcome === 'X') draws++;
+      else awayWins++;
+    }
+  });
+  
+  const totalMatches = matches.length || 1;
+  
+  return {
+    homeWinRate: homeWins / totalMatches,
+    drawRate: draws / totalMatches,
+    awayWinRate: awayWins / totalMatches,
+    totalMatches
+  };
+}
+
+// Calculate probabilities using scientific model
+function calculateProbabilities(homeStats, awayStats, directStats) {
+  // Weighted factors
+  const FORM_WEIGHT = 0.4;     // Recent form importance
+  const DIRECT_WEIGHT = 0.3;   // Head-to-head importance
+  const GOAL_WEIGHT = 0.2;     // Goal difference importance
+  const ODDS_WEIGHT = 0.1;     // Historical odds importance
+  
+  // Calculate base probabilities
+  const homeWinProb = 
+    (homeStats.winRate * FORM_WEIGHT) +
+    (directStats.homeWinRate * DIRECT_WEIGHT) +
+    ((homeStats.avgGoalsFor - awayStats.avgGoalsAgainst) * GOAL_WEIGHT);
+  
+  const drawProb = 
+    (homeStats.drawRate * FORM_WEIGHT * 0.5) +
+    (awayStats.drawRate * FORM_WEIGHT * 0.5) +
+    (directStats.drawRate * DIRECT_WEIGHT);
+  
+  const awayWinProb = 
+    (awayStats.winRate * FORM_WEIGHT) +
+    (directStats.awayWinRate * DIRECT_WEIGHT) +
+    ((awayStats.avgGoalsFor - homeStats.avgGoalsAgainst) * GOAL_WEIGHT);
+  
+  // Normalize to 100%
+  const total = homeWinProb + drawProb + awayWinProb;
+  
+  return {
+    homeWin: Math.max(0, (homeWinProb / total) * 100),
+    draw: Math.max(0, (drawProb / total) * 100),
+    awayWin: Math.max(0, (awayWinProb / total) * 100)
+  };
+}
+
+// Show prediction results
+function showPredictionResults(homeTeam, awayTeam, probabilities) {
+  // Update team names
+  document.getElementById('predictionHomeTeam').textContent = homeTeam;
+  document.getElementById('predictionAwayTeam').textContent = awayTeam;
+  
+  // Update probabilities
+  document.getElementById('homeProb').textContent = probabilities.homeWin.toFixed(1) + '%';
+  document.getElementById('drawProb').textContent = probabilities.draw.toFixed(1) + '%';
+  document.getElementById('awayProb').textContent = probabilities.awayWin.toFixed(1) + '%';
+  
+  // Update progress bars
+  document.getElementById('homeProgress').style.width = probabilities.homeWin + '%';
+  document.getElementById('drawProgress').style.width = probabilities.draw + '%';
+  document.getElementById('awayProgress').style.width = probabilities.awayWin + '%';
+  
+  // Determine final prediction
+  let predictionText;
+  if (probabilities.homeWin > probabilities.awayWin && probabilities.homeWin > probabilities.draw) {
+    predictionText = `${homeTeam} wins`;
+  } else if (probabilities.awayWin > probabilities.homeWin && probabilities.awayWin > probabilities.draw) {
+    predictionText = `${awayTeam} wins`;
+  } else {
+    predictionText = 'Draw';
+  }
+  
+  document.getElementById('finalPrediction').textContent = predictionText;
+  
+  // Show the result card
+  document.getElementById('predictionResult').style.display = 'block';
+}
+
+window.onload = () => {
+  const savedFixtures = localStorage.getItem("fixtures");
+  const savedResults = localStorage.getItem("results");
+  const savedMatchData = localStorage.getItem("allMatches");
+
+  if (savedFixtures) document.getElementById("fixtures").value = savedFixtures;
+  if (savedResults) document.getElementById("results").value = savedResults;
+  if (savedMatchData) {
+    allMatches = JSON.parse(savedMatchData);
+    document.getElementById("output").textContent = allMatches.map(m => m.raw).join("\n");
+    document.getElementById("matchCount").textContent = allMatches.length;
+  }
+  
+  // Populate team dropdowns on load
+  populateTeamDropdowns();
+};
+</script>
+</body>
+</html>
