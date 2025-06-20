@@ -138,42 +138,42 @@
   C<p id="timer" style="font-size: 20px; color: red; font-weight: 200; margin-top: 20px;">
   Countdown for Page A: ...
 </p>
-
 <script>
-  const pageKey = "pageAExpiry"; // Unique for this page
-  const redirectToPaymentPage = "real.html?page=pageA";
+  // ✅ Dynamically extract page ID from URL (e.g. "realbet-bot" from realbet-bot.html)
+  const pageId = window.location.pathname.split("/").pop().replace(".html", "");
+  const expiryKey = `accessExpiresAt_${pageId}`;
 
   function startCountdown(expiry) {
     const timerEl = document.getElementById("timer");
-
     const interval = setInterval(() => {
       const now = Date.now();
       const distance = expiry - now;
 
       if (distance <= 0) {
         clearInterval(interval);
-        localStorage.removeItem(pageKey);
-        window.location.href = redirectToPaymentPage;
+        localStorage.removeItem(expiryKey);
+        window.location.href = `real.html?page=${pageId}`;
       } else {
         const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((distance / (1000 * 60)) % 60);
         const seconds = Math.floor((distance / 1000) % 60);
-        timerEl.innerText = `Time Remaining: ${hours}h ${minutes}m ${seconds}s`;
+        timerEl.innerText = `Access Time Left: ${hours}h ${minutes}m ${seconds}s`;
       }
     }, 1000);
   }
 
-  function initCountdown() {
-    const expiry = localStorage.getItem(pageKey);
+  function checkAccess() {
+    const expiry = localStorage.getItem(expiryKey);
     if (!expiry || Date.now() > parseInt(expiry)) {
-      window.location.href = redirectToPaymentPage;
+      window.location.href = `real.html?page=${pageId}`;
     } else {
-      startCountdown(parseInt(expiry));
+      startCountdown(parseInt(expiry, 10));
     }
   }
 
-  initCountdown();
+  checkAccess();
 </script>
+
   <script>
     let matchCount = 0;
     const matchesContainer = document.getElementById('matches');
