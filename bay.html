@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Tool Access Verification</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
   <!-- Bootstrap & FontAwesome -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
@@ -16,20 +16,19 @@
     .card {
       border-radius: 12px;
     }
+    .modal-content {
+      border-radius: 1rem;
+    }
     .status-box {
-      background: #fff;
-      border: 1px solid #ccc;
+      background: #e9f7ef;
+      border: 1px solid #c3e6cb;
       border-radius: 0.5rem;
       padding: 1rem;
-      margin-bottom: 1rem;
+      margin-top: 1rem;
     }
     .countdown-status {
       font-weight: bold;
-      color: #28a745;
-    }
-    .expired {
-      color: #dc3545;
-      font-weight: bold;
+      color: green;
     }
   </style>
 </head>
@@ -53,10 +52,10 @@
           <label for="tool" class="form-label">Select Tool</label>
           <select class="form-select" id="tool" required>
             <option value="">-- Choose Tool --</option>
-            <option value="jack">Jack - ₦35</option>
-            <option value="real">Real - ₦30</option>
-            <option value="odi">Odi - ₦25</option>
-            <option value="betika">Betika - ₦20</option>
+            <option value="jack">Jack - ksh 35</option>
+            <option value="real">Real - ksh 30</option>
+            <option value="odi">Odi - ksh 25</option>
+            <option value="betika">Betika - ksh 20</option>
           </select>
         </div>
         <div class="mb-3 text-center">
@@ -64,18 +63,25 @@
         </div>
       </form>
 
-      <div id="status" class="text-center mb-3"></div>
-      <div id="accessList"></div>
+      <div id="status" class="text-center"></div>
+      <div id="accessList" class="mt-4"></div>
+    </div>
+  </div>
 
-      <div class="text-center mt-4">
-        <a href="https://wa.me/254704518130" class="btn btn-success">
-          <i class="fab fa-whatsapp"></i> Chat on WhatsApp: +254 704 518130
-        </a>
+  <!-- Modal -->
+  <div class="modal fade" id="toolModal" tabindex="-1" aria-labelledby="toolModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center p-4">
+        <div class="modal-body">
+          <h4 class="text-success mb-3"><i class="fas fa-check-circle fa-2x"></i><br> Access Granted</h4>
+          <p>You now have access to <strong id="toolName"></strong>.</p>
+          <button type="button" class="btn btn-primary mt-3" id="proceedBtn">Go to Tool</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Firebase -->
+  <!-- Firebase & Bootstrap Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -104,15 +110,27 @@
       betika: 5 * 60 * 1000
     };
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const name = document.getElementById("name").value.trim();
-      const code = document.getElementById("code").value.trim();
+      const code = document.getElementById("code").value.trim().toUpperCase();
       const tool = document.getElementById("tool").value;
 
       if (!name || !code || !tool) {
-        alert("Please complete all fields.");
+        alert("All fields are required.");
+        return;
+      }
+
+      const mpesaRegex = /^[A-Z]{4}\d{6,}$/;
+      if (!mpesaRegex.test(code)) {
+        alert("Invalid M-Pesa code format. It should look like QWER123456.");
+        return;
+      }
+
+      const snapshot = await db.ref("payments").orderByChild("code").equalTo(code).once("value");
+      if (snapshot.exists()) {
+        alert("This M-Pesa code has already been used.");
         return;
       }
 
@@ -138,55 +156,40 @@
         localStorage.setItem("pendingPaymentId", paymentId);
         localStorage.setItem("pendingTool", tool);
 
-        const waMessage = `Hi, I paid ₦${amounts[tool]} for ${tool}. Name: ${name}, Code: ${code}. Please verify.`;
-        const waLink = `https://wa.me/254704518130?text=${encodeURIComponent(waMessage)}`;
-
         statusEl.innerHTML = `
           <div class="alert alert-success">
-            Submitted! Now confirm via WhatsApp.
+            Submitted! Please wait for verification.
           </div>
-          <a href="${waLink}" class="btn btn-success mt-2" target="_blank">
-            <i class="fab fa-whatsapp"></i> Confirm on WhatsApp
-          </a>
         `;
       });
     });
 
     function checkAccessStatus() {
       const tools = ["jack", "real", "odi", "betika"];
-      let html = '';
-      const now = Date.now();
+      let html = '<h5 class="mb-3">Current Access:</h5>';
+      let hasAccess = false;
 
       tools.forEach(tool => {
         const expiry = parseInt(localStorage.getItem(`accessExpiresAt_${tool}`), 10);
-        const toolName = tool.charAt(0).toUpperCase() + tool.slice(1);
-
-        if (expiry && now < expiry) {
-          const remaining = expiry - now;
-          const mins = Math.floor(remaining / 60000);
-          const secs = Math.floor((remaining % 60000) / 1000);
+        if (expiry && Date.now() < expiry) {
+          const secondsLeft = Math.floor((expiry - Date.now()) / 1000);
+          const mins = Math.floor(secondsLeft / 60);
+          const secs = secondsLeft % 60;
+          const returnPage = `${tool}.html`;
 
           html += `
             <div class="status-box">
-              <strong>${toolName}</strong><br>
+              <strong>${tool.toUpperCase()}</strong>: 
               <span class="countdown-status">${mins}:${secs.toString().padStart(2, '0')} remaining</span><br>
-              <a href="${tool}.html" class="btn btn-sm btn-primary mt-2">Go to Tool</a>
+              <a href="${returnPage}" class="btn btn-sm btn-primary mt-2">Go to Tool</a>
             </div>
           `;
-        } else if (expiry && now >= expiry) {
-          localStorage.removeItem(`accessExpiresAt_${tool}`);
-          html += `
-            <div class="status-box">
-              <strong>${toolName}</strong><br>
-              <span class="expired">Subscription expired</span><br>
-              <small>Please pay and verify again to regain access.</small>
-            </div>
-          `;
+          hasAccess = true;
         }
       });
 
-      if (html === '') {
-        html = '<p class="text-muted">No active access. Submit payment above.</p>';
+      if (!hasAccess) {
+        html += `<p class="text-muted">No active tool access. Please verify payment first.</p>`;
       }
 
       accessList.innerHTML = html;
@@ -198,28 +201,37 @@
 
       const paymentId = localStorage.getItem("pendingPaymentId");
       const tool = localStorage.getItem("pendingTool");
+      const returnPage = `${tool}.html`;
 
       if (paymentId && tool) {
         const ref = db.ref("payments/" + paymentId);
-        const toolName = tool.charAt(0).toUpperCase() + tool.slice(1);
-        const returnPage = `${tool}.html`;
+        statusEl.innerHTML = `<p>Checking verification status...</p>`;
 
-        statusEl.innerHTML = `<p>Checking verification for ${toolName}...</p>`;
-        const checkInterval = setInterval(() => {
+        const startTime = Date.now();
+        const maxWaitTime = 10 * 1000;
+
+        const interval = setInterval(() => {
+          if (Date.now() - startTime > maxWaitTime) {
+            clearInterval(interval);
+            statusEl.innerHTML = `<div class="alert alert-danger">Verification timeout. Please contact support.</div>`;
+            return;
+          }
+
           ref.once("value").then((snap) => {
             const data = snap.val();
             if (data && data.verified === true) {
-              clearInterval(checkInterval);
+              clearInterval(interval);
               const expiresAt = Date.now() + toolDurations[tool];
               localStorage.setItem(`accessExpiresAt_${tool}`, expiresAt.toString());
-              localStorage.removeItem("pendingPaymentId");
-              localStorage.removeItem("pendingTool");
 
-              statusEl.innerHTML = `
-                <div class="alert alert-success">
-                  Verified! You now have access to ${toolName}.
-                </div>
-              `;
+              document.getElementById("toolName").textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
+              const toolModal = new bootstrap.Modal(document.getElementById("toolModal"));
+              toolModal.show();
+
+              document.getElementById("proceedBtn").onclick = () => {
+                window.location.href = returnPage;
+              };
+
               checkAccessStatus();
             }
           });
@@ -228,4 +240,4 @@
     });
   </script>
 </body>
-  </html>
+    </html>
