@@ -374,6 +374,7 @@
 
     
   function grantAccess() {
+    const page = params.get("page") || "realbet-bot.html";
     const params = new URLSearchParams(window.location.search);
     const page = params.get("page");
 
