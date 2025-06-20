@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Premium Tool Access Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- Bootstrap & FontAwesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="bay.css">
+  
+</head>
+<body>
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <div class="logo">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <h1 class="text-white">Premium Tool Access Verification</h1>
+      <p class="lead">Verify your purchase to access exclusive prediction tools</p>
+    </div>
+    
+    <div class="row g-4">
+      <!-- Payment Form -->
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-header text-white">
+            <h4 class="mb-0"><i class="fas fa-lock me-2"></i>Payment Verification</h4>
+          </div>
+          <div class="card-body">
+            <form id="paymentForm">
+              <div class="mb-3 position-relative">
+                <label for="name" class="form-label">Your Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter your full name" required>
+                <i class="fas fa-user position-absolute end-0 top-50 me-3 translate-middle-y"></i>
+              </div>
+              
+              <div class="mb-3 position-relative">
+                <label for="code" class="form-label">M-Pesa Transaction Code</label>
+                <input type="text" class="form-control code-input" id="code" 
+                       placeholder="e.g. QWER123456" required
+                       pattern="[A-Z0-9]{10,12}" 
+                       title="M-Pesa code must be 10-12 uppercase alphanumeric characters">
+                <i class="fas fa-receipt position-absolute end-0 top-50 me-3 translate-middle-y"></i>
+                <div class="form-text">Enter code in UPPERCASE letters only</div>
+              </div>
+              
+              <div class="mb-4 position-relative">
+                <label for="tool" class="form-label">Select Tool</label>
+                <select class="form-select" id="tool" required>
+                  <option value="">-- Choose Tool --</option>
+                  <option value="jack"><span class="tool-icon">🔮</span> Jack Predictor - ₦35</option>
+                  <option value="real"><span class="tool-icon">⚽</span> Real Odds - ₦30</option>
+                  <option value="odi"><span class="tool-icon">🎯</span> Odi Master - ₦25</option>
+                  <option value="betika"><span class="tool-icon">💎</span> Betika Pro - ₦20</option>
+                </select>
+                <i class="fas fa-tools position-absolute end-0 top-50 me-3 translate-middle-y"></i>
+              </div>
+              
+              <div class="mb-3 text-center">
+                <button type="submit" class="btn btn-primary w-100 py-3">
+                  <i class="fas fa-paper-plane me-2"></i>Submit for Verification
+                </button>
+              </div>
+            </form>
+            
+            <div class="mt-4">
+              <div class="d-flex align-items-center mb-2">
+                <div class="flex-grow-1">
+                  <span>Security Level</span>
+                </div>
+                <div>High</div>
+              </div>
+              <div class="progress">
+                <div class="progress-bar" style="width: 90%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Access Status -->
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-header text-white">
+            <h4 class="mb-0"><i class="fas fa-user-shield me-2"></i>Access Status</h4>
+          </div>
+          <div class="card-body">
+            <div id="status" class="text-center mb-4"></div>
+            <div id="accessList" class="mb-4"></div>
+            
+            <div class="text-center mt-4">
+              <a href="https://wa.me/254704518130" class="btn btn-success w-100 py-3">
+                <i class="fab fa-whatsapp me-2"></i> WhatsApp Support: +254 704 518130
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tools Information -->
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header text-white">
+            <h4 class="mb-0"><i class="fas fa-tools me-2"></i>Available Tools</h4>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3 mb-4">
+                <div class="card tool-card bg-dark text-white h-100">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-crown me-2"></i>Jack Predictor</h5>
+                    <p class="card-text">Advanced algorithm with 95% accuracy rate</p>
+                    <ul class="feature-list">
+                      <li>Daily predictions</li>
+                      <li>VIP access</li>
+                      <li>24/7 support</li>
+                    </ul>
+                    <div class="text-center mt-3">
+                      <span class="badge bg-primary py-2 px-3">₦35 / day</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-3 mb-4">
+                <div class="card tool-card bg-dark text-white h-100">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-futbol me-2"></i>Real Odds</h5>
+                    <p class="card-text">Professional odds analysis tool</p>
+                    <ul class="feature-list">
+                      <li>Live odds tracking</li>
+                      <li>Value bet detection</li>
+                      <li>Daily insights</li>
+                    </ul>
+                    <div class="text-center mt-3">
+                      <span class="badge bg-primary py-2 px-3">₦30 / day</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-3 mb-4">
+                <div class="card tool-card bg-dark text-white h-100">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-bullseye me-2"></i>Odi Master</h5>
+                    <p class="card-text">Specialized for high-stakes matches</p>
+                    <ul class="feature-list">
+                      <li>Exclusive tips</li>
+                      <li>Risk management</li>
+                      <li>Bankroll strategy</li>
+                    </ul>
+                    <div class="text-center mt-3">
+                      <span class="badge bg-primary py-2 px-3">₦25 / day</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-3 mb-4">
+                <div class="card tool-card bg-dark text-white h-100">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-gem me-2"></i>Betika Pro</h5>
+                    <p class="card-text">Premium insights for Betika platform</p>
+                    <ul class="feature-list">
+                      <li>Market analysis</li>
+                      <li>Daily jackpot tips</li>
+                      <li>Expert predictions</li>
+                    </ul>
+                    <div class="text-center mt-3">
+                      <span class="badge bg-primary py-2 px-3">₦20 / day</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer class="text-center mt-5 pt-4 text-white-50">
+      <p>Secure Payment Verification System • All Rights Reserved © 2023</p>
+      <p>M-Pesa is a registered trademark of Vodafone Group. This service is not affiliated with M-Pesa or Vodafone.</p>
+    </footer>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBTmeDxIUhua52KDAoag23q9MuNEOQXYQg",
+      authDomain: "prediction-94bf9.firebaseapp.com",
+      databaseURL: "https://prediction-94bf9-default-rtdb.firebaseio.com",
+      projectId: "prediction-94bf9",
+      storageBucket: "prediction-94bf9.appspot.com",
+      messagingSenderId: "960123689722",
+      appId: "1:960123689722:web:ca9579625439ecf2478743"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    
+    // DOM elements
+    const form = document.getElementById("paymentForm");
+    const statusEl = document.getElementById("status");
+    const accessList = document.getElementById("accessList");
+    
+    // Tool durations in milliseconds (5 minutes)
+    const toolDurations = {
+      jack: 5 * 60 * 1000,
+      real: 5 * 60 * 1000,
+      odi: 5 * 60 * 1000,
+      betika: 5 * 60 * 1000
+    };
+    
+    // Tool names for display
+    const toolNames = {
+      jack: "Jack Predictor",
+      real: "Real Odds",
+      odi: "Odi Master",
+      betika: "Betika Pro"
+    };
+
+    // Ensure code is always uppercase
+    document.getElementById('code').addEventListener('input', function() {
+      this.value = this.value.toUpperCase();
+    });
+
+    // Form submission handler
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      
+      const name = document.getElementById("name").value.trim();
+      let code = document.getElementById("code").value.trim().toUpperCase();
+      const tool = document.getElementById("tool").value;
+      
+      // Validation
+      if (!name || !code || !tool) {
+        showAlert("Please complete all fields", "warning");
+        return;
+      }
+      
+      // Code format validation
+      if (!/^[A-Z0-9]{10,12}$/.test(code)) {
+        showAlert("M-Pesa code must be 10-12 uppercase alphanumeric characters", "warning");
+        return;
+      }
+      
+      // Check for duplicate code
+      checkCodeUniqueness(code, name, tool);
+    });
+    
+    // Check if code is unique
+    function checkCodeUniqueness(code, name, tool) {
+      statusEl.innerHTML = `<div class="alert alert-info">Checking code uniqueness...</div>`;
+      
+      db.ref("active_codes").orderByChild("code").equalTo(code).once("value")
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            showAlert("This M-Pesa code is already in use. Please use a different code.", "danger");
+          } else {
+            processPayment(code, name, tool);
+          }
+        })
+        .catch(error => {
+          showAlert("Error checking code: " + error.message, "danger");
+        });
+    }
+    
+    // Process payment
+    function processPayment(code, name, tool) {
+      const amounts = {
+        jack: 35,
+        real: 30,
+        odi: 25,
+        betika: 20
+      };
+      
+      const paymentData = {
+        name,
+        code,
+        tool,
+        amount: amounts[tool],
+        timestamp: Date.now(),
+        verified: false
+      };
+      
+      const txRef = db.ref("payments").push();
+      
+      txRef.set(paymentData)
+        .then(() => {
+          const paymentId = txRef.key;
+          localStorage.setItem("pendingPaymentId", paymentId);
+          localStorage.setItem("pendingTool", tool);
+          
+          // Mark code as active
+          db.ref("active_codes/" + paymentId).set({
+            code: code,
+            timestamp: Date.now()
+          });
+          
+          // Show success message with WhatsApp link
+          const waMessage = `Hi, I paid ₦${amounts[tool]} for ${toolNames[tool]}. Name: ${name}, Code: ${code}. Please verify.`;
+          const waLink = `https://wa.me/254704518130?text=${encodeURIComponent(waMessage)}`;
+          
+          statusEl.innerHTML = `
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle me-2"></i> Successfully submitted!
+            </div>
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i> Please confirm your payment via WhatsApp
+            </div>
+            <a href="${waLink}" class="btn btn-success mt-2 w-100 py-3" target="_blank">
+              <i class="fab fa-whatsapp me-2"></i> Confirm on WhatsApp
+            </a>
+          `;
+        })
+        .catch(error => {
+          showAlert("Payment processing error: " + error.message, "danger");
+        });
+    }
+    
+    // Check access status
+    function checkAccessStatus() {
+      const tools = ["jack", "real", "odi", "betika"];
+      let html = '';
+      const now = Date.now();
+      let activeTool = null;
+
+      tools.forEach(tool => {
+        const expiry = parseInt(localStorage.getItem(`accessExpiresAt_${tool}`), 10);
+        const toolName = toolNames[tool];
+        
+        if (expiry && now < expiry) {
+          activeTool = tool;
+          const remaining = expiry - now;
+          const mins = Math.floor(remaining / 60000);
+          const secs = Math.floor((remaining % 60000) / 1000);
+          
+          const progress = Math.max(5, Math.floor((remaining / toolDurations[tool]) * 100));
+          
+          html += `
+            <div class="status-box">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <i class="fas fa-unlock me-2"></i>
+                  <strong>${toolName}</strong>
+                </div>
+                <span class="countdown-status">${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}</span>
+              </div>
+              <div class="d-flex justify-content-between small mt-2">
+                <span>Time remaining</span>
+                <span>Active</span>
+              </div>
+              <div class="progress mt-1">
+                <div class="progress-bar" style="width: ${progress}%"></div>
+              </div>
+              <a href="${tool}.html" class="btn btn-sm btn-primary w-100 mt-2">
+                <i class="fas fa-external-link-alt me-2"></i> Access Tool
+              </a>
+            </div>
+          `;
+        } else if (expiry && now >= expiry) {
+          localStorage.removeItem(`accessExpiresAt_${tool}`);
+          html += `
+            <div class="status-box expired">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <i class="fas fa-lock me-2"></i>
+                  <strong>${toolName}</strong>
+                </div>
+                <span class="expired-text">EXPIRED</span>
+              </div>
+              <div class="d-flex justify-content-between small mt-2">
+                <span>Subscription</span>
+                <span>Inactive</span>
+              </div>
+              <div class="mt-2 small">
+                <i class="fas fa-info-circle me-2"></i> Renew to regain access
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      if (html === '') {
+        html = `
+          <div class="text-center py-4">
+            <i class="fas fa-lock fa-3x mb-3 text-warning"></i>
+            <h5>No Active Access</h5>
+            <p class="mb-0">Submit payment to access premium tools</p>
+          </div>
+        `;
+      }
+
+      accessList.innerHTML = html;
+      return activeTool;
+    }
+    
+    // Show alert message
+    function showAlert(message, type) {
+      statusEl.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    }
+    
+    // Initialize on page load
+    window.addEventListener("load", () => {
+      // Check access status every second
+      checkAccessStatus();
+      setInterval(checkAccessStatus, 1000);
+      
+      // Check for pending payment verification
+      const paymentId = localStorage.getItem("pendingPaymentId");
+      const tool = localStorage.getItem("pendingTool");
+      
+      if (paymentId && tool) {
+        const ref = db.ref("payments/" + paymentId);
+        const toolName = toolNames[tool];
+        
+        statusEl.innerHTML = `
+          <div class="alert alert-info">
+            <div class="d-flex align-items-center">
+              <div class="spinner-border spinner-border-sm me-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <div>
+                Verifying access for ${toolName}...
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Check for verification every 3 seconds
+        const checkInterval = setInterval(() => {
+          ref.once("value").then((snap) => {
+            const data = snap.val();
+            if (data && data.verified === true) {
+              clearInterval(checkInterval);
+              const expiresAt = Date.now() + toolDurations[tool];
+              localStorage.setItem(`accessExpiresAt_${tool}`, expiresAt.toString());
+              localStorage.removeItem("pendingPaymentId");
+              localStorage.removeItem("pendingTool");
+              
+              // Clear active code record
+              db.ref("active_codes/" + paymentId).remove();
+              
+              statusEl.innerHTML = `
+                <div class="alert alert-success">
+                  <i class="fas fa-check-circle me-2"></i> Verified! You now have access to ${toolName}.
+                </div>
+              `;
+              checkAccessStatus();
+              
+              // Show celebration effect
+              document.body.classList.add('verified');
+              setTimeout(() => document.body.classList.remove('verified'), 2000);
+            }
+          });
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>
