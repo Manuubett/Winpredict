@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Tool Access Verification</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  
   <!-- Bootstrap & FontAwesome -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
@@ -16,19 +16,20 @@
     .card {
       border-radius: 12px;
     }
-    .modal-content {
-      border-radius: 1rem;
-    }
     .status-box {
-      background: #e9f7ef;
-      border: 1px solid #c3e6cb;
+      background: #fff;
+      border: 1px solid #ccc;
       border-radius: 0.5rem;
       padding: 1rem;
-      margin-top: 1rem;
+      margin-bottom: 1rem;
     }
     .countdown-status {
       font-weight: bold;
-      color: green;
+      color: #28a745;
+    }
+    .expired {
+      color: #dc3545;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -63,8 +64,8 @@
         </div>
       </form>
 
-      <div id="status" class="text-center"></div>
-      <div id="accessList" class="mt-4"></div>
+      <div id="status" class="text-center mb-3"></div>
+      <div id="accessList"></div>
 
       <div class="text-center mt-4">
         <a href="https://wa.me/254704518130" class="btn btn-success">
@@ -74,20 +75,7 @@
     </div>
   </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="toolModal" tabindex="-1" aria-labelledby="toolModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content text-center p-4">
-        <div class="modal-body">
-          <h4 class="text-success mb-3"><i class="fas fa-check-circle fa-2x"></i><br> Access Granted</h4>
-          <p>You now have access to <strong id="toolName"></strong>.</p>
-          <button type="button" class="btn btn-primary mt-3" id="proceedBtn">Go to Tool</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scripts -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -100,8 +88,7 @@
       projectId: "prediction-94bf9",
       storageBucket: "prediction-94bf9.appspot.com",
       messagingSenderId: "960123689722",
-      appId: "1:960123689722:web:ca9579625439ecf2478743",
-      measurementId: "G-MTDJTB6JXG"
+      appId: "1:960123689722:web:ca9579625439ecf2478743"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -125,7 +112,7 @@
       const tool = document.getElementById("tool").value;
 
       if (!name || !code || !tool) {
-        alert("All fields are required.");
+        alert("Please complete all fields.");
         return;
       }
 
@@ -151,15 +138,15 @@
         localStorage.setItem("pendingPaymentId", paymentId);
         localStorage.setItem("pendingTool", tool);
 
-        const message = `Hello, I paid ₦${amounts[tool]} for ${tool}. My name is ${name}, code is ${code}. Please verify.`;
-        const waLink = `https://wa.me/254704518130?text=${encodeURIComponent(message)}`;
+        const waMessage = `Hi, I paid ₦${amounts[tool]} for ${tool}. Name: ${name}, Code: ${code}. Please verify.`;
+        const waLink = `https://wa.me/254704518130?text=${encodeURIComponent(waMessage)}`;
 
         statusEl.innerHTML = `
           <div class="alert alert-success">
-            Submitted! Please wait for verification.
+            Submitted! Now confirm via WhatsApp.
           </div>
-          <a href="${waLink}" target="_blank" class="btn btn-success mt-2">
-            <i class="fab fa-whatsapp"></i> Send Confirmation via WhatsApp
+          <a href="${waLink}" class="btn btn-success mt-2" target="_blank">
+            <i class="fab fa-whatsapp"></i> Confirm on WhatsApp
           </a>
         `;
       });
@@ -167,30 +154,39 @@
 
     function checkAccessStatus() {
       const tools = ["jack", "real", "odi", "betika"];
-      let html = '<h5 class="mb-3">Current Access:</h5>';
-      let hasAccess = false;
+      let html = '';
+      const now = Date.now();
 
       tools.forEach(tool => {
         const expiry = parseInt(localStorage.getItem(`accessExpiresAt_${tool}`), 10);
-        if (expiry && Date.now() < expiry) {
-          const secondsLeft = Math.floor((expiry - Date.now()) / 1000);
-          const mins = Math.floor(secondsLeft / 60);
-          const secs = secondsLeft % 60;
-          const returnPage = `${tool}.html`;
+        const toolName = tool.charAt(0).toUpperCase() + tool.slice(1);
+
+        if (expiry && now < expiry) {
+          const remaining = expiry - now;
+          const mins = Math.floor(remaining / 60000);
+          const secs = Math.floor((remaining % 60000) / 1000);
 
           html += `
             <div class="status-box">
-              <strong>${tool.toUpperCase()}</strong>: 
+              <strong>${toolName}</strong><br>
               <span class="countdown-status">${mins}:${secs.toString().padStart(2, '0')} remaining</span><br>
-              <a href="${returnPage}" class="btn btn-sm btn-primary mt-2">Go to Tool</a>
+              <a href="${tool}.html" class="btn btn-sm btn-primary mt-2">Go to Tool</a>
             </div>
           `;
-          hasAccess = true;
+        } else if (expiry && now >= expiry) {
+          localStorage.removeItem(`accessExpiresAt_${tool}`);
+          html += `
+            <div class="status-box">
+              <strong>${toolName}</strong><br>
+              <span class="expired">Subscription expired</span><br>
+              <small>Please pay and verify again to regain access.</small>
+            </div>
+          `;
         }
       });
 
-      if (!hasAccess) {
-        html += `<p class="text-muted">No active tool access. Please verify payment first.</p>`;
+      if (html === '') {
+        html = '<p class="text-muted">No active access. Submit payment above.</p>';
       }
 
       accessList.innerHTML = html;
@@ -198,42 +194,32 @@
 
     window.addEventListener("load", () => {
       checkAccessStatus();
-      setInterval(checkAccessStatus, 1000); // Refresh every second
+      setInterval(checkAccessStatus, 1000);
 
       const paymentId = localStorage.getItem("pendingPaymentId");
       const tool = localStorage.getItem("pendingTool");
-      const returnPage = `${tool}.html`;
 
       if (paymentId && tool) {
         const ref = db.ref("payments/" + paymentId);
-        statusEl.innerHTML = `<p>Checking verification status...</p>`;
+        const toolName = tool.charAt(0).toUpperCase() + tool.slice(1);
+        const returnPage = `${tool}.html`;
 
-        const startTime = Date.now();
-        const maxWaitTime = 10 * 1000;
-
-        const interval = setInterval(() => {
-          const elapsed = Date.now() - startTime;
-          if (elapsed > maxWaitTime) {
-            clearInterval(interval);
-            statusEl.innerHTML = `<div class="alert alert-danger">Verification timeout. Please contact support.</div>`;
-            return;
-          }
-
+        statusEl.innerHTML = `<p>Checking verification for ${toolName}...</p>`;
+        const checkInterval = setInterval(() => {
           ref.once("value").then((snap) => {
             const data = snap.val();
             if (data && data.verified === true) {
-              clearInterval(interval);
+              clearInterval(checkInterval);
               const expiresAt = Date.now() + toolDurations[tool];
               localStorage.setItem(`accessExpiresAt_${tool}`, expiresAt.toString());
+              localStorage.removeItem("pendingPaymentId");
+              localStorage.removeItem("pendingTool");
 
-              document.getElementById("toolName").textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
-              const toolModal = new bootstrap.Modal(document.getElementById("toolModal"));
-              toolModal.show();
-
-              document.getElementById("proceedBtn").onclick = () => {
-                window.location.href = returnPage;
-              };
-
+              statusEl.innerHTML = `
+                <div class="alert alert-success">
+                  Verified! You now have access to ${toolName}.
+                </div>
+              `;
               checkAccessStatus();
             }
           });
