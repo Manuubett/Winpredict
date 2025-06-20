@@ -135,11 +135,9 @@
     </footer>
   </div>
   <div id="countdown" class="text-end text-muted small mt-2 me-2"></div>
-  <p id="timer" style="font-size: 20px; color: red; font-weight: 200; margin-top: 20px;">
-  Subscription ends in: ...
-  </p>
+  
   <script>
-  const tool = "jack"; // Update this for other tools
+  const tool = "real"; // Update this for other tools
   const countdownEl = document.getElementById("countdown");
   const expiresAt = parseInt(localStorage.getItem(`accessExpiresAt_${tool}`), 10);
 
