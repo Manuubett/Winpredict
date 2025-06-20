@@ -121,12 +121,11 @@
         alert("All fields are required.");
         return;
       }
-
-      const mpesaRegex = /^[A-Z]{4}\d{6,}$/;
-      if (!mpesaRegex.test(code)) {
-        alert("Invalid M-Pesa code format. It should look like QWER123456.");
-        return;
-      }
+if (!/^[A-Z0-9]{8,}$/i.test(code)) {
+  alert("Please enter a valid M-Pesa code (min 8 alphanumeric characters).");
+  return;
+    }
+      
 
       const snapshot = await db.ref("payments").orderByChild("code").equalTo(code).once("value");
       if (snapshot.exists()) {
