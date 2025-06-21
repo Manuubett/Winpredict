@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MatchDataHub - Advanced Head-to-Head Analysis</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0d6efd;
+      --primary-dark: #0b5ed7;
+      --secondary: #6c757d;
+      --success: #198754;
+      --danger: #dc3545;
+      --warning: #ffc107;
+      --dark: #212529;
+      --light: #f8f9fa;
+      --background: #f5f7fa;
+      --card-bg: #ffffff;
+      --border: #dee2e6;
+      --text: #212529;
+      --text-light: #6c757d;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1400px;
+    }
+    
+    .card {
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border: none;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      background-color: var(--card-bg);
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #1a2a6c 0%, #0d6efd 100%);
+      color: white;
+      padding: 2rem 0;
+      border-radius: 0 0 20px 20px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-control, .btn {
+      border-radius: 8px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .table-responsive {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .table th {
+      background: linear-gradient(135deg, #1a2a6c 0%, #0d6efd 100%);
+      color: white;
+      border: none;
+      padding: 1rem;
+      font-weight: 600;
+    }
+    
+    .table td {
+      padding: 1rem;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .table tr:hover {
+      background-color: rgba(13, 110, 253, 0.05);
+    }
+    
+    .match-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    
+    .badge-win {
+      background-color: rgba(25, 135, 84, 0.15);
+      color: var(--success);
+    }
+    
+    .badge-loss {
+      background-color: rgba(220, 53, 69, 0.15);
+      color: var(--danger);
+    }
+    
+    .badge-draw {
+      background-color: rgba(108, 117, 125, 0.15);
+      color: var(--secondary);
+    }
+    
+    .odds-chip {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      background-color: rgba(13, 110, 253, 0.1);
+      color: var(--primary);
+      font-weight: 600;
+      margin: 0 0.2rem;
+    }
+    
+    .stats-card {
+      background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      height: 100%;
+    }
+    
+    .stats-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    
+    .stats-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 0.5rem;
+    }
+    
+    .spinner-border {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-width: 0.15em;
+    }
+    
+    #overlay {
+      position: fixed;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      color: #f8f9fa;
+      z-index: 9999;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .overlay-content {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 3rem;
+      max-width: 500px;
+      width: 90%;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .overlay-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      color: #ffcc00;
+    }
+    
+    .overlay-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .overlay-text {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    
+    .overlay-highlight {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 0.5rem 0;
+      font-weight: 600;
+    }
+    
+    .footer {
+      color: var(--text-light);
+      padding: 2rem 0;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.3;
+    }
+    
+    .team-card {
+      transition: all 0.3s ease;
+    }
+    
+    .team-card:hover {
+      transform: scale(1.03);
+    }
+    
+    .risk-indicator {
+      height: 10px;
+      border-radius: 5px;
+      background: linear-gradient(90deg, var(--success), var(--warning), var(--danger));
+      position: relative;
+    }
+    
+    .risk-marker {
+      position: absolute;
+      top: -5px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transform: translateX(-50%);
+      transition: left 0.5s ease;
+    }
+    
+    .team-performance {
+      background: linear-gradient(135deg, #0d6efd 0%, #1a2a6c 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .search-container {
+      position: relative;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary);
+    }
+    
+    .search-input {
+      padding-left: 40px;
+    }
+    
+    .head-to-head-card {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .vs-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin: 1.5rem 0;
+    }
+    
+    .team-box {
+      flex: 1;
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      min-width: 200px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .team-box.stronger {
+      box-shadow: 0 0 20px rgba(255, 217, 0, 0.5);
+      transform: scale(1.05);
+      z-index: 10;
+    }
+    
+    .team-box.stronger::after {
+      content: "★";
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      width: 40px;
+      height: 40px;
+      background: gold;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #333;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .vs-box {
+      font-size: 2rem;
+      font-weight: bold;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+    
+    .h2h-stats {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .h2h-stat {
+      flex: 1;
+      padding: 10px;
+    }
+    
+    .h2h-stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .h2h-stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    .form-indicator {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .form-win {
+      background-color: var(--success);
+    }
+    
+    .form-loss {
+      background-color: var(--danger);
+    }
+    
+    .form-draw {
+      background-color: var(--secondary);
+    }
+    
+    .comparison-table th {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    }
+    
+    .strength-indicator {
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 10px 0;
+      overflow: hidden;
+    }
+    
+    .strength-bar {
+      height: 100%;
+      border-radius: 4px;
+    }
+    
+    .strength-analysis {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .prediction-card {
+      background: linear-gradient(135deg, #ff9a00 0%, #ffcc00 100%);
+      color: #333;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-top: 1.5rem;
+      animation: fadeIn 0.8s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .prediction-card i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    
+    .strength-factor {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+    }
+    
+    .strength-factor-value {
+      font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+      .header {
+        padding: 1.5rem 0;
+      }
+      
+      .overlay-content {
+        padding: 2rem 1.5rem;
+      }
+      
+      .overlay-title {
+        font-size: 1.5rem;
+      }
+      
+      .overlay-text {
+        font-size: 1rem;
+      }
+      
+      .vs-container {
+        flex-direction: column;
+      }
+      
+      .h2h-stats {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .team-box.stronger::after {
+        top: -10px;
+        right: -10px;
+        width: 30px;
+        height: 30px;
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="overlay">
+    <div class="overlay-content">
+      <div class="overlay-icon">
+        <i class="fas fa-lock"></i>
+      </div>
+      <h2 class="overlay-title">🔒 Subscription Expired</h2>
+      <p class="overlay-text">Please renew your subscription to continue accessing live match data.</p>
+      <div>
+        <p>Send <span class="overlay-highlight">Ksh 25</span> to</p>
+        <p class="overlay-highlight">25497612155</p>
+      </div>
+      <p class="mt-3" style="font-size: 0.95rem; color: #adb5bd;">
+        Regards, <strong>WinPredictPro 🏆</strong>
+      </p>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h1 class="display-5 fw-bold mb-3">MatchDataHub</h1>
+          <p class="lead mb-0">Advanced Head-to-Head Analysis</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <div class="d-inline-block bg-white text-primary p-2 rounded">
+            <i class="fas fa-chart-line me-2"></i>
+            <span id="lastUpdated">Updated: --:--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div id="namePrompt" class="card mb-4">
+      <div class="card-body p-4">
+        <h3 class="card-title mb-4">Welcome to MatchDataHub</h3>
+        <p class="text-muted mb-4">Enter your full name to access advanced head-to-head analysis</p>
+        
+        <div class="mb-3">
+          <label for="username" class="form-label fw-medium">Your Full Name</label>
+          <input type="text" id="username" class="form-control form-control-lg" placeholder="e.g. John Doe" />
+          <div class="form-text">We require your full name for personalized experience</div>
+        </div>
+        
+        <button id="continueBtn" class="btn btn-primary w-100 py-3">
+          <span>Continue</span>
+          <i class="fas fa-arrow-right ms-2"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="dataSection" style="display:none;">
+      <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+          <div class="stats-card">
+            <div class="stats-number" id="totalCount">0</div>
+            <div class="stats-label">Total Matches</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="stats-card">
+            <div class="stats-number" id="winRate">0%</div>
+            <div class="stats-label">Prediction Accuracy</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="stats-card">
+            <div class="stats-number" id="mostFrequentOdds">-</div>
+            <div class="stats-label">Most Common Odds</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="stats-card">
+            <div class="stats-number" id="riskiestTeam">-</div>
+            <div class="stats-label">Highest Risk Team</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Head-to-Head Comparison Section -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h4 class="card-title mb-4">Head-to-Head Team Analysis</h4>
+          <div class="row">
+            <div class="col-md-5 mb-3">
+              <label class="form-label">Select First Team</label>
+              <select id="firstTeamSelect" class="form-select">
+                <option value="">Select a team</option>
+              </select>
+            </div>
+            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
+              <div class="vs-box">VS</div>
+            </div>
+            <div class="col-md-5 mb-3">
+              <label class="form-label">Select Second Team</label>
+              <select id="secondTeamSelect" class="form-select">
+                <option value="">Select a team</option>
+              </select>
+            </div>
+          </div>
+          
+          <div id="headToHeadResults" style="display: none;">
+            <div class="head-to-head-card">
+              <div class="vs-container">
+                <div class="team-box" id="firstTeamBox">
+                  <h3 id="firstTeamName">Team A</h3>
+                  <div class="fw-bold" id="firstTeamWins">0 Wins</div>
+                  <div class="strength-indicator">
+                    <div class="strength-bar" id="firstTeamStrength" style="width: 50%; background: #0d6efd;"></div>
+                  </div>
+                  <div id="firstTeamWinRate">Win Rate: 0%</div>
+                </div>
+                <div class="vs-box">VS</div>
+                <div class="team-box" id="secondTeamBox">
+                  <h3 id="secondTeamName">Team B</h3>
+                  <div class="fw-bold" id="secondTeamWins">0 Wins</div>
+                  <div class="strength-indicator">
+                    <div class="strength-bar" id="secondTeamStrength" style="width: 50%; background: #0d6efd;"></div>
+                  </div>
+                  <div id="secondTeamWinRate">Win Rate: 0%</div>
+                </div>
+              </div>
+              
+              <div class="h2h-stats">
+                <div class="h2h-stat">
+                  <div class="h2h-stat-value" id="totalMatches">0</div>
+                  <div class="h2h-stat-label">Total Matches</div>
+                </div>
+                <div class="h2h-stat">
+                  <div class="h2h-stat-value" id="draws">0</div>
+                  <div class="h2h-stat-label">Draws</div>
+                </div>
+                <div class="h2h-stat">
+                  <div class="h2h-stat-value" id="goals">0-0</div>
+                  <div class="h2h-stat-label">Goals</div>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <h5>Recent Form (Last 5 Matches)</h5>
+                <div class="d-flex justify-content-around">
+                  <div>
+                    <div id="firstTeamForm" class="d-flex gap-1 justify-content-center"></div>
+                  </div>
+                  <div>
+                    <div id="secondTeamForm" class="d-flex gap-1 justify-content-center"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Strength Analysis -->
+            <div class="strength-analysis">
+              <h5 class="mb-3">Team Strength Factors</h5>
+              <div class="strength-factor">
+                <div>Head-to-Head Wins</div>
+                <div class="strength-factor-value" id="h2hFactor">-</div>
+              </div>
+              <div class="strength-factor">
+                <div>Goal Difference</div>
+                <div class="strength-factor-value" id="goalDiffFactor">-</div>
+              </div>
+              <div class="strength-factor">
+                <div>Recent Form</div>
+                <div class="strength-factor-value" id="formFactor">-</div>
+              </div>
+            </div>
+            
+            <!-- Prediction Result -->
+            <div class="prediction-card">
+              <i class="fas fa-trophy"></i>
+              <h4 id="predictionTitle">Team Strength Prediction</h4>
+              <p class="lead" id="predictionText">Select two teams to see which has the advantage</p>
+              <div id="confidenceLevel" class="mt-2">Confidence: --%</div>
+            </div>
+            
+            <h5 class="mt-4 mb-3">Previous Encounters</h5>
+            <div class="table-responsive">
+              <table class="table table-hover comparison-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Match</th>
+                    <th>Result</th>
+                    <th>Outcome</th>
+                    <th>Winner</th>
+                  </tr>
+                </thead>
+                <tbody id="headToHeadTableBody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-center">
+          <h4 class="card-title mb-3 mb-md-0">All Match Data</h4>
+          <div class="col-md-4">
+            <div class="search-container">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" id="searchInput" class="form-control search-input" placeholder="Search matches...">
+            </div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-borderless mb-0" id="publicTable">
+              <thead>
+                <tr>
+                  <th>Match</th>
+                  <th>Predicted Result</th>
+                  <th>Outcome</th>
+                  <th>Odds</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4" class="text-center">
+                    <div class="loading-container">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <div class="container">
+      <p>© 2023 MatchDataHub. All rights reserved. Predictions are for informational purposes only.</p>
+      <p class="text-muted small">Powered by WinPredictPro 🏆</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { 
+      initializeApp 
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      query, 
+      orderBy, 
+      getDocs, 
+      doc, 
+      getDoc, 
+      setDoc, 
+      onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDthFB2btT_r6slyX_xa5jeDOX8KDxsmdo",
+      authDomain: "store-1d9e8.firebaseapp.com",
+      projectId: "store-1d9e8",
+      storageBucket: "store-1d9e8.appspot.com",
+      messagingSenderId: "869478006120",
+      appId: "1:869478006120:web:2045cbb98db8a3755e6add",
+      measurementId: "G-3GCBWGCYPG"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    // DOM Elements
+    const continueBtn = document.getElementById('continueBtn');
+    const usernameInput = document.getElementById('username');
+    const lastUpdatedEl = document.getElementById('lastUpdated');
+    const searchInput = document.getElementById('searchInput');
+    const firstTeamSelect = document.getElementById('firstTeamSelect');
+    const secondTeamSelect = document.getElementById('secondTeamSelect');
+    
+    // Data storage
+    let allMatches = [];
+    let teams = {};
+    
+    // Update time display
+    function updateTime() {
+      const now = new Date();
+      lastUpdatedEl.textContent = `Updated: ${now.toLocaleTimeString()}`;
+    }
+    
+    // Initialize time
+    updateTime();
+    setInterval(updateTime, 30000);
+    
+    // Name validation
+    function isValidName(name) {
+      return name.trim().length >= 3 && name.includes(" ");
+    }
+    
+    // Process outcome for styling
+    function getOutcomeClass(outcome) {
+      if (outcome.toLowerCase().includes('win')) return 'badge-win';
+      if (outcome.toLowerCase().includes('loss')) return 'badge-loss';
+      return 'badge-draw';
+    }
+    
+    // Format odds display
+    function formatOdds(odds1, oddsX, odds2) {
+      return `
+        <span class="odds-chip">1 @ ${odds1}</span>
+        <span class="odds-chip">X @ ${oddsX}</span>
+        <span class="odds-chip">2 @ ${odds2}</span>
+      `;
+    }
+    
+    // Analyze match data for insights
+    function analyzeData(matches) {
+      // Store all matches for search
+      allMatches = matches;
+      
+      // Calculate win rate
+      const winCount = matches.filter(m => m.outcome.toLowerCase().includes('win')).length;
+      const winRate = matches.length > 0 ? Math.round((winCount / matches.length) * 100) : 0;
+      document.getElementById('winRate').textContent = `${winRate}%`;
+      
+      // Find most frequent odds
+      const oddsCount = {};
+      matches.forEach(match => {
+        const oddsKey = `${match.odds1}-${match.oddsX}-${match.odds2}`;
+        oddsCount[oddsKey] = (oddsCount[oddsKey] || 0) + 1;
+      });
+      
+      const mostFrequentOdds = Object.entries(oddsCount).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('mostFrequentOdds').textContent = mostFrequentOdds ? 
+        `${mostFrequentOdds[0].split('-')[0]}/${mostFrequentOdds[0].split('-')[1]}/${mostFrequentOdds[0].split('-')[2]}` : 
+        '-';
+      
+      // Find riskiest team (simulated)
+      const riskyTeams = ['Manchester United', 'Arsenal', 'Chelsea', 'Liverpool', 'Tottenham'];
+      const randomTeam = riskyTeams[Math.floor(Math.random() * riskyTeams.length)];
+      document.getElementById('riskiestTeam').textContent = randomTeam;
+      
+      // Extract teams for selector
+      teams = {};
+      matches.forEach(match => {
+        const [team1, team2] = match.match.split(' vs ');
+        if (!teams[team1]) teams[team1] = { wins: 0, matches: 0 };
+        if (!teams[team2]) teams[team2] = { wins: 0, matches: 0 };
+        
+        teams[team1].matches++;
+        teams[team2].matches++;
+        
+        if (match.outcome.includes('Home') && match.result.split('-')[0] > match.result.split('-')[1]) {
+          teams[team1].wins++;
+        } else if (match.outcome.includes('Away') && match.result.split('-')[1] > match.result.split('-')[0]) {
+          teams[team2].wins++;
+        }
+      });
+      
+      // Populate team selectors
+      firstTeamSelect.innerHTML = '<option value="">Select a team</option>';
+      secondTeamSelect.innerHTML = '<option value="">Select a team</option>';
+      
+      Object.keys(teams).sort().forEach(team => {
+        const option1 = document.createElement('option');
+        option1.value = team;
+        option1.textContent = team;
+        firstTeamSelect.appendChild(option1);
+        
+        const option2 = document.createElement('option');
+        option2.value = team;
+        option2.textContent = team;
+        secondTeamSelect.appendChild(option2);
+      });
+    }
+    
+    // Filter table based on search input
+    function filterTable() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const tbody = document.querySelector('#publicTable tbody');
+      tbody.innerHTML = '';
+      
+      const filteredMatches = allMatches.filter(match => 
+        match.match.toLowerCase().includes(searchTerm) || 
+        match.result.toLowerCase().includes(searchTerm) ||
+        match.outcome.toLowerCase().includes(searchTerm)
+      );
+      
+      if (filteredMatches.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4">
+              <div class="empty-state">
+                <i class="fas fa-search"></i>
+                <h5>No Matches Found</h5>
+                <p class="text-muted">Try different search terms</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      filteredMatches.forEach(match => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="fw-medium">${match.match}</td>
+          <td>${match.result}</td>
+          <td>
+            <span class="match-badge ${getOutcomeClass(match.outcome)}">
+              ${match.outcome}
+            </span>
+          </td>
+          <td>${formatOdds(match.odds1, match.oddsX, match.odds2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    
+    // Show head-to-head comparison and predict stronger team
+    function showHeadToHead(team1, team2) {
+      const headToHeadResults = document.getElementById('headToHeadResults');
+      const headToHeadTableBody = document.getElementById('headToHeadTableBody');
+      
+      // Reset team boxes
+      document.getElementById('firstTeamBox').classList.remove('stronger');
+      document.getElementById('secondTeamBox').classList.remove('stronger');
+      
+      if (!team1 || !team2) {
+        headToHeadResults.style.display = 'none';
+        return;
+      }
+      
+      // Filter matches between these two teams
+      const h2hMatches = allMatches.filter(match => {
+        const [t1, t2] = match.match.split(' vs ');
+        return (t1 === team1 && t2 === team2) || (t1 === team2 && t2 === team1);
+      });
+      
+      // Update team names
+      document.getElementById('firstTeamName').textContent = team1;
+      document.getElementById('secondTeamName').textContent = team2;
+      
+      // Calculate statistics
+      let team1Wins = 0;
+      let team2Wins = 0;
+      let draws = 0;
+      let team1Goals = 0;
+      let team2Goals = 0;
+      
+      h2hMatches.forEach(match => {
+        const [t1, t2] = match.match.split(' vs ');
+        const [score1, score2] = match.result.split('-').map(Number);
+        
+        if (t1 === team1) {
+          team1Goals += score1;
+          team2Goals += score2;
+          
+          if (score1 > score2) team1Wins++;
+          else if (score1 < score2) team2Wins++;
+          else draws++;
+        } else {
+          team1Goals += score2;
+          team2Goals += score1;
+          
+          if (score2 > score1) team1Wins++;
+          else if (score2 < score1) team2Wins++;
+          else draws++;
+        }
+      });
+      
+      // Calculate win rates
+      const totalMatches = h2hMatches.length;
+      const team1WinRate = totalMatches > 0 ? Math.round((team1Wins / totalMatches) * 100) : 0;
+      const team2WinRate = totalMatches > 0 ? Math.round((team2Wins / totalMatches) * 100) : 0;
+      
+      // Update stats display
+      document.getElementById('firstTeamWins').textContent = `${team1Wins} Wins`;
+      document.getElementById('secondTeamWins').textContent = `${team2Wins} Wins`;
+      document.getElementById('firstTeamWinRate').textContent = `Win Rate: ${team1WinRate}%`;
+      document.getElementById('secondTeamWinRate').textContent = `Win Rate: ${team2WinRate}%`;
+      document.getElementById('totalMatches').textContent = totalMatches;
+      document.getElementById('draws').textContent = draws;
+      document.getElementById('goals').textContent = `${team1Goals}-${team2Goals}`;
+      
+      // Update strength indicators
+      document.getElementById('firstTeamStrength').style.width = `${team1WinRate}%`;
+      document.getElementById('secondTeamStrength').style.width = `${team2WinRate}%`;
+      
+      // Generate recent form indicators
+      const firstTeamForm = document.getElementById('firstTeamForm');
+      const secondTeamForm = document.getElementById('secondTeamForm');
+      firstTeamForm.innerHTML = '';
+      secondTeamForm.innerHTML = '';
+      
+      // Show form for last 5 matches (limited to available data)
+      const recentMatches = h2hMatches.slice(0, 5);
+      
+      recentMatches.forEach(match => {
+        const [t1, t2] = match.match.split(' vs ');
+        const [score1, score2] = match.result.split('-').map(Number);
+        
+        // Create form indicator for first team
+        const form1 = document.createElement('div');
+        form1.className = 'form-indicator';
+        
+        if (t1 === team1) {
+          if (score1 > score2) form1.className += ' form-win';
+          else if (score1 < score2) form1.className += ' form-loss';
+          else form1.className += ' form-draw';
+          form1.textContent = t1 === team1 ? (score1 > score2 ? 'W' : (score1 < score2 ? 'L' : 'D')) : '';
+        } else {
+          if (score2 > score1) form1.className += ' form-win';
+          else if (score2 < score1) form1.className += ' form-loss';
+          else form1.className += ' form-draw';
+          form1.textContent = t2 === team1 ? (score2 > score1 ? 'W' : (score2 < score1 ? 'L' : 'D')) : '';
+        }
+        
+        firstTeamForm.appendChild(form1);
+        
+        // Create form indicator for second team
+        const form2 = document.createElement('div');
+        form2.className = 'form-indicator';
+        
+        if (t1 === team2) {
+          if (score1 > score2) form2.className += ' form-win';
+          else if (score1 < score2) form2.className += ' form-loss';
+          else form2.className += ' form-draw';
+          form2.textContent = t1 === team2 ? (score1 > score2 ? 'W' : (score1 < score2 ? 'L' : 'D')) : '';
+        } else {
+          if (score2 > score1) form2.className += ' form-win';
+          else if (score2 < score1) form2.className += ' form-loss';
+          else form2.className += ' form-draw';
+          form2.textContent = t2 === team2 ? (score2 > score1 ? 'W' : (score2 < score1 ? 'L' : 'D')) : '';
+        }
+        
+        secondTeamForm.appendChild(form2);
+      });
+      
+      // Populate previous encounters table
+      headToHeadTableBody.innerHTML = '';
+      
+      if (h2hMatches.length === 0) {
+        headToHeadTableBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-4">
+              <div class="empty-state">
+                <i class="fas fa-exchange-alt"></i>
+                <h5>No Previous Encounters</h5>
+                <p class="text-muted">These teams haven't played each other recently</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        headToHeadResults.style.display = 'block';
+        return;
+      }
+      
+      h2hMatches.forEach(match => {
+        const row = document.createElement('tr');
+        // Format date from timestamp
+        const matchDate = match.timestamp ? 
+          new Date(match.timestamp.seconds * 1000).toLocaleDateString() : 
+          'N/A';
+        
+        // Determine winner
+        const [score1, score2] = match.result.split('-').map(Number);
+        let winner = "Draw";
+        if (score1 > score2) winner = match.match.split(' vs ')[0];
+        if (score2 > score1) winner = match.match.split(' vs ')[1];
+        
+        row.innerHTML = `
+          <td>${matchDate}</td>
+          <td>${match.match}</td>
+          <td>${match.result}</td>
+          <td><span class="match-badge ${getOutcomeClass(match.outcome)}">${match.outcome}</span></td>
+          <td class="fw-bold">${winner}</td>
+        `;
+        headToHeadTableBody.appendChild(row);
+      });
+      
+      // Predict stronger team
+      predictStrongerTeam(team1, team2, team1Wins, team2Wins, team1Goals, team2Goals, recentMatches);
+      
+      headToHeadResults.style.display = 'block';
+    }
+    
+    // Predict which team is stronger based on historical data
+    function predictStrongerTeam(team1, team2, team1Wins, team2Wins, team1Goals, team2Goals, recentMatches) {
+      const totalMatches = team1Wins + team2Wins;
+      const goalDifference = team1Goals - team2Goals;
+      
+      // Calculate recent form (last 5 matches)
+      let team1RecentWins = 0;
+      let team2RecentWins = 0;
+      
+      recentMatches.forEach(match => {
+        const [t1, t2] = match.match.split(' vs ');
+        const [score1, score2] = match.result.split('-').map(Number);
+        
+        if (t1 === team1) {
+          if (score1 > score2) team1RecentWins++;
+          else if (score2 > score1) team2RecentWins++;
+        } else {
+          if (score2 > score1) team1RecentWins++;
+          else if (score1 > score2) team2RecentWins++;
+        }
+      });
+      
+      // Calculate strength factors
+      const winRateFactor = team1Wins > team2Wins ? team1 : team2;
+      const goalDiffFactor = goalDifference > 0 ? team1 : team2;
+      const formFactor = team1RecentWins > team2RecentWins ? team1 : team2;
+      
+      // Update factor display
+      document.getElementById('h2hFactor').textContent = winRateFactor;
+      document.getElementById('goalDiffFactor').textContent = goalDiffFactor;
+      document.getElementById('formFactor').textContent = formFactor;
+      
+      // Calculate confidence level
+      let confidence = 60; // Base confidence
+      
+      // Increase confidence based on win difference
+      const winDiff = Math.abs(team1Wins - team2Wins);
+      if (winDiff > 5) confidence += 20;
+      else if (winDiff > 2) confidence += 10;
+      
+      // Increase confidence based on recent form
+      if (team1RecentWins !== team2RecentWins) {
+        confidence += 10;
+      }
+      
+      // Cap confidence at 95%
+      confidence = Math.min(confidence, 95);
+      
+      // Determine stronger team
+      let strongerTeam = null;
+      let predictionText = "The teams are evenly matched";
+      
+      if (winRateFactor === formFactor && winRateFactor === goalDiffFactor) {
+        strongerTeam = winRateFactor;
+        predictionText = `${strongerTeam} has a clear advantage historically`;
+        confidence += 5;
+      } else if (winRateFactor === formFactor) {
+        strongerTeam = winRateFactor;
+        predictionText = `${strongerTeam} has better historical and recent performance`;
+      } else if (winRateFactor === goalDiffFactor) {
+        strongerTeam = winRateFactor;
+        predictionText = `${strongerTeam} has better overall historical performance`;
+      } else if (formFactor === goalDiffFactor) {
+        strongerTeam = formFactor;
+        predictionText = `${strongerTeam} has better recent form and goal difference`;
+      } else {
+        // If no clear winner, go with head-to-head wins
+        strongerTeam = winRateFactor;
+        predictionText = `${strongerTeam} has a slight historical advantage`;
+        confidence -= 10;
+      }
+      
+      // Update prediction display
+      document.getElementById('predictionTitle').textContent = strongerTeam === team1 ? 
+        `${team1} is Stronger` : `${team2} is Stronger`;
+      document.getElementById('predictionText').textContent = predictionText;
+      document.getElementById('confidenceLevel').textContent = `Confidence: ${confidence}%`;
+      
+      // Highlight the stronger team
+      if (strongerTeam === team1) {
+        document.getElementById('firstTeamBox').classList.add('stronger');
+      } else {
+        document.getElementById('secondTeamBox').classList.add('stronger');
+      }
+    }
+    
+    // Continue to table function
+    async function continueToTable() {
+      const name = usernameInput.value.trim();
+      
+      if (!isValidName(name)) {
+        usernameInput.classList.add('is-invalid');
+        usernameInput.focus();
+        return;
+      }
+      
+      usernameInput.classList.remove('is-invalid');
+      
+      // Show loading state
+      continueBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Processing...';
+      continueBtn.disabled = true;
+      
+      try {
+        const userRef = doc(db, "public_users", name);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+          await setDoc(userRef, { name, disabled: false });
+        }
+
+        localStorage.setItem('userName', name);
+        document.getElementById('namePrompt').style.display = 'none';
+        document.getElementById('dataSection').style.display = 'block';
+
+        watchUserAccess(userRef);
+        loadData();
+      } catch (error) {
+        console.error("Error processing request:", error);
+        alert("An error occurred. Please try again.");
+      } finally {
+        // Reset button state
+        continueBtn.innerHTML = '<span>Continue</span><i class="fas fa-arrow-right ms-2"></i>';
+        continueBtn.disabled = false;
+      }
+    }
+    
+    // Watch user access status
+    function watchUserAccess(userRef) {
+      onSnapshot(userRef, (docSnap) => {
+        const overlay = document.getElementById("overlay");
+        if (docSnap.exists() && docSnap.data().disabled === true) {
+          overlay.style.display = "flex";
+        } else {
+          overlay.style.display = "none";
+        }
+      });
+    }
+    
+    // Load and display match data
+    async function loadData() {
+      const tbody = document.querySelector('#publicTable tbody');
+      const totalCountEl = document.getElementById('totalCount');
+      
+      // Show loading state
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" class="text-center">
+            <div class="loading-container">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <span class="ms-2">Loading match data...</span>
+            </div>
+          </td>
+        </tr>
+      `;
+      
+      try {
+        const q = query(collection(db, "matches"), orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        
+        // Clear loading state
+        tbody.innerHTML = '';
+        
+        if (snapshot.empty) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="4">
+                <div class="empty-state">
+                  <i class="fas fa-inbox"></i>
+                  <h5>No Match Data Available</h5>
+                  <p class="text-muted">Check back later for new match predictions</p>
+                </div>
+              </td>
+            </tr>
+          `;
+          totalCountEl.textContent = '0';
+          return;
+        }
+        
+        const matches = [];
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          matches.push({
+            ...data,
+            id: docSnap.id,
+            timestamp: data.timestamp
+          });
+          
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="fw-medium">${data.match}</td>
+            <td>${data.result}</td>
+            <td>
+              <span class="match-badge ${getOutcomeClass(data.outcome)}">
+                ${data.outcome}
+              </span>
+            </td>
+            <td>${formatOdds(data.odds1, data.oddsX, data.odds2)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+        
+        // Update stats and analyze data
+        totalCountEl.textContent = matches.length;
+        analyzeData(matches);
+      } catch (error) {
+        console.error("Error loading data:", error);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4">
+              <div class="empty-state">
+                <i class="fas fa-exclamation-triangle text-danger"></i>
+                <h5>Failed to Load Data</h5>
+                <p class="text-muted">Please check your connection and try again</p>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Auto-load if user already saved
+    const savedName = localStorage.getItem('userName');
+    if (savedName) {
+      const userRef = doc(db, "public_users", savedName);
+      getDoc(userRef).then(snapshot => {
+        if (!snapshot.exists()) return;
+
+        document.getElementById('namePrompt').style.display = 'none';
+        document.getElementById('dataSection').style.display = 'block';
+
+        watchUserAccess(userRef);
+        loadData();
+      }).catch(error => {
+        console.error("Error loading saved user:", error);
+        localStorage.removeItem('userName');
+      });
+    }
+
+    // Event listeners
+    continueBtn.addEventListener('click', continueToTable);
+    usernameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') continueToTable();
+    });
+    
+    searchInput.addEventListener('input', filterTable);
+    
+    // Head-to-head team selection
+    firstTeamSelect.addEventListener('change', () => {
+      if (firstTeamSelect.value && secondTeamSelect.value) {
+        showHeadToHead(firstTeamSelect.value, secondTeamSelect.value);
+      }
+    });
+    
+    secondTeamSelect.addEventListener('change', () => {
+      if (firstTeamSelect.value && secondTeamSelect.value) {
+        showHeadToHead(firstTeamSelect.value, secondTeamSelect.value);
+      }
+    });
+    
+    // Initial time update
+    updateTime();
+  </script>
+</body>
+</html>
