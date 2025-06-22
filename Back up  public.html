@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MatchDataHub | Football Analytics Platform</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #dc2626;
+      --accent: #f59e0b;
+      --light: #f8fafc;
+      --dark: #0f172a;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: #334155;
+      min-height: 100vh;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    
+    .flag-icon {
+      width: 24px;
+      height: 18px;
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: middle;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .league-nav {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .league-btn {
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-weight: 500;
+      color: #475569;
+      background: #f1f5f9;
+      border: none;
+      margin: 0 5px 10px;
+    }
+    
+    .league-btn:hover, .league-btn.active {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .card {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      border: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    
+    .card-header {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      padding: 15px 20px;
+      border: none;
+    }
+    
+    .comparison-result {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 20px;
+    }
+    
+    .stats-badge {
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 50px;
+      font-weight: 500;
+    }
+    
+    .search-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .search-container i {
+      position: absolute;
+      left: 15px;
+      top: 12px;
+      color: #94a3b8;
+    }
+    
+    .search-input {
+      padding-left: 45px;
+      border-radius: 50px;
+      height: 46px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.25rem rgba(30, 58, 138, 0.25);
+    }
+    
+    .table thead th {
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-weight: 600;
+      padding: 12px 15px;
+    }
+    
+    .table tbody tr {
+      transition: background 0.2s ease;
+    }
+    
+    .table tbody tr:hover {
+      background: #f1f5f9;
+    }
+    
+    .outcome-badge {
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+    
+    .bg-win {
+      background: #10b981;
+      color: white;
+    }
+    
+    .bg-draw {
+      background: #f59e0b;
+      color: white;
+    }
+    
+    .bg-loss {
+      background: #ef4444;
+      color: white;
+    }
+    
+    .odds-cell {
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .comparison-header {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .vs-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--secondary);
+      text-align: center;
+      margin: 0;
+      padding: 10px 0;
+    }
+    
+    .team-select {
+      height: 46px;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .team-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.25rem rgba(30, 58, 138, 0.25);
+    }
+    
+    .comparison-results {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .comparison-results table {
+      margin-bottom: 0;
+    }
+    
+    .comparison-results table th {
+      background: #f1f5f9;
+      font-weight: 600;
+    }
+    
+    .footer {
+      background: var(--dark);
+      color: #cbd5e1;
+      padding: 30px 0;
+      margin-top: 40px;
+    }
+    
+    .footer a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .footer a:hover {
+      color: white;
+    }
+    
+    .stat-card {
+      text-align: center;
+      padding: 20px;
+      border-radius: 12px;
+      background: white;
+    }
+    
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 5px;
+    }
+    
+    .progress {
+      height: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    
+    .team-logo {
+      width: 40px;
+      height: 40px;
+      background: #e2e8f0;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    @media (max-width: 768px) {
+      .league-nav {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background: var(--primary);">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-futbol me-2"></i>MatchDataHub
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Leagues</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Teams</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Stats</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Subscription</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+<div id="overlay" style="
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px); /* blur effect */
+  background: rgba(0, 0, 0, 0.6); /* semi-transparent dark */
+  color: #f8f9fa;
+  z-index: 9999;
+  display: none; /* set to flex via JS when needed */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+">
+  <div>
+    <!-- Overlay content goes here -->
+  
+  
+
+      <p><strong>🔒 Subscription Expired</strong></p>
+      <p>Please renew your subscription to continue.</p>
+      <p>Send <strong>Ksh 25</strong> to <strong>25497612155</strong></p>
+      <p style="font-size: 0.95rem; color: #adb5bd;">Regards, <strong>WinPredictPro 🏆</strong></p>
+    </div>
+  </div>
+
+  <div class="container py-4">
+    <h2 class="mb-3">Welcome to MatchDataHub</h2>
+    
+    <div id="namePrompt" class="mb-4">
+      <label for="username" class="form-label">Enter your real name to continue:</label>
+      <input type="text" id="username" class="form-control mb-2" placeholder="e.g. John Doe" />
+      <button class="btn btn-primary" onclick="continueToTable()">Continue</button>
+    </div>
+
+    <div id="dataSection" style="display:none;">
+      <!-- League Navigation -->
+      <div class="league-nav">
+        <div class="d-flex flex-wrap justify-content-center">
+          <button class="league-btn active" data-league="all">
+            <i class="fas fa-globe me-2"></i>All Leagues
+          </button>
+          <button class="league-btn" data-league="premier">
+            <span class="flag-icon" style="background: linear-gradient(to right, #c8102e 33%, white 33%, white 66%, #c8102e 66%);"></span>
+            Premier League
+          </button>
+          <button class="league-btn" data-league="laliga">
+            <span class="flag-icon" style="background: linear-gradient(to bottom, #aa151b 25%, #f1bf00 25%, #f1bf00 50%, #aa151b 50%, #aa151b 75%, #f1bf00 75%);"></span>
+            Spanish
+          </button>
+          <button class="league-btn" data-league="seriea">
+            <span class="flag-icon" style="background: linear-gradient(to right, #009246 33%, white 33%, white 66%, #ce2b37 66%);"></span>
+            Italian
+          </button>
+          <button class="league-btn" data-league="kenyan">
+            <span class="flag-icon" style="background: linear-gradient(to bottom, #000000 33%, #BB0000 33%, #BB0000 66%, #006600 66%);"></span>
+            Kenyan Premier
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8">
+          <!-- Search and Stats -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="d-md-flex justify-content-between align-items-center mb-4">
+                <div class="search-container w-100 me-md-3 mb-3 mb-md-0">
+                  <i class="fas fa-search"></i>
+                  <input type="text" class="form-control search-input" id="searchInput" placeholder="Search matches, teams, results, odds...">
+                </div>
+                <div class="d-flex">
+                  <div class="stat-card me-2">
+                    <div class="stat-number"><span id="totalCount">0</span></div>
+                    <div class="stat-label">Matches</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Table Section -->
+              <div class="table-responsive">
+                <table class="table table-hover align-middle" id="publicTable">
+                  <thead>
+                    <tr>
+                      <th>Match</th>
+                      <th>Result</th>
+                      <th>Outcome</th>
+                      <th>Odds</th>
+                      <th>League</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              
+              <nav>
+                <ul class="pagination justify-content-center">
+                  <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4">
+          <!-- Team Comparison Section -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-exchange-alt me-2"></i>Team Comparison
+            </div>
+            <div class="card-body">
+              <div class="comparison-header">Head-to-Head Analysis</div>
+              
+              <div class="row g-3 mb-4">
+                <div class="col-5">
+                  <select class="form-select team-select" id="team1Select">
+                    <option value="">Select Team 1</option>
+                    <!-- Teams will be populated dynamically -->
+                  </select>
+                </div>
+                <div class="col-2 text-center">
+                  <p class="vs-text">VS</p>
+                </div>
+                <div class="col-5">
+                  <select class="form-select team-select" id="team2Select">
+                    <option value="">Select Team 2</option>
+                    <!-- Teams will be populated dynamically -->
+                  </select>
+                </div>
+              </div>
+              
+              <!-- Comparison Results -->
+              <div class="comparison-result" id="comparisonResult" style="display: none;">
+                <div class="d-flex justify-content-between mb-3">
+                  <div>
+                    <h5 id="team1Name">Team 1</h5>
+                    <span class="badge bg-primary stats-badge" id="team1League">League</span>
+                  </div>
+                  <div class="text-center">
+                    <h3>Head-to-Head</h3>
+                    <h2 id="headToHeadRecord">0-0-0</h2>
+                  </div>
+                  <div class="text-end">
+                    <h5 id="team2Name">Team 2</h5>
+                    <span class="badge bg-primary stats-badge" id="team2League">League</span>
+                  </div>
+                </div>
+                
+                <div class="comparison-results">
+                  <table class="table table-sm">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Match</th>
+                        <th>Result</th>
+                        <th>Winner</th>
+                      </tr>
+                    </thead>
+                    <tbody id="headToHeadMatches"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Performance Stats -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-chart-line me-2"></i>Performance Statistics
+            </div>
+            <div class="card-body" id="performanceStats">
+              <div class="text-center py-4">
+                <p>Select two teams to see performance statistics</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5 class="text-white mb-4">MatchDataHub</h5>
+          <p>Advanced football analytics and match prediction platform providing in-depth statistics and insights for professionals and enthusiasts.</p>
+          <div class="mt-3">
+            <a href="#" class="me-3"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5 class="text-white mb-4">Leagues</h5>
+          <div class="row">
+            <div class="col-6">
+              <ul class="list-unstyled">
+                <li class="mb-2"><a href="#">Premier League</a></li>
+                <li class="mb-2"><a href="#">La Liga</a></li>
+                <li class="mb-2"><a href="#">Serie A</a></li>
+                <li><a href="#">Bundesliga</a></li>
+              </ul>
+            </div>
+            <div class="col-6">
+              <ul class="list-unstyled">
+                <li class="mb-2"><a href="#">Ligue 1</a></li>
+                <li class="mb-2"><a href="#">MLS</a></li>
+                <li class="mb-2"><a href="#">Kenyan PL</a></li>
+                <li><a href="#">Champions League</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <h5 class="text-white mb-4">Subscribe</h5>
+          <p>Get the latest match insights and predictions delivered to your inbox.</p>
+          <div class="input-group">
+            <input type="email" class="form-control" placeholder="Your email">
+            <button class="btn btn-primary">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4 bg-light">
+      <div class="text-center">
+        <p class="mb-0">© 2023 MatchDataHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { 
+      initializeApp 
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      query, 
+      orderBy, 
+      getDocs, 
+      doc, 
+      getDoc, 
+      setDoc, 
+      onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDthFB2btT_r6slyX_xa5jeDOX8KDxsmdo",
+      authDomain: "store-1d9e8.firebaseapp.com",
+      projectId: "store-1d9e8",
+      storageBucket: "store-1d9e8.appspot.com",
+      messagingSenderId: "869478006120",
+      appId: "1:869478006120:web:2045cbb98db8a3755e6add",
+      measurementId: "G-3GCBWGCYPG"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Define leagues and teams
+    const leagues = [
+      {
+        name: "🇪🇸 Spanish League (La Liga)",
+        shortName: "La Liga",
+        teams: [
+          "Villareal", "Osa", "Athletic Bilbao", "Real Sociedad", 
+          "Atletico Madrid", "Real Betis", "Almeria", "Real Madrid", 
+          "Levante", "Getafe", "Celta Vigo", "Mallorca", "Sevilla", 
+          "Leganes", "Barcelona", "Gra", "Real Valladolid", 
+          "Esp", "Alaves", "Valencia"
+        ]
+      },
+      {
+        name: "🏴 English League (Premier League)",
+        shortName: "Premier League",
+        teams: [
+          "Tottenham ", "Fulham", "London Reds", "Southampton", 
+          "Everton", "Manchester Reds", "London Blues", "Palace", 
+          "Aston Villa", "Brighton", "West Brom", 
+          "Sheffield U", "Leicester", "Manchester Bluep", 
+          "Wolves", "Newcastle", "Liverpool", 
+          "Burnley", "Leeds ", "West Ham"
+        ]
+      },
+      {
+        name: "🇮🇹 Italian League (Serie A)",
+        shortName: "Serie A",
+        teams: [
+          "Juventus", "Cagliari", "Bologna", "Fiorentina", "Genoa", 
+          "Lazio", "Torino", "AC Milan", "Sampdoria", "Atalanta", 
+          "SPAL", "Inter Milan", "Udinese", "Napoli", "Frosinone", 
+          "Brescia", "Hellas Verona", "Roma", "Lecce", "Sassuolo"
+        ]
+      },
+      {
+        name: "🇰🇪 Kenyan League (Kenyan Premier League)",
+        shortName: "Kenyan PL",
+        teams: [
+          "Ulinzi Stars", "Sofapaka", "Posta Rangers", "Kakamega Homeboyz", 
+          "Zoo Kericho", "AFC Leopards", "Tusker FC", "Wazito FC", 
+          "KCB FC", "Chemelil Sugar", "Sony Sugar", "Nzoia Sugar", 
+          "Kariobangi Sharks", "Western Stima", "Mathare United", 
+          "Vihiga United", "Gor Mahia"
+        ]
+      }
+    ];
+
+    // Function to populate team dropdowns
+    function populateTeamDropdowns() {
+      const team1Select = document.getElementById('team1Select');
+      const team2Select = document.getElementById('team2Select');
+      
+      // Clear existing options except the first
+      team1Select.innerHTML = '<option value="">Select Team 1</option>';
+      team2Select.innerHTML = '<option value="">Select Team 2</option>';
+      
+      // Add league categories and teams
+      leagues.forEach(league => {
+        const optgroup1 = document.createElement('optgroup');
+        optgroup1.label = league.name;
+        
+        const optgroup2 = document.createElement('optgroup');
+        optgroup2.label = league.name;
+        
+        league.teams.forEach(team => {
+          const option1 = new Option(team, team);
+          const option2 = new Option(team, team);
+          optgroup1.appendChild(option1);
+          optgroup2.appendChild(option2);
+        });
+        
+        team1Select.appendChild(optgroup1);
+        team2Select.appendChild(optgroup2);
+      });
+    }
+
+    // Function to determine league from team
+    function getLeagueForTeam(teamName) {
+      for (const league of leagues) {
+        if (league.teams.includes(teamName)) {
+          return league.shortName;
+        }
+      }
+      return "Unknown";
+    }
+
+    // Function to get team abbreviation
+    function getTeamAbbreviation(teamName) {
+      return teamName.split(' ')
+        .map(word => word[0].toUpperCase())
+        .join('')
+        .substring(0, 3);
+    }
+
+    async function continueToTable() {
+      const name = document.getElementById('username').value.trim();
+      if (name.length < 3 || !name.includes(" ")) {
+        alert("Please enter your full name (e.g. John Doe)");
+        return;
+      }
+
+      const userRef = doc(db, "public_users", name);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, { name, disabled: false });
+      }
+
+      localStorage.setItem('userName', name);
+      document.getElementById('namePrompt').style.display = 'none';
+      document.getElementById('dataSection').style.display = 'block';
+
+      // Populate dropdowns after showing the section
+      populateTeamDropdowns();
+      watchUserAccess(userRef);
+      loadData();
+    }
+
+    function watchUserAccess(userRef) {
+      onSnapshot(userRef, (docSnap) => {
+        const overlay = document.getElementById("overlay");
+        if (docSnap.exists() && docSnap.data().disabled === true) {
+          overlay.style.display = "flex";
+        } else {
+          overlay.style.display = "none";
+        }
+      });
+    }
+
+    async function loadData() {
+      const tbody = document.querySelector('#publicTable tbody');
+      const totalCountEl = document.getElementById('totalCount');
+      tbody.innerHTML = '';
+      let count = 0;
+
+      const q = query(collection(db, "matches"), orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
+      
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        
+        // Extract teams from match string
+        const [team1, team2] = data.match.split(' vs ');
+        const league = getLeagueForTeam(team1);
+        
+        // Determine outcome class
+        let outcomeClass = '';
+        if (data.outcome.includes('Win')) outcomeClass = 'bg-win';
+        else if (data.outcome.includes('Draw')) outcomeClass = 'bg-draw';
+        else if (data.outcome.includes('Loss')) outcomeClass = 'bg-loss';
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <span class="team-logo">${getTeamAbbreviation(team1)}</span>
+            ${team1} vs 
+            <span class="team-logo">${getTeamAbbreviation(team2)}</span>
+            ${team2}
+          </td>
+          <td>${data.result}</td>
+          <td><span class="outcome-badge ${outcomeClass}">${data.outcome}</span></td>
+          <td class="odds-cell">1 @ ${data.odds1}, X @ ${data.oddsX}, 2 @ ${data.odds2}</td>
+          <td><span class="badge bg-primary">${league}</span></td>
+        `;
+        tbody.appendChild(tr);
+        count++;
+      });
+
+      totalCountEl.textContent = count;
+      
+      // Setup search functionality
+      document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#publicTable tbody tr');
+        
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+      });
+      
+      // Setup league filtering
+      document.querySelectorAll('.league-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.league-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          const league = this.dataset.league;
+          const rows = document.querySelectorAll('#publicTable tbody tr');
+          
+          rows.forEach(row => {
+            if (league === 'all') {
+              row.style.display = '';
+              return;
+            }
+            
+            const leagueBadge = row.querySelector('.badge').textContent.toLowerCase();
+            const shouldShow = 
+              (league === 'premier' && leagueBadge.includes('premier')) ||
+              (league === 'laliga' && leagueBadge.includes('liga')) ||
+              (league === 'seriea' && leagueBadge.includes('serie')) ||
+              (league === 'kenyan' && leagueBadge.includes('kenyan'));
+            
+            row.style.display = shouldShow ? '' : 'none';
+          });
+        });
+      });
+      
+      // Setup team comparison
+      document.getElementById('team1Select').addEventListener('change', updateComparison);
+      document.getElementById('team2Select').addEventListener('change', updateComparison);
+    }
+
+    function updateComparison() {
+      const team1 = document.getElementById('team1Select').value;
+      const team2 = document.getElementById('team2Select').value;
+      
+      if (team1 && team2) {
+        document.getElementById('team1Name').textContent = team1;
+        document.getElementById('team2Name').textContent = team2;
+        
+        document.getElementById('team1League').textContent = getLeagueForTeam(team1);
+        document.getElementById('team2League').textContent = getLeagueForTeam(team2);
+        
+        // Show comparison section
+        document.getElementById('comparisonResult').style.display = 'block';
+        
+        // Generate random head-to-head record
+        const wins = Math.floor(Math.random() * 5) + 1;
+        const draws = Math.floor(Math.random() * 3);
+        const losses = Math.floor(Math.random() * 4);
+        document.getElementById('headToHeadRecord').textContent = `${wins}-${draws}-${losses}`;
+        
+        // Generate head-to-head matches
+        const matchesBody = document.getElementById('headToHeadMatches');
+        matchesBody.innerHTML = '';
+        
+        for (let i = 0; i < 3; i++) {
+          const date = new Date(Date.now() - i * 30 * 24 * 60 * 60 * 1000);
+          const formattedDate = date.toLocaleDateString();
+          const homeTeam = i % 2 === 0 ? team1 : team2;
+          const awayTeam = i % 2 === 0 ? team2 : team1;
+          const homeGoals = Math.floor(Math.random() * 3) + 1;
+          const awayGoals = Math.floor(Math.random() * 3);
+          
+          let winnerBadge = '';
+          if (homeGoals > awayGoals) {
+            winnerBadge = `<span class="badge bg-success">${homeTeam}</span>`;
+          } else if (awayGoals > homeGoals) {
+            winnerBadge = `<span class="badge bg-danger">${awayTeam}</span>`;
+          } else {
+            winnerBadge = `<span class="badge bg-warning text-dark">Draw</span>`;
+          }
+          
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${formattedDate}</td>
+            <td>${homeTeam} vs ${awayTeam}</td>
+            <td>${homeGoals}-${awayGoals}</td>
+            <td>${winnerBadge}</td>
+          `;
+          matchesBody.appendChild(tr);
+        }
+        
+        // Update performance stats
+        const performanceStats = document.getElementById('performanceStats');
+        performanceStats.innerHTML = `
+          <div class="mb-4">
+            <h6>Win Probability</h6>
+            <div class="d-flex align-items-center">
+              <div class="text-center me-3" style="width: 30%;">
+                <div class="stat-number">${Math.floor(Math.random() * 40) + 45}%</div>
+                <div class="stat-label">${team1}</div>
+              </div>
+              <div class="progress flex-grow-1" style="height: 20px;">
+                <div class="progress-bar bg-success" style="width: ${Math.floor(Math.random() * 40) + 45}%"></div>
+                <div class="progress-bar bg-warning" style="width: ${Math.floor(Math.random() * 20) + 10}%"></div>
+                <div class="progress-bar bg-danger" style="width: ${Math.floor(Math.random() * 20) + 10}%"></div>
+              </div>
+              <div class="text-center ms-3" style="width: 30%;">
+                <div class="stat-number">${Math.floor(Math.random() * 30) + 15}%</div>
+                <div class="stat-label">${team2}</div>
+              </div>
+            </div>
+            <div class="text-center mt-2">
+              <span class="badge bg-warning text-dark">Draw: ${Math.floor(Math.random() * 20) + 10}%</span>
+            </div>
+          </div>
+          
+          <div class="row text-center">
+            <div class="col-4">
+              <div class="stat-number">${(Math.random() * 1.5 + 1.5).toFixed(1)}</div>
+              <div class="stat-label">Avg Goals</div>
+            </div>
+            <div class="col-4">
+              <div class="stat-number">${Math.floor(Math.random() * 20) + 45}%</div>
+              <div class="stat-label">Possession</div>
+            </div>
+            <div class="col-4">
+              <div class="stat-number">${(Math.random() * 3 + 3).toFixed(1)}</div>
+              <div class="stat-label">Shots/Game</div>
+            </div>
+          </div>
+        `;
+      } else {
+        document.getElementById('comparisonResult').style.display = 'none';
+      }
+    }
+
+    // Auto-load if user already saved
+    const savedName = localStorage.getItem('userName');
+    if (savedName) {
+      const userRef = doc(db, "public_users", savedName);
+      getDoc(userRef).then(snapshot => {
+        if (!snapshot.exists()) return;
+
+        document.getElementById('namePrompt').style.display = 'none';
+        document.getElementById('dataSection').style.display = 'block';
+
+        // Populate dropdowns after showing the section
+        populateTeamDropdowns();
+        watchUserAccess(userRef);
+        loadData();
+      });
+    }
+
+    // Expose function for button click
+    window.continueToTable = continueToTable;
+  </script>
+</body>
+</html>
