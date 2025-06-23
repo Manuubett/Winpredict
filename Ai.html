@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MatchDataHub - Premium Football Data</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #3a86ff;
+      --secondary: #8338ec;
+      --success: #06d6a0;
+      --warning: #ffd166;
+      --danger: #ef476f;
+      --dark: #1a1a2e;
+      --light: #f8f9fa;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+    
+    .header-gradient {
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    #overlay {
+      position: fixed;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      color: #f8f9fa;
+      z-index: 9999;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 30px;
+      font-size: 1.2rem;
+    }
+    
+    .overlay-content {
+      background: rgba(30, 30, 46, 0.9);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .welcome-card {
+      background: linear-gradient(135deg, #3a86ff 0%, #8338ec 100%);
+      color: white;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card {
+      border-radius: 16px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      border: none;
+      overflow: hidden;
+      background: white;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .table thead {
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+    }
+    
+    .table th {
+      font-weight: 600;
+      padding: 15px 12px;
+      vertical-align: middle;
+    }
+    
+    .table td {
+      padding: 12px;
+      vertical-align: middle;
+    }
+    
+    .table-striped>tbody>tr:nth-of-type(odd)>* {
+      background-color: rgba(58, 134, 255, 0.03);
+    }
+    
+    .table-hover tbody tr:hover {
+      background-color: rgba(131, 56, 236, 0.05) !important;
+    }
+    
+    .badge-outcome {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      min-width: 60px;
+      text-align: center;
+    }
+    
+    .badge-win {
+      background-color: rgba(6, 214, 160, 0.2);
+      color: #06a17a;
+    }
+    
+    .badge-draw {
+      background-color: rgba(255, 209, 102, 0.2);
+      color: #c9a337;
+    }
+    
+    .badge-loss {
+      background-color: rgba(239, 71, 111, 0.2);
+      color: #d43b5f;
+    }
+    
+    .match-cell {
+      min-width: 220px;
+      font-weight: 500;
+    }
+    
+    .odds-cell {
+      font-weight: 600;
+      min-width: 70px;
+      text-align: center;
+    }
+    
+    .odds-1 { color: var(--primary); }
+    .odds-x { color: var(--warning); }
+    .odds-2 { color: var(--danger); }
+    
+    .date-cell {
+      font-size: 0.85rem;
+      color: #6c757d;
+      white-space: nowrap;
+    }
+    
+    .team-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #e9ecef;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    
+    .stats-card {
+      text-align: center;
+      border-radius: 12px;
+      padding: 20px 15px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+    }
+    
+    .stats-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    
+    .stats-label {
+      font-size: 0.9rem;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .filter-section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    
+    .user-welcome {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: white;
+    }
+    
+    .user-welcome i {
+      margin-right: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      border-radius: 20px;
+      padding: 5px 15px;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+    
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .footer {
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 30px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    
+    @media (max-width: 768px) {
+      .header-gradient {
+        padding: 15px;
+      }
+      
+      .user-welcome {
+        font-size: 1.1rem;
+      }
+      
+      .table th, .table td {
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+  <div id="overlay">
+    <div class="overlay-content">
+      <div class="mb-4">
+        <i class="fas fa-lock fa-3x mb-3" style="color: #ffd166;"></i>
+        <h3 class="mb-3">🔒 Subscription Expired</h3>
+        <p class="mb-4">To continue accessing premium match data, please renew your subscription</p>
+      </div>
+      
+      <div class="alert alert-warning p-3 mb-4">
+        <p class="mb-1"><strong>Renewal Instructions:</strong></p>
+        <p class="mb-0">Send <strong>Ksh 25</strong> to <strong>25497612155</strong></p>
+      </div>
+      
+      <p class="mb-0" style="font-size: 0.95rem; color: #adb5bd;">
+        Regards, <strong>WinPredictPro 🏆</strong>
+      </p>
+    </div>
+  </div>
+
+  <div class="container py-4">
+    <div class="header-gradient mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="mb-2"><i class="fas fa-futbol me-2"></i>MatchDataHub</h1>
+          <p class="mb-0">Premium Football Match Analytics</p>
+        </div>
+        <div id="userWelcomeContainer" style="display:none;">
+          <div class="user-welcome">
+            <i class="fas fa-user"></i>
+            Welcome, <span id="userNameDisplay"></span>
+            <button class="logout-btn ms-2" onclick="logout()">
+              <i class="fas fa-sign-out-alt me-1"></i>Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="namePrompt" class="card mb-4">
+      <div class="card-body p-4">
+        <div class="welcome-card mb-4">
+          <h2 class="mb-3"><i class="fas fa-user-circle me-2"></i>Welcome to MatchDataHub</h2>
+          <p class="mb-0">Enter your real name to access premium match data</p>
+        </div>
+        
+        <div class="mb-3">
+          <label for="username" class="form-label fw-bold">Full Name:</label>
+          <input type="text" id="username" class="form-control form-control-lg" placeholder="e.g. John Doe" />
+          <div class="form-text">We require your full name for personalized access</div>
+        </div>
+        
+        <button class="btn btn-primary w-100 py-3 fw-bold" onclick="continueToTable()">
+          <i class="fas fa-arrow-right me-2"></i>Continue to Match Data
+        </button>
+      </div>
+    </div>
+
+    <div id="dataSection" style="display:none;">
+      <div class="filter-section">
+        <h4 class="mb-4"><i class="fas fa-filter me-2"></i>Filter Match Data</h4>
+        
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-search"></i></span>
+              <input type="text" id="searchInput" class="form-control" placeholder="Search matches..." oninput="filterTable()" />
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <select id="team1Select" class="form-select">
+              <option value="">Select Team A</option>
+            </select>
+          </div>
+          
+          <div class="col-md-4">
+            <select id="team2Select" class="form-select">
+              <option value="">Select Team B</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="row mt-3">
+          <div class="col-md-6 mb-2">
+            <button class="btn btn-success w-100 py-3" onclick="compareTeams()">
+              <i class="fas fa-exchange-alt me-2"></i>Compare Selected Teams
+            </button>
+          </div>
+          <div class="col-md-6 mb-2">
+            <button class="btn btn-outline-primary w-100 py-3" onclick="filterTable()">
+              <i class="fas fa-sync-alt me-2"></i>Reset Filters
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stats-card">
+          <div class="stats-value" id="totalCount">0</div>
+          <div class="stats-label">Total Matches</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-value text-primary" id="winCount">0</div>
+          <div class="stats-label">Home Wins</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-value text-warning" id="drawCount">0</div>
+          <div class="stats-label">Draws</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-value text-danger" id="lossCount">0</div>
+          <div class="stats-label">Away Wins</div>
+        </div>
+      </div>
+      
+      <div class="mb-3 d-flex justify-content-between align-items-center">
+        <h4><i class="fas fa-table me-2"></i>Match Data</h4>
+        <div class="text-muted">Updated: <span id="lastUpdated">Just now</span></div>
+      </div>
+      
+      <div class="table-container">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th class="match-cell">Match</th>
+              <th>Result</th>
+              <th>Outcome</th>
+              <th class="odds-cell">1</th>
+              <th class="odds-cell">X</th>
+              <th class="odds-cell">2</th>
+              <th class="date-cell">Date</th>
+            </tr>
+          </thead>
+          <tbody id="publicTableBody"></tbody>
+        </table>
+      </div>
+      
+      <div class="footer">
+        <p class="mb-1">© 2023 MatchDataHub • All data provided by official sources</p>
+        <p class="mb-0">WinPredictPro 🏆 - Premium Football Analytics</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      orderBy,
+      getDocs,
+      doc,
+      getDoc,
+      setDoc,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDthFB2btT_r6slyX_xa5jeDOX8KDxsmdo",
+      authDomain: "store-1d9e8.firebaseapp.com",
+      projectId: "store-1d9e8",
+      storageBucket: "store-1d9e8.appspot.com",
+      messagingSenderId: "869478006120",
+      appId: "1:869478006120:web:2045cbb98db8a3755e6add",
+      measurementId: "G-3GCBWGCYPG"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    let allMatches = [];
+
+    async function continueToTable() {
+      const name = document.getElementById('username').value.trim();
+      if (name.length < 3 || !name.includes(" ")) {
+        alert("Please enter your full name (e.g. John Doe)");
+        return;
+      }
+
+      const userRef = doc(db, "public_users", name);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, { name, disabled: false });
+      }
+
+      localStorage.setItem('userName', name);
+      document.getElementById('namePrompt').style.display = 'none';
+      document.getElementById('dataSection').style.display = 'block';
+      
+      // Show welcome message with user's name
+      document.getElementById('userNameDisplay').textContent = name;
+      document.getElementById('userWelcomeContainer').style.display = 'block';
+
+      watchUserAccess(userRef);
+      loadData();
+    }
+
+    function logout() {
+      localStorage.removeItem('userName');
+      document.getElementById('userWelcomeContainer').style.display = 'none';
+      document.getElementById('dataSection').style.display = 'none';
+      document.getElementById('namePrompt').style.display = 'block';
+      document.getElementById('username').value = '';
+    }
+
+    function watchUserAccess(userRef) {
+      onSnapshot(userRef, (docSnap) => {
+        document.getElementById("overlay").style.display = (docSnap.exists() && docSnap.data().disabled === true) ? "flex" : "none";
+      });
+    }
+
+    async function loadData() {
+      const snapshot = await getDocs(
+        query(collection(db, "matches"), orderBy("timestamp", "desc"))
+      );
+      allMatches = [];
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        // Add formatted date for display
+        if (data.timestamp) {
+          const date = data.timestamp.toDate();
+          data.formattedDate = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+        } else {
+          data.formattedDate = 'N/A';
+        }
+        allMatches.push(data);
+      });
+
+      populateDropdowns(allMatches);
+      setupDropdownListeners();
+      filterTable();
+      updateLastUpdated();
+    }
+    
+    function updateLastUpdated() {
+      const now = new Date();
+      document.getElementById('lastUpdated').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function populateDropdowns(matches) {
+      const teamSet = new Set();
+      matches.forEach(m => {
+        const parts = m.match.split(' vs ');
+        if (parts.length === 2) {
+          teamSet.add(parts[0].trim());
+          teamSet.add(parts[1].trim());
+        }
+      });
+
+      const teams = Array.from(teamSet).sort();
+      const team1Select = document.getElementById('team1Select');
+      const team2Select = document.getElementById('team2Select');
+
+      [team1Select, team2Select].forEach(select => {
+        select.innerHTML = '<option value="">Select Team</option>';
+        teams.forEach(team => {
+          const option = document.createElement('option');
+          option.value = team;
+          option.textContent = team;
+          select.appendChild(option);
+        });
+      });
+    }
+
+    function setupDropdownListeners() {
+      const team1Select = document.getElementById('team1Select');
+      const team2Select = document.getElementById('team2Select');
+
+      [team1Select, team2Select].forEach(select => {
+        select.addEventListener('change', () => {
+          const team1 = team1Select.value;
+          const team2 = team2Select.value;
+
+          if (team1 && team2) {
+            compareTeams();
+          } else if (!team1 && !team2) {
+            filterTable();
+          } else {
+            filterTable();
+          }
+        });
+      });
+    }
+    
+    function updateStats(filtered) {
+      const winCount = filtered.filter(m => m.outcome === '1').length;
+      const drawCount = filtered.filter(m => m.outcome === 'X').length;
+      const lossCount = filtered.filter(m => m.outcome === '2').length;
+      
+      document.getElementById('totalCount').textContent = filtered.length;
+      document.getElementById('winCount').textContent = winCount;
+      document.getElementById('drawCount').textContent = drawCount;
+      document.getElementById('lossCount').textContent = lossCount;
+    }
+
+    function createTableRow(data) {
+      const tr = document.createElement('tr');
+      
+      // Determine outcome badge class
+      let outcomeClass = '';
+      if (data.outcome === '1') outcomeClass = 'badge-win';
+      else if (data.outcome === 'X') outcomeClass = 'badge-draw';
+      else if (data.outcome === '2') outcomeClass = 'badge-loss';
+      
+      const teams = data.match.split(' vs ');
+      
+      tr.innerHTML = `
+        <td class="match-cell">
+          <div class="d-flex align-items-center">
+            <div class="team-logo">${teams[0].substring(0, 1)}</div>
+            <span>${teams[0]}</span>
+          </div>
+          <div class="d-flex align-items-center mt-1">
+            <div class="team-logo">${teams[1].substring(0, 1)}</div>
+            <span>${teams[1]}</span>
+          </div>
+        </td>
+        <td>${data.result}</td>
+        <td><span class="badge-outcome ${outcomeClass}">${data.outcome}</span></td>
+        <td class="odds-1">${data.odds1}</td>
+        <td class="odds-x">${data.oddsX}</td>
+        <td class="odds-2">${data.odds2}</td>
+        <td class="date-cell">${data.formattedDate}</td>
+      `;
+      return tr;
+    }
+
+    function filterTable() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const team1 = document.getElementById('team1Select').value;
+      const team2 = document.getElementById('team2Select').value;
+      
+      const tbody = document.getElementById('publicTableBody');
+      tbody.innerHTML = '';
+
+      let filtered = allMatches;
+      
+      // Apply search filter
+      if (search) {
+        filtered = filtered.filter(data => {
+          const combined = `${data.match} ${data.result} ${data.outcome} ${data.odds1} ${data.oddsX} ${data.odds2} ${data.formattedDate}`.toLowerCase();
+          return combined.includes(search);
+        });
+      }
+      
+      // Apply team comparison filter if both teams selected
+      if (team1 && team2) {
+        filtered = filtered.filter(data => {
+          return data.match.includes(`${team1} vs ${team2}`) || 
+                 data.match.includes(`${team2} vs ${team1}`);
+        });
+      }
+      
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4">No matches found</td></tr>`;
+      } else {
+        filtered.forEach(data => {
+          tbody.appendChild(createTableRow(data));
+        });
+      }
+      
+      updateStats(filtered);
+    }
+
+    function compareTeams() {
+      const team1 = document.getElementById('team1Select').value;
+      const team2 = document.getElementById('team2Select').value;
+      
+      if (!team1 || !team2) {
+        alert("Please select both teams.");
+        return;
+      }
+      
+      filterTable();
+    }
+
+    // Auto-load if user already saved
+    const savedName = localStorage.getItem('userName');
+    if (savedName) {
+      const userRef = doc(db, "public_users", savedName);
+      getDoc(userRef).then(snapshot => {
+        if (!snapshot.exists()) return;
+        document.getElementById('namePrompt').style.display = 'none';
+        document.getElementById('dataSection').style.display = 'block';
+        document.getElementById('userNameDisplay').textContent = savedName;
+        document.getElementById('userWelcomeContainer').style.display = 'block';
+        watchUserAccess(userRef);
+        loadData();
+      });
+    }
+
+    window.continueToTable = continueToTable;
+    window.compareTeams = compareTeams;
+    window.filterTable = filterTable;
+    window.logout = logout;
+  </script>
+</body>
+</html>
