@@ -1,397 +1,377 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Match Predictor Pro</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Match Outcome & Goals Predictor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <style>
     :root {
-      --primary-color: #3a7bd5;
-      --secondary-color: #00d2ff;
-      --dark-color: #2c3e50;
-      --light-color: #f8f9fa;
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --success-color: #2ecc71;
+      --danger-color: #e74c3c;
+      --warning-color: #f39c12;
+      --light-bg: #f8f9fa;
+      --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
     body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--light-bg);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+      color: white;
+      padding: 1.5rem 0;
+      margin-bottom: 2rem;
+      border-radius: 0 0 10px 10px;
+      box-shadow: var(--card-shadow);
     }
     
     .card {
       border: none;
-      border-radius: 12px;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease;
     }
     
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
     }
     
-    .input-card {
-      background: white;
-      border-left: 5px solid var(--primary-color);
-    }
-    
-    .result-card {
-      background: white;
-      border-left: 5px solid var(--secondary-color);
-    }
-    
-    .data-card {
-      background: white;
-    }
-    
-    .odds-input {
-      border-radius: 8px;
-      border-left: 3px solid var(--primary-color);
-      font-weight: 500;
-    }
-    
-    .btn-predict {
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      border: none;
+    .card-header {
+      border-radius: 10px 10px 0 0 !important;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      font-size: 1.1rem;
     }
     
-    .outcome-badge {
-      font-size: 0.85rem;
-      padding: 0.4em 0.7em;
+    .result-box {
+      font-size: 1.1rem;
+      background-color: rgba(52, 152, 219, 0.1);
+      border-radius: 8px;
+      padding: 1rem;
     }
     
-    .progress-thin {
+    .loading-spinner {
+      display: none;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    
+    .progress {
       height: 8px;
       border-radius: 4px;
+      margin-top: 0.5rem;
     }
     
-    .progress-thick {
-      height: 24px;
-      border-radius: 12px;
+    .similarity-badge {
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
     }
     
-    .table-custom th {
-      background: linear-gradient(to right, var(--dark-color), #34495e);
+    .table-responsive {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .table {
+      margin-bottom: 0;
+    }
+    
+    .table thead th {
+      background-color: var(--secondary-color);
       color: white;
       font-weight: 500;
     }
     
-    .table-custom tr:hover {
-      background-color: rgba(58, 123, 213, 0.05);
+    .form-control, .form-select {
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #ced4da;
+    }
+    
+    .btn-success {
+      background-color: var(--success-color);
+      border: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+    }
+    
+    .btn-outline-primary {
+      border-radius: 6px;
+      font-weight: 500;
     }
     
     .stat-card {
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 15px;
       background: white;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     
     .stat-value {
-      font-size: 1.8rem;
-      font-weight: 700;
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .countdown-badge {
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
-      color: white;
+      font-size: 1.5rem;
       font-weight: 600;
     }
     
-    .accuracy-meter {
-      position: relative;
-      height: 8px;
-      background: #e9ecef;
-      border-radius: 4px;
-      overflow: hidden;
+    .stat-label {
+      font-size: 0.9rem;
+      color: #6c757d;
     }
     
-    .accuracy-fill {
-      position: absolute;
-      height: 100%;
-      background: linear-gradient(to right, #4e54c8, #8f94fb);
-      width: 0%;
-      transition: width 1s ease;
+    .match-row:hover {
+      background-color: rgba(52, 152, 219, 0.05);
+      cursor: pointer;
+    }
+    
+    .countdown-display {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--secondary-color);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-weight: bold;
     }
     
     @media (max-width: 768px) {
-      .stat-card {
-        margin-bottom: 10px;
+      .card-body {
+        padding: 1rem;
+      }
+      
+      .header {
+        padding: 1rem 0;
+      }
+      
+      .countdown-display {
+        bottom: 10px;
+        right: 10px;
+        font-size: 0.9rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container py-4">
-    <div class="text-center mb-4">
-      <h2 class="fw-bold mb-1" style="color: var(--dark-color);">
-        <i class="bi bi-speedometer2"></i> Match Predictor Pro
-      </h2>
-      <p class="text-muted">Advanced football match predictions using historical odds analysis</p>
-      <span class="badge countdown-badge rounded-pill px-3 py-2" id="countdown">
-        <i class="bi bi-clock"></i> Session expires in: <span id="timer">--:--</span>
-      </span>
+  <div class="header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="mb-0"><i class="bi bi-graph-up"></i> Match Predictor Pro</h1>
+        <span id="lastUpdated" class="text-light small"></span>
+      </div>
+      <p class="mb-0 mt-2 opacity-75">Analyze historical data to predict match outcomes and goals</p>
     </div>
+  </div>
 
+
+  <div class="container">
     <div class="row">
-      <!-- Left Column - Input and Results -->
+      <!-- Prediction Card -->
       <div class="col-lg-8">
-        <!-- Input Card -->
-        <div class="card input-card mb-4">
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white d-flex align-items-center">
+            <i class="bi bi-input-cursor-text me-2"></i> Enter Match Odds
+          </div>
           <div class="card-body">
-            <h5 class="card-title mb-4">
-              <i class="bi bi-input-cursor-text"></i> Match Odds Input
-            </h5>
-            
             <div class="row g-3">
               <div class="col-md-4">
                 <label for="odds1" class="form-label fw-medium">Home Win (1)</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-primary text-white">1</span>
-                  <input type="number" class="form-control odds-input" id="odds1" placeholder="2.10" step="0.01">
+                  <span class="input-group-text bg-light"><i class="bi bi-house-door"></i></span>
+                  <input type="number" class="form-control" id="odds1" step="0.01" min="1.01" required placeholder="2.50">
                 </div>
+                <div class="invalid-feedback">Please enter a valid odd (≥1.01)</div>
               </div>
               <div class="col-md-4">
                 <label for="oddsX" class="form-label fw-medium">Draw (X)</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-warning text-dark">X</span>
-                  <input type="number" class="form-control odds-input" id="oddsX" placeholder="3.40" step="0.01">
+                  <span class="input-group-text bg-light"><i class="bi bi-dash-lg"></i></span>
+                  <input type="number" class="form-control" id="oddsX" step="0.01" min="1.01" required placeholder="3.20">
                 </div>
+                <div class="invalid-feedback">Please enter a valid odd (≥1.01)</div>
               </div>
               <div class="col-md-4">
                 <label for="odds2" class="form-label fw-medium">Away Win (2)</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-danger text-white">2</span>
-                  <input type="number" class="form-control odds-input" id="odds2" placeholder="3.80" step="0.01">
+                  <span class="input-group-text bg-light"><i class="bi bi-arrow-right"></i></span>
+                  <input type="number" class="form-control" id="odds2" step="0.01" min="1.01" required placeholder="2.80">
                 </div>
+                <div class="invalid-feedback">Please enter a valid odd (≥1.01)</div>
               </div>
             </div>
-            
+
             <div class="row mt-3">
               <div class="col-md-6">
                 <label for="matchCount" class="form-label fw-medium">
-                  <i class="bi bi-filter-circle"></i> Analysis Sample Size
+                  <i class="bi bi-filter-square"></i> Matches for Prediction
                 </label>
                 <select id="matchCount" class="form-select">
-                  <option value="25">25 Closest Matches</option>
-                  <option value="50" selected>50 Closest Matches</option>
-                  <option value="100">100 Closest Matches</option>
-                  <option value="250">250 Closest Matches</option>
+                  <option value="25" selected>Top 25 Similar</option>
+                  <option value="50">Top 50 Similar</option>
+                  <option value="100">Top 100 Similar</option>
+                  <option value="500">Top 500 Similar</option>
+                  <option value="all">All Loaded Matches</option>
                 </select>
               </div>
               <div class="col-md-6 d-flex align-items-end">
-                <button class="btn btn-predict w-100 py-2" onclick="predictOutcome()">
-                  <i class="bi bi-lightning-charge"></i> Generate Prediction
+                <button id="predictBtn" class="btn btn-success w-100 py-2" onclick="predictOutcome()">
+                  <span id="predictText"><i class="bi bi-lightning-charge"></i> Predict</span>
+                  <div id="predictSpinner" class="spinner-border spinner-border-sm loading-spinner text-light" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-        
-        <!-- Results Card -->
-        <div class="card result-card mb-4">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5 class="card-title mb-0">
-                <i class="bi bi-graph-up-arrow"></i> Prediction Results
-              </h5>
-              <span class="badge bg-dark rounded-pill" id="accuracyBadge">
-                Accuracy: Loading...
-              </span>
-            </div>
-            
-            <div id="loadingSpinner" class="text-center my-4" style="display: none;">
-              <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+
+            <div class="mt-4 result-box">
+              <div id="predictionResult" class="text-center">
+                <p class="mb-2">Enter odds and click <strong>Predict</strong> to see results</p>
+                <small class="text-muted">Analysis will appear here based on historical data</small>
               </div>
-              <p class="mt-2 text-muted">Analyzing historical data...</p>
-            </div>
-            
-            <div id="predictionResult">
-              <div class="alert alert-light border text-center py-4">
-                <i class="bi bi-info-circle-fill text-primary"></i>
-                <p class="mb-0">Enter match odds and click "Generate Prediction" to see results</p>
+              <div class="progress mt-3">
+                <div id="homeProgress" class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
+                <div id="drawProgress" class="progress-bar bg-warning" role="progressbar" style="width: 0%"></div>
+                <div id="awayProgress" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
-      <!-- Right Column - Stats and Data -->
+
+      <!-- Stats Summary Column -->
       <div class="col-lg-4">
-        <!-- Stats Overview -->
-        <div class="card data-card mb-4">
+        <div class="card mb-4">
+          <div class="card-header bg-secondary text-white d-flex align-items-center">
+            <i class="bi bi-speedometer2 me-2"></i> Quick Stats
+          </div>
           <div class="card-body">
-            <h5 class="card-title mb-3">
-              <i class="bi bi-database"></i> Data Overview
-            </h5>
-            
             <div class="row">
               <div class="col-6">
-                <div class="stat-card">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                      <h6 class="text-muted mb-1">Matches</h6>
-                      <div class="stat-value" id="loadedMatches">0</div>
-                    </div>
-                    <i class="bi bi-collection text-primary"></i>
-                  </div>
-                  <div class="accuracy-meter mt-2">
-                    <div class="accuracy-fill" id="dataFreshnessBar"></div>
-                  </div>
+                <div class="stat-card text-center">
+                  <div class="stat-value" id="totalMatches">0</div>
+                  <div class="stat-label">Total Matches</div>
                 </div>
               </div>
-              
               <div class="col-6">
-                <div class="stat-card">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                      <h6 class="text-muted mb-1">Accuracy</h6>
-                      <div class="stat-value" id="accuracyValue">0%</div>
-                    </div>
-                    <i class="bi bi-check-circle text-success"></i>
-                  </div>
-                  <div class="accuracy-meter mt-2">
-                    <div class="accuracy-fill" id="accuracyBar"></div>
-                  </div>
+                <div class="stat-card text-center">
+                  <div class="stat-value" id="avgGoals">0.00</div>
+                  <div class="stat-label">Avg Goals</div>
                 </div>
               </div>
-              
               <div class="col-6">
-                <div class="stat-card">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                      <h6 class="text-muted mb-1">Avg. Goals</h6>
-                      <div class="stat-value" id="avgGoals">0.00</div>
-                    </div>
-                    <i class="bi bi-bullseye text-info"></i>
-                  </div>
+                <div class="stat-card text-center">
+                  <div class="stat-value" id="homeWinRate">0%</div>
+                  <div class="stat-label">Home Wins</div>
                 </div>
               </div>
-              
               <div class="col-6">
-                <div class="stat-card">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                      <h6 class="text-muted mb-1">Home Wins</h6>
-                      <div class="stat-value" id="avgHomeWin">0%</div>
-                    </div>
-                    <i class="bi bi-house-door text-danger"></i>
-                  </div>
+                <div class="stat-card text-center">
+                  <div class="stat-value" id="over25Rate">0%</div>
+                  <div class="stat-label">Over 2.5</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        
-        <!-- Quick Stats -->
-        <div class="card data-card">
+
+        <div class="card">
+          <div class="card-header bg-info text-white d-flex align-items-center">
+            <i class="bi bi-info-circle me-2"></i> How It Works
+          </div>
           <div class="card-body">
-            <h5 class="card-title mb-3">
-              <i class="bi bi-speedometer"></i> Quick Stats
-            </h5>
-            
-            <div class="mb-3">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="text-muted">Recent Performance</span>
-                <span class="fw-medium" id="performanceValue">0%</span>
-              </div>
-              <div class="progress progress-thick">
-                <div class="progress-bar bg-success" id="performanceBar" role="progressbar" style="width: 0%"></div>
-              </div>
-            </div>
-            
-            <div class="mb-3">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="text-muted">System Confidence</span>
-                <span class="fw-medium" id="confidenceValue">0%</span>
-              </div>
-              <div class="progress progress-thick">
-                <div class="progress-bar bg-info" id="confidenceBar" role="progressbar" style="width: 0%"></div>
-              </div>
-            </div>
-            
-            <div class="text-center mt-3">
-              <button class="btn btn-outline-primary btn-sm" onclick="loadMatches()">
-                <i class="bi bi-arrow-clockwise"></i> Refresh Data
-              </button>
-              <span class="text-muted small ms-2" id="lastUpdated"></span>
+            <ol class="small">
+              <li class="mb-2">Enter current match odds for Home, Draw, and Away</li>
+              <li class="mb-2">Select how many similar matches to analyze</li>
+              <li class="mb-2">Click Predict to see probabilities</li>
+              <li>The system finds historically similar odds patterns</li>
+            </ol>
+            <div class="alert alert-warning small mb-0">
+              <i class="bi bi-exclamation-triangle"></i> Past performance doesn't guarantee future results
+              <p style="color: red;">Subscription expires in <span id="timer" style="color: red;"></span></p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
+
     <!-- Match Data Table -->
-    <div class="card mt-4">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h5 class="card-title mb-0">
-            <i class="bi bi-table"></i> Recent Match Data
-          </h5>
-          <div class="text-muted small" id="tableInfo">Showing 0 matches</div>
+    <div class="card">
+      <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <div>
+          <i class="bi bi-table me-2"></i> Latest Match Data
+          <span class="badge bg-light text-dark ms-2" id="loadedMatchesCount">0</span>
         </div>
-        
+        <button id="refreshBtn" class="btn btn-sm btn-light" onclick="loadMatches()">
+          <span id="refreshText">Refresh</span>
+          <div id="refreshSpinner" class="spinner-border spinner-border-sm loading-spinner" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </button>
+      </div>
+      <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-custom table-hover mb-0">
+          <table class="table table-hover mb-0" id="matchTable">
             <thead>
               <tr>
-                <th>Match</th>
-                <th>Result</th>
-                <th>Outcome</th>
-                <th>Goals</th>
-                <th>Odds (1-X-2)</th>
-                <th>Date</th>
+                <th><i class="bi bi-flag"></i> Match</th>
+                <th><i class="bi bi-123"></i> Result</th>
+                <th><i class="bi bi-trophy"></i> Outcome</th>
+                <th><i class="bi bi-balloon"></i> Goals</th>
+                <th><i class="bi bi-graph-up"></i> Odds</th>
+                <th><i class="bi bi-percent"></i> Similarity</th>
               </tr>
             </thead>
-            <tbody id="matchTable"></tbody>
+            <tbody></tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    const timerDisplay = document.getElementById("timer");
+  <!-- Countdown Display -->
+  <div id="countdownDisplay" class="countdown-display"></div>
+  
+<script>
+  const timerDisplay = document.getElementById("timer");
+  const endTime = parseInt(localStorage.getItem("countdown_end_time"));
 
-    // Read end time from localStorage
-    const endTime = parseInt(localStorage.getItem("countdown_end_time"));
+  if (!endTime || isNaN(endTime)) {
+    window.location.href = "home 2.html";
+  }
 
-    // If not found or invalid, redirect to subscription page
-    if (!endTime || isNaN(endTime)) {
-      window.location.href = "home 2.html";
+  function updateCountdown() {
+    const now = Date.now();
+    const remaining = endTime - now;
+
+    if (remaining <= 0) {
+      timerDisplay.textContent = "Expired";
+      localStorage.removeItem("countdown_end_time");
+      timerDisplay.style.background = "#333";
+      timerDisplay.style.color = "#ff4444";
+      timerDisplay.style.fontSize = "2.5rem";
+
+      setTimeout(() => {
+        window.location.href = "home 2.html";
+      }, 2000);
+    } else {
+      const minutes = Math.floor(remaining / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+      timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      requestAnimationFrame(updateCountdown);
     }
+  }
 
-    function updateCountdown() {
-      const now = Date.now();
-      const remaining = endTime - now;
-
-      if (remaining <= 0) {
-        timerDisplay.textContent = "Expired";
-        localStorage.removeItem("countdown_end_time");
-
-        // Optional: Redirect or clear session
-        setTimeout(() => {
-          window.location.href = "home 2.html";
-        }, 2000);
-      } else {
-        const minutes = Math.floor(remaining / (1000 * 60));
-        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-        timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        requestAnimationFrame(updateCountdown);
-      }
-    }
-
-    updateCountdown();
-  </script>
-
+  updateCountdown();
+</script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import {
@@ -416,45 +396,32 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     let allMatches = [];
-    let accuracyStats = {
-      totalPredictions: 0,
-      correctPredictions: 0,
-      accuracy: 0,
-      performance: 0,
-      confidence: 0
-    };
+    let lastPrediction = null;
 
-    // Load accuracy stats from localStorage if available
-    if (localStorage.getItem('accuracyStats')) {
-      accuracyStats = JSON.parse(localStorage.getItem('accuracyStats'));
-      updateStatsDisplay();
+    function showLoading(buttonId, spinnerId, textId) {
+      document.getElementById(spinnerId).style.display = 'inline-block';
+      document.getElementById(textId).style.display = 'none';
+      document.getElementById(buttonId).disabled = true;
     }
 
-    function updateStatsDisplay() {
-      document.getElementById('accuracyBadge').textContent = 
-        `Accuracy: ${accuracyStats.accuracy.toFixed(1)}%`;
-      
-      document.getElementById('accuracyValue').textContent = `${accuracyStats.accuracy.toFixed(1)}%`;
-      document.getElementById('accuracyBar').style.width = `${accuracyStats.accuracy}%`;
-      
-      document.getElementById('performanceValue').textContent = `${accuracyStats.performance.toFixed(1)}%`;
-      document.getElementById('performanceBar').style.width = `${accuracyStats.performance}%`;
-      
-      document.getElementById('confidenceValue').textContent = `${accuracyStats.confidence.toFixed(1)}%`;
-      document.getElementById('confidenceBar').style.width = `${accuracyStats.confidence}%`;
+    function hideLoading(buttonId, spinnerId, textId) {
+      document.getElementById(spinnerId).style.display = 'none';
+      document.getElementById(textId).style.display = 'inline';
+      document.getElementById(buttonId).disabled = false;
     }
 
     async function loadMatches() {
-      document.getElementById('loadingSpinner').style.display = 'block';
-      
       try {
+        showLoading('refreshBtn', 'refreshSpinner', 'refreshText');
         const q = query(collection(db, "matches"), orderBy("timestamp", "desc"), limit(1000));
         const snapshot = await getDocs(q);
-        const tbody = document.querySelector("#matchTable");
+        const tbody = document.querySelector("#matchTable tbody");
         tbody.innerHTML = "";
         allMatches = [];
-        
-        let totalHome = 0, totalDraw = 0, totalAway = 0, totalGoals = 0;
+
+        let totalHomeWins = 0;
+        let totalGoals = 0;
+        let totalOver25 = 0;
 
         snapshot.forEach(doc => {
           const data = doc.data();
@@ -462,319 +429,187 @@
           const homeGoals = parseInt(resultParts[0]);
           const awayGoals = parseInt(resultParts[1]);
           const goals = homeGoals + awayGoals;
-          totalGoals += goals;
-          
-          if (data.outcome === "1") totalHome++;
-          else if (data.outcome === "X") totalDraw++;
-          else if (data.outcome === "2") totalAway++;
-          
-          const matchDate = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
-          
           allMatches.push({ ...data, goals, homeGoals, awayGoals });
 
+          // Stats calculations
+          totalGoals += goals;
+          if (data.outcome === "1") totalHomeWins++;
+          if (goals > 2.5) totalOver25++;
+
+          // Calculate similarity if we have a previous prediction
+          let similarityBadge = '';
+          if (lastPrediction) {
+            const d1 = lastPrediction.odds1 - data.odds1;
+            const dX = lastPrediction.oddsX - data.oddsX;
+            const d2 = lastPrediction.odds2 - data.odds2;
+            const distance = Math.sqrt(d1 * d1 + dX * dX + d2 * d2);
+            const similarity = Math.max(0, 100 - (distance * 10)); // Scale to 0-100
+            similarityBadge = `<span class="badge rounded-pill bg-${getSimilarityColor(similarity)} similarity-badge">${similarity.toFixed(0)}%</span>`;
+          }
+
           const tr = document.createElement("tr");
+          tr.className = "match-row";
           tr.innerHTML = `
             <td>${data.match}</td>
-            <td><strong>${data.result}</strong></td>
-            <td>
-              <span class="badge rounded-pill outcome-badge 
-                ${data.outcome === '1' ? 'bg-primary' : 
-                  data.outcome === 'X' ? 'bg-warning text-dark' : 'bg-danger'}">
-                ${data.outcome}
-              </span>
-            </td>
+            <td>${data.result}</td>
+            <td>${data.outcome}</td>
             <td>${goals}</td>
-            <td>
-              <span class="text-primary">${parseFloat(data.odds1).toFixed(2)}</span> | 
-              <span class="text-warning">${parseFloat(data.oddsX).toFixed(2)}</span> | 
-              <span class="text-danger">${parseFloat(data.odds2).toFixed(2)}</span>
-            </td>
-            <td>${matchDate}</td>
+            <td>1 @ ${data.odds1}, X @ ${data.oddsX}, 2 @ ${data.odds2}</td>
+            <td>${similarityBadge}</td>
           `;
           tbody.appendChild(tr);
         });
 
-        // Update statistics
-        const totalMatches = snapshot.size;
-        document.getElementById('loadedMatches').textContent = totalMatches;
-        document.getElementById('avgHomeWin').textContent = `${(totalHome / totalMatches * 100).toFixed(1)}%`;
-        document.getElementById('avgDraw').textContent = `${(totalDraw / totalMatches * 100).toFixed(1)}%`;
-        document.getElementById('avgAwayWin').textContent = `${(totalAway / totalMatches * 100).toFixed(1)}%`;
-        document.getElementById('avgGoals').textContent = (totalGoals / totalMatches).toFixed(2);
-        document.getElementById('tableInfo').textContent = `Showing ${totalMatches} matches`;
-        
-        // Update freshness meter
-        const freshness = Math.min(100, Math.floor(totalMatches / 10));
-        document.getElementById('dataFreshnessBar').style.width = `${freshness}%`;
-        
-        document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString();
-        
-        // Calculate accuracy if we have enough data
-        if (allMatches.length > 100) {
-          calculateHistoricalAccuracy();
-        }
+        // Update stats
+        const total = snapshot.size;
+        document.getElementById("totalMatches").textContent = total;
+        document.getElementById("avgGoals").textContent = (totalGoals / total).toFixed(2);
+        document.getElementById("homeWinRate").textContent = `${((totalHomeWins / total) * 100).toFixed(1)}%`;
+        document.getElementById("over25Rate").textContent = `${((totalOver25 / total) * 100).toFixed(1)}%`;
+        document.getElementById("loadedMatchesCount").textContent = total;
+
+        document.getElementById("lastUpdated").textContent = "Last refreshed: " + new Date().toLocaleTimeString();
       } catch (error) {
         console.error("Error loading matches:", error);
-        document.getElementById("predictionResult").innerHTML = `
-          <div class="alert alert-danger">
-            <i class="bi bi-exclamation-triangle"></i> Error loading match data. Please try again.
-          </div>
-        `;
+        document.getElementById("lastUpdated").textContent = "Error loading data. Please try again.";
       } finally {
-        document.getElementById('loadingSpinner').style.display = 'none';
+        hideLoading('refreshBtn', 'refreshSpinner', 'refreshText');
       }
     }
 
-    function calculateHistoricalAccuracy() {
-      // Test the algorithm on historical data to estimate accuracy
-      let testSize = Math.min(100, Math.floor(allMatches.length * 0.2)); // Use 20% of data for testing
-      let correct = 0;
-      let confidenceSum = 0;
-      
-      for (let i = 0; i < testSize; i++) {
-        const testMatch = allMatches[i];
-        const similarMatches = findSimilarMatches(testMatch.odds1, testMatch.oddsX, testMatch.odds2, 50);
-        
-        if (similarMatches.length > 0) {
-          const prediction = predictFromMatches(similarMatches);
-          confidenceSum += prediction.confidence * 100;
-          
-          if (prediction.mostLikelyOutcome === testMatch.outcome) {
-            correct++;
-          }
-        }
-      }
-      
-      const testAccuracy = (correct / testSize) * 100;
-      const avgConfidence = confidenceSum / testSize;
-      const performance = testAccuracy * 0.8 + avgConfidence * 0.2; // Weighted performance metric
-      
-      accuracyStats.accuracy = testAccuracy;
-      accuracyStats.confidence = avgConfidence;
-      accuracyStats.performance = performance;
-      
-      updateStatsDisplay();
-      localStorage.setItem('accuracyStats', JSON.stringify(accuracyStats));
+    function getSimilarityColor(similarity) {
+      if (similarity >= 80) return 'success';
+      if (similarity >= 60) return 'primary';
+      if (similarity >= 40) return 'warning';
+      return 'danger';
     }
 
-    function findSimilarMatches(odds1, oddsX, odds2, count) {
-      const distances = allMatches.slice(20).map(match => { // Skip most recent matches for testing
-        const d1 = odds1 - match.odds1;
-        const dX = oddsX - match.oddsX;
-        const d2 = odds2 - match.odds2;
-        
-        // Weighted distance calculation with more emphasis on home and away odds
-        const distance = Math.sqrt((d1 * d1 * 1.4) + (dX * dX) + (d2 * d2 * 1.4));
-        
-        return {
-          ...match,
-          distance
-        };
-      });
+    function weightedDistance(odds1, oddsX, odds2, match) {
+      // Give more weight to the favorite outcome
+      const favoriteWeight = 1.5;
+      const underdogWeight = 0.8;
       
-      return distances.sort((a, b) => a.distance - b.distance).slice(0, count);
-    }
-
-    function predictFromMatches(matches) {
-      let count1 = 0, countX = 0, count2 = 0;
-      let over15 = 0, over25 = 0, over35 = 0;
-      let gg = 0, ng = 0;
-      let totalGoals = 0;
-      let homeGoalsAvg = 0, awayGoalsAvg = 0;
-
-      matches.forEach(match => {
-        if (match.outcome === "1") count1++;
-        else if (match.outcome === "X") countX++;
-        else if (match.outcome === "2") count2++;
-
-        if (match.goals > 1.5) over15++;
-        if (match.goals > 2.5) over25++;
-        if (match.goals > 3.5) over35++;
-
-        if (match.homeGoals >= 1 && match.awayGoals >= 1) gg++;
-        else ng++;
-        
-        totalGoals += match.goals;
-        homeGoalsAvg += match.homeGoals;
-        awayGoalsAvg += match.awayGoals;
-      });
-
-      const total = matches.length;
-      const outcomes = [
-        {outcome: "1", count: count1, percentage: count1 / total},
-        {outcome: "X", count: countX, percentage: countX / total},
-        {outcome: "2", count: count2, percentage: count2 / total}
-      ].sort((a, b) => b.percentage - a.percentage);
-      
-      const mostLikelyOutcome = outcomes[0].outcome;
-      const confidence = outcomes[0].percentage - (outcomes[1]?.percentage || 0);
-
-      return {
-        mostLikelyOutcome,
-        confidence,
-        outcomes,
-        over15: over15 / total,
-        over25: over25 / total,
-        over35: over35 / total,
-        gg: gg / total,
-        ng: ng / total,
-        avgGoals: totalGoals / total,
-        avgHomeGoals: homeGoalsAvg / total,
-        avgAwayGoals: awayGoalsAvg / total
+      const weights = {
+        odds1: odds1 < match.odds1 ? favoriteWeight : underdogWeight,
+        oddsX: oddsX < match.oddsX ? favoriteWeight : underdogWeight,
+        odds2: odds2 < match.odds2 ? favoriteWeight : underdogWeight
       };
+      
+      const d1 = (odds1 - match.odds1) * weights.odds1;
+      const dX = (oddsX - match.oddsX) * weights.oddsX;
+      const d2 = (odds2 - match.odds2) * weights.odds2;
+      
+      return Math.sqrt(d1 * d1 + dX * dX + d2 * d2);
     }
 
-    window.predictOutcome = function() {
-      const odds1 = parseFloat(document.getElementById("odds1").value);
-      const oddsX = parseFloat(document.getElementById("oddsX").value);
-      const odds2 = parseFloat(document.getElementById("odds2").value);
-      const matchCountValue = document.getElementById("matchCount").value;
+    window.predictOutcome = async function () {
+      try {
+        // Validate inputs
+        const odds1 = parseFloat(document.getElementById("odds1").value);
+        const oddsX = parseFloat(document.getElementById("oddsX").value);
+        const odds2 = parseFloat(document.getElementById("odds2").value);
+        const matchCountValue = document.getElementById("matchCount").value;
 
-      if (isNaN(odds1) || isNaN(oddsX) || isNaN(odds2)) {
-        document.getElementById("predictionResult").innerHTML = `
-          <div class="alert alert-danger">
-            <i class="bi bi-exclamation-triangle"></i> Please enter valid odds for all outcomes
-          </div>
-        `;
-        return;
-      }
-
-      if (allMatches.length === 0) {
-        document.getElementById("predictionResult").innerHTML = `
-          <div class="alert alert-warning">
-            <i class="bi bi-hourglass-split"></i> Loading match data, please wait...
-          </div>
-        `;
-        return;
-      }
-
-      document.getElementById('loadingSpinner').style.display = 'block';
-      
-      setTimeout(() => {
-        try {
-          const count = matchCountValue === "all" ? allMatches.length : parseInt(matchCountValue);
-          const similarMatches = findSimilarMatches(odds1, oddsX, odds2, count);
-
-          if (similarMatches.length === 0) {
-            document.getElementById("predictionResult").innerHTML = `
-              <div class="alert alert-warning">
-                <i class="bi bi-search"></i> No similar matches found in our database
-              </div>
-            `;
-            return;
-          }
-
-          const prediction = predictFromMatches(similarMatches);
-          const confidencePercent = Math.round(prediction.confidence * 100);
-          
-          // Format outcome probabilities
-          const outcomeItems = prediction.outcomes.map(outcome => `
-            <div class="mb-2">
-              <div class="d-flex justify-content-between small mb-1">
-                <span class="fw-medium">${outcome.outcome === '1' ? 'Home Win' : outcome.outcome === 'X' ? 'Draw' : 'Away Win'}</span>
-                <span>${(outcome.percentage * 100).toFixed(1)}% (${outcome.count} matches)</span>
-              </div>
-              <div class="progress progress-thin">
-                <div class="progress-bar ${outcome.outcome === '1' ? 'bg-primary' : outcome.outcome === 'X' ? 'bg-warning' : 'bg-danger'}" 
-                     role="progressbar" style="width: ${outcome.percentage * 100}%"></div>
-              </div>
-            </div>
-          `).join('');
-          
-          // Format goal predictions
-          const goalPredictions = `
-            <div class="row mt-3 g-2">
-              <div class="col-4">
-                <div class="text-center p-2 bg-light rounded">
-                  <div class="fw-bold">${(prediction.over15 * 100).toFixed(1)}%</div>
-                  <div class="small text-muted">Over 1.5</div>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="text-center p-2 bg-light rounded">
-                  <div class="fw-bold">${(prediction.over25 * 100).toFixed(1)}%</div>
-                  <div class="small text-muted">Over 2.5</div>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="text-center p-2 bg-light rounded">
-                  <div class="fw-bold">${(prediction.over35 * 100).toFixed(1)}%</div>
-                  <div class="small text-muted">Over 3.5</div>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="text-center p-2 bg-light rounded">
-                  <div class="fw-bold">${(prediction.gg * 100).toFixed(1)}%</div>
-                  <div class="small text-muted">GG</div>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="text-center p-2 bg-light rounded">
-                  <div class="fw-bold">${prediction.avgGoals.toFixed(2)}</div>
-                  <div class="small text-muted">Avg Goals</div>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="text-center p-2 bg-light rounded">
-                  <div class="fw-bold">${confidencePercent}%</div>
-                  <div class="small text-muted">Confidence</div>
-                </div>
-              </div>
-            </div>
-          `;
-          
-          // Confidence indicator
-          let confidenceIcon, confidenceClass;
-          if (confidencePercent > 30) {
-            confidenceIcon = 'bi-check-circle-fill';
-            confidenceClass = 'text-success';
-          } else if (confidencePercent > 15) {
-            confidenceIcon = 'bi-exclamation-triangle-fill';
-            confidenceClass = 'text-warning';
-          } else {
-            confidenceIcon = 'bi-exclamation-circle-fill';
-            confidenceClass = 'text-danger';
-          }
-          
-          document.getElementById("predictionResult").innerHTML = `
-            <div class="mb-3">
-              <h6 class="fw-bold mb-2">Predicted Outcome: 
-                <span class="badge ${prediction.mostLikelyOutcome === '1' ? 'bg-primary' : 
-                  prediction.mostLikelyOutcome === 'X' ? 'bg-warning text-dark' : 'bg-danger'}">
-                  ${prediction.mostLikelyOutcome === '1' ? 'Home Win' : 
-                   prediction.mostLikelyOutcome === 'X' ? 'Draw' : 'Away Win'}
-                </span>
-              </h6>
-              ${outcomeItems}
-              <div class="alert ${confidenceClass} mt-2 py-2">
-                <i class="bi ${confidenceIcon} me-1"></i>
-                <strong>${confidencePercent > 30 ? 'High' : confidencePercent > 15 ? 'Moderate' : 'Low'} confidence</strong> in this prediction
-              </div>
-            </div>
-            ${goalPredictions}
-          `;
-          
-          // Update accuracy stats
-          accuracyStats.totalPredictions++;
-          localStorage.setItem('accuracyStats', JSON.stringify(accuracyStats));
-          
-        } catch (error) {
-          console.error("Prediction error:", error);
-          document.getElementById("predictionResult").innerHTML = `
-            <div class="alert alert-danger">
-              <i class="bi bi-exclamation-triangle"></i> Error generating prediction. Please try again.
-            </div>
-          `;
-        } finally {
-          document.getElementById('loadingSpinner').style.display = 'none';
+        if (isNaN(odds1) || isNaN(oddsX) || isNaN(odds2) || 
+            odds1 < 1.01 || oddsX < 1.01 || odds2 < 1.01) {
+          document.getElementById("predictionResult").textContent = "Please enter valid odds (≥1.01).";
+          return;
         }
-      }, 500);
+
+        showLoading('predictBtn', 'predictSpinner', 'predictText');
+        
+        // Store last prediction for similarity calculation
+        lastPrediction = { odds1, oddsX, odds2 };
+
+        const distances = allMatches.map(match => {
+          const distance = weightedDistance(odds1, oddsX, odds2, match);
+          const resultParts = match.result.split(" - ");
+          const homeGoals = parseInt(resultParts[0]);
+          const awayGoals = parseInt(resultParts[1]);
+          const goals = homeGoals + awayGoals;
+
+          return {
+            match: match.match,
+            outcome: match.outcome,
+            goals,
+            homeGoals,
+            awayGoals,
+            distance,
+            odds1: match.odds1,
+            oddsX: match.oddsX,
+            odds2: match.odds2
+          };
+        });
+
+        let closest;
+        if (matchCountValue === "all") {
+          closest = distances;
+        } else {
+          const count = parseInt(matchCountValue);
+          closest = distances.sort((a, b) => a.distance - b.distance).slice(0, count);
+        }
+
+        let count1 = 0, countX = 0, count2 = 0;
+        let over15 = 0, over25 = 0, over35 = 0;
+        let gg = 0, ng = 0;
+        let totalGoals = 0;
+
+        closest.forEach(match => {
+          if (match.outcome === "1") count1++;
+          else if (match.outcome === "X") countX++;
+          else if (match.outcome === "2") count2++;
+
+          if (match.goals > 1.5) over15++;
+          if (match.goals > 2.5) over25++;
+          if (match.goals > 3.5) over35++;
+
+          if (match.homeGoals >= 1 && match.awayGoals >= 1) gg++;
+          else ng++;
+
+          totalGoals += match.goals;
+        });
+
+        const total = closest.length;
+        if (total === 0) {
+          document.getElementById("predictionResult").textContent = "No matches found with similar odds.";
+          return;
+        }
+
+        const outcome = [["1", count1], ["X", countX], ["2", count2]].sort((a, b) => b[1] - a[1])[0];
+        const avgGoals = (totalGoals / total).toFixed(2);
+
+        // Update progress bars
+        document.getElementById("homeProgress").style.width = `${count1 / total * 100}%`;
+        document.getElementById("drawProgress").style.width = `${countX / total * 100}%`;
+        document.getElementById("awayProgress").style.width = `${count2 / total * 100}%`;
+
+        document.getElementById("predictionResult").innerHTML = `
+          <strong>Predicted Outcome:</strong> ${outcome[0]} (${outcome[1]} of ${total} matches)<br/>
+          <strong>Home:</strong> ${(count1 / total * 100).toFixed(1)}% | 
+          <strong>Draw:</strong> ${(countX / total * 100).toFixed(1)}% | 
+          <strong>Away:</strong> ${(count2 / total * 100).toFixed(1)}%<br/>
+          <strong>Over 1.5:</strong> ${(over15 / total * 100).toFixed(1)}% | 
+          <strong>Over 2.5:</strong> ${(over25 / total * 100).toFixed(1)}% | 
+          <strong>Over 3.5:</strong> ${(over35 / total * 100).toFixed(1)}%<br/>
+          <strong>GG (Both Teams Score):</strong> ${(gg / total * 100).toFixed(1)}% | 
+          <strong>NG:</strong> ${(ng / total * 100).toFixed(1)}%<br/>
+          <strong>Average Goals:</strong> ${avgGoals}
+        `;
+
+        // Reload matches to show similarity badges
+        await loadMatches();
+      } catch (error) {
+        console.error("Prediction error:", error);
+        document.getElementById("predictionResult").textContent = "An error occurred during prediction. Please try again.";
+      } finally {
+        hideLoading('predictBtn', 'predictSpinner', 'predictText');
+      }
     };
+
+
 
     // Initial load
     loadMatches();
-    // Refresh data every 2 minutes
-    setInterval(loadMatches, 120000);
   </script>
 </body>
 </html>
