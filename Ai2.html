@@ -739,7 +739,7 @@ input:checked + .slider:before {
             try {
                 const querySnapshot = await db.collection("matches")
                     .orderBy("timestamp", "desc")
-                    .limit(4000)
+                    .limit(1500)
                     .get();
                 
                 historicalMatches = [];
