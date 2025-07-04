@@ -9,8 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <style>
-          /* ... existing styles ... */
-                :root {
+        :root {
             --primary: #0f172a;
             --secondary: #1e293b;
             --accent: #3b82f6;
@@ -615,231 +614,156 @@
             background: rgba(239, 68, 68, 0.2);
             color: var(--danger);
         }
+        
         #toggleSettings {
-  margin-top: 20px;
-  display: inline-block;
-  background: #007bff;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-#toggleSettings:hover {
-  background: #0056b3;
-}
-
-.settings-panel {
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  padding: 15px;
-  background: #f9f9f9;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  display: none;
-}
-
-.threshold-group {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 10px 0;
-}
-
-.threshold-label {
-  flex: 1;
-  font-size: 0.9rem;
-}
-
-.threshold-controls {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.threshold-value {
-  width: 40px;
-  text-align: center;
-  font-weight: bold;
-}
-
-.threshold-btn {
-  padding: 3px 8px;
-  font-size: 0.9rem;
-  border: 1px solid #ccc;
-  background: #eee;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.threshold-btn:hover {
-  background: #ddd;
-}
-
-.info-note {
-  font-size: 0.85rem;
-  color: #444;
-  margin-top: 10px;
-}
-/* Settings panel background & layout */
-.settings-panel {
-  background-color: #1f1f2e;
-  padding: 20px;
-  border-radius: 10px;
-  color: #f0f0f0;
-  box-shadow: 0 0 8px rgba(0,0,0,0.5);
-}
-
-/* Labels */
-.threshold-label {
-  display: block;
-  font-size: 0.95rem;
-  margin-bottom: 6px;
-  color: #b0d9ff;
-}
-
-/* Buttons & values */
-.threshold-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-.threshold-value {
-  font-weight: bold;
-  font-size: 1.1rem;
-  background: #333;
-  padding: 5px 12px;
-  border-radius: 6px;
-  min-width: 40px;
-  text-align: center;
-  color: #00e5ff;
-  box-shadow: inset 0 0 3px #000;
-}
-.threshold-btn {
-  background-color: #333;
-  color: #00e5ff;
-  border: 1px solid #00e5ff;
-  border-radius: 4px;
-  padding: 4px 10px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.threshold-btn:hover {
-  background-color: #005a87;
-}
-
-/* Info note */
-.info-note {
-  font-size: 0.85rem;
-  color: #ccc;
-  background: #292939;
-  padding: 10px;
-  border-left: 4px solid #00caff;
-  margin-top: 10px;
-  border-radius: 6px;
-}
-
-/* Warning note */
-.warning-note {
-  font-size: 0.85rem;
-  color: #ffc107;
-  background: #402c00;
-  padding: 10px;
-  border-left: 4px solid #ffa500;
-  margin-top: 10px;
-  border-radius: 6px;
-}
-
-/* Preset display (if using) */
-.preset-status {
-  font-size: 0.85rem;
-  background: #2b3d4f;
-  padding: 6px 10px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  text-align: center;
-  font-weight: 500;
-  color: #90caf9;
-}
-.preset-status strong {
-  color: #29b6f6;
-}
-.preset-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 15px;
-}
-.preset-buttons button {
-  padding: 8px 14px;
-  font-size: 0.95rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background: var(--btn-bg, #333);
-  color: #fff;
-  transition: 0.3s;
-}
-.preset-buttons button:hover {
-  background: #444;
-}
-.preset-buttons button.active {
-  background-color: #28a745;
-  border-color: #28a745;
-  color: #fff;
-}
-.profile-popup {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #222;
-  color: #fff;
-  padding: 14px 18px;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  font-size: 14px;
-  line-height: 1.4;
-  z-index: 9999;
-  transition: opacity 0.4s ease;
-  max-width: 300px;
-}
-
-.profile-popup .popup-content i {
-  margin-right: 6px;
-  color: #ffc107;
-}
-
-.profile-popup.hidden {
-  display: none;.profile-btn {
-  background-color: #222;
-  color: #ccc;
-  border: 1px solid #444;
-  padding: 8px 14px;
-  margin: 4px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.preset-buttons button {
-  background-color: #222;
-  color: #ccc;
-  border: 1px solid #444;
-  padding: 8px 14px;
-  margin: 4px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.preset-buttons button.active {
-  background-color: #28a745; /* Green */
-  color: #rgb(194,14,47);
-  border-color: #28a745;
-}
-  
-        </style>
+            margin-top: 20px;
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        
+        #toggleSettings:hover {
+            background: var(--accent-dark);
+        }
+        
+        .settings-panel {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            background: var(--secondary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .threshold-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .threshold-label {
+            flex: 1;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+        
+        .threshold-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .threshold-value {
+            width: 50px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            background: rgba(255,255,255,0.07);
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+        
+        .threshold-btn {
+            padding: 5px 12px;
+            font-size: 1rem;
+            border: none;
+            background: var(--accent);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .threshold-btn:hover {
+            background: var(--accent-dark);
+        }
+        
+        .info-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 8px;
+            border-left: 3px solid var(--info);
+        }
+        
+        .warning-note {
+            font-size: 0.85rem;
+            color: var(--warning);
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid var(--warning);
+        }
+        
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .preset-buttons button {
+            flex: 1;
+            padding: 10px;
+            font-size: 0.95rem;
+            background: var(--secondary);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .preset-buttons button:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .preset-buttons button.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        .profile-popup {
+            position: fixed;
+            top: 80px;
+            right: 70px;
+            background: var(--secondary);
+            color: var(--text);
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            font-size: 14px;
+            line-height: 1.4;
+            z-index: 9999;
+            max-width: 300px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .profile-popup .popup-content i {
+            margin-right: 6px;
+            color: var(--warning);
+        }
+        
+        .auto-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .auto-toggle-label {
+            font-size: 0.95rem;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -859,6 +783,9 @@
                 <i class="fas fa-sun"></i>
             </div>
         </header>
+        <div style="font-size: 0.9rem; color: yellow;">
+  Subscription ends in <span id="timer">--:--:--</span>
+</div>
         
         <div class="stats">
             <div class="stat-card">
@@ -904,117 +831,100 @@
                 <button id="analyzeOddsBtn">
                     <i class="fas fa-chart-line"></i> Analyze Odds
                 </button>
+                
+                <div class="preset-buttons">
+                    <button onclick="applyPreset('safe')">✅ Safe</button>
+                    <button onclick="applyPreset('balanced')">⚖️ Balanced</button>
+                    <button onclick="applyPreset('aggressive')">🔥 Aggressive</button>
+                </div>
+                
+                <div class="auto-toggle-container">
+                    <label class="auto-toggle-label">
+                        <input type="checkbox" id="autoPredictToggle" checked>
+                        Auto Predict Mode
+                    </label>
+                </div>
+                
+                <div id="toggleSettings">⚙️ Prediction Settings</div>
+                
+                <div class="settings-panel" id="settingsPanel" style="display: none;">
+                    <div class="threshold-group">
+                        <span class="threshold-label">Home Win Threshold (%)</span>
+                        <div class="threshold-controls">
+                            <button class="threshold-btn" onclick="adjustThreshold('homeThreshold', -10)">−</button>
+                            <div id="homeThreshold" class="threshold-value">60</div>
+                            <button class="threshold-btn" onclick="adjustThreshold('homeThreshold', 10)">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="threshold-group">
+                        <span class="threshold-label">Draw Threshold (%)</span>
+                        <div class="threshold-controls">
+                            <button class="threshold-btn" onclick="adjustThreshold('drawThreshold', -10)">−</button>
+                            <div id="drawThreshold" class="threshold-value">40</div>
+                            <button class="threshold-btn" onclick="adjustThreshold('drawThreshold', 10)">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="threshold-group">
+                        <span class="threshold-label">Away Win Threshold (%)</span>
+                        <div class="threshold-controls">
+                            <button class="threshold-btn" onclick="adjustThreshold('awayThreshold', -10)">−</button>
+                            <div id="awayThreshold" class="threshold-value">60</div>
+                            <button class="threshold-btn" onclick="adjustThreshold('awayThreshold', 10)">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="threshold-group">
+                        <span class="threshold-label">BTTS (GG) Threshold (%)</span>
+                        <div class="threshold-controls">
+                            <button class="threshold-btn" onclick="adjustThreshold('bttsThreshold', -10)">−</button>
+                            <div id="bttsThreshold" class="threshold-value">70</div>
+                            <button class="threshold-btn" onclick="adjustThreshold('bttsThreshold', 10)">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="threshold-group">
+                        <span class="threshold-label">Over 2.5 Goals Threshold (%)</span>
+                        <div class="threshold-controls">
+                            <button class="threshold-btn" onclick="adjustThreshold('over25Threshold', -10)">−</button>
+                            <div id="over25Threshold" class="threshold-value">70</div>
+                            <button class="threshold-btn" onclick="adjustThreshold('over25Threshold', 10)">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="info-note">
+                        <i class="fas fa-info-circle"></i> Use the + / − buttons to fine-tune prediction sensitivity.
+                        Lower thresholds = more aggressive picks. Higher = more conservative.
+                    </div>
+                </div>
+                
+                <div class="warning-note">
+                    ⚠️ Thresholds are influenced by your market. Always check real market trends before tuning or placing bets to reduce risk.
+                </div>
+                
+                <div class="info-note" id="autoModeNote" style="display: none;">
+                    <i class="fas fa-robot"></i> Auto Predict Mode is ON — thresholds adjust based on market trends.
+                </div>
             </div>         
-<div class=\"preset-buttons\">
-
-<button onclick="applyPreset('safe')">✅ Safe</button>
-<button onclick="applyPreset('balanced')">⚖️ Balanced</button>
-<button onclick="applyPreset('aggressive')">🔥 Aggressive</button>
-  <label style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
-    <input type="checkbox" id="autoPredictToggle" checked>
-    <span style="font-size: 0.9rem;">Auto Predict</span>
-  </label>
-
-
-</div>
-
-  <div class="warning-note">
-  ⚠️ Thresholds are influenced by *your market*. Always check real market trends before tuning or placing bets to reduce risk.
-</div>
-</div>
-
-  
-<div class="info-note" id="autoModeNote" style="display: none;">
-  <i class="fas fa-robot"></i> Auto Predict Mode is ON — thresholds adjust based on market trends.
-</div>
-
-<div class="info-note">
-    <i class="fas fa-info-circle"></i> Use the + / − buttons to fine-tune prediction sensitivity.
-    Lower thresholds = more aggressive picks. Higher = more conservative.
-  </div>
-            <div id="toggleSettings">⚙️ Prediction Settings</div>
-
-<div class="settings-panel" id="settingsPanel">
-  <div class="threshold-group">
-    <span class="threshold-label">Home Win Threshold (%)</span>
-    <div class="threshold-controls">
-      <button class="threshold-btn" onclick="adjustThreshold('homeThreshold', -10)">−</button>
-      <div id="homeThreshold" class="threshold-value">60</div>
-      <button class="threshold-btn" onclick="adjustThreshold('homeThreshold', 10)">+</button>
-    </div>
-  </div>
-
-  <div class="threshold-group">
-    <span class="threshold-label">Draw Threshold (%)</span>
-    <div class="threshold-controls">
-      <button class="threshold-btn" onclick="adjustThreshold('drawThreshold', -10)">−</button>
-      <div id="drawThreshold" class="threshold-value">40</div>
-      <button class="threshold-btn" onclick="adjustThreshold('drawThreshold', 10)">+</button>
-    </div>
-  </div>
-
-  <div class="threshold-group">
-    <span class="threshold-label">Away Win Threshold (%)</span>
-    <div class="threshold-controls">
-      <button class="threshold-btn" onclick="adjustThreshold('awayThreshold', -10)">−</button>
-      <div id="awayThreshold" class="threshold-value">60</div>
-      <button class="threshold-btn" onclick="adjustThreshold('awayThreshold', 10)">+</button>
-    </div>
-  </div>
-
-  <div class="threshold-group">
-    <span class="threshold-label">BTTS (GG) Threshold (%)</span>
-    <div class="threshold-controls">
-      <button class="threshold-btn" onclick="adjustThreshold('bttsThreshold', -10)">−</button>
-      <div id="bttsThreshold" class="threshold-value">70</div>
-      <button class="threshold-btn" onclick="adjustThreshold('bttsThreshold', 10)">+</button>
-    </div>
-  </div>
-
-  <div class="threshold-group">
-    <span class="threshold-label">Over 2.5 Goals Threshold (%)</span>
-    <div class="threshold-controls">
-      <button class="threshold-btn" onclick="adjustThreshold('over25Threshold', -10)">−</button>
-      <div id="over25Threshold" class="threshold-value">70</div>
-      <button class="threshold-btn" onclick="adjustThreshold('over25Threshold', 10)">+</button>
-    </div>
-  </div>
-
-  <div class="info-note">
-    <i class="fas fa-info-circle"></i> Use the + / − buttons to fine-tune prediction sensitivity.
-    Lower thresholds = more aggressive picks. Higher = more conservative.
-  </div>
-</div>
-
-<div class="card prediction-card">
-  <h2 class="card-title"><i class="fas fa-lightbulb"></i> Prediction Result</h2>
-
-  <!-- Main prediction result from system -->
-  <div class="prediction-content" id="predictionResult">
-    <i class="fas fa-analytics" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 20px;"></i>
-    <h3 style="font-weight: 500; color: var(--text-secondary);">Odds Analysis</h3>
-    <p style="margin-top: 10px; color: var(--text-secondary);">Enter match odds and click "Analyze Odds" to get prediction insights</p>
-  </div>
-
-  <!-- Historical trend stats -->
-  <div id="customStatsResult" style="margin-top: 20px; padding: 15px; background: #1e293b; border-radius: 10px; color: #fff;"></div>
-
-  <!-- System AI prediction (delayed) -->
-  <div id="systemPredictionBox" style="margin-top: 20px;"></div>
-
-  <!-- Suggested correct scores from trend data -->
-  <div id="csSuggestionBox" style="margin-top: 20px;"></div>
-</div>
-
-  <!-- ✅ Historical trend stats -->
-  <div id="customStatsResult" style="margin-top:20px; padding:15px; background:#1e293b; border-radius:10px; color:#fff;"></div>
-
-  <!-- ✅ System AI prediction (delayed) -->
-  <div id="systemPredictionBox" style="margin-top: 20px;"></div>
-
-  <!-- ✅ System suggested correct scores -->
-  <div id="csSuggestionBox" style="margin-top: 20px;"></div>
-</div>
+            
+            <div class="card prediction-card">
+                <h2 class="card-title"><i class="fas fa-lightbulb"></i> Prediction Result</h2>
+                
+                <div class="prediction-content" id="predictionResult">
+                    <i class="fas fa-analytics" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 20px;"></i>
+                    <h3 style="font-weight: 500; color: var(--text-secondary);">Odds Analysis</h3>
+                    <p style="margin-top: 10px; color: var(--text-secondary);">Enter match odds and click "Analyze Odds" to get prediction insights</p>
+                </div>
+                
+                <div id="customStatsResult" style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.1); border-radius: 10px;"></div>
+                
+                <div id="systemPredictionBox" style="margin-top: 20px;"></div>
+                
+                <div id="csSuggestionBox" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+        
         <div class="card">
             <h2 class="card-title"><i class="fas fa-history"></i> Recent Matches</h2>
             <div style="overflow-x: auto;">
@@ -1050,6 +960,10 @@
             <p>Odds Analyzer Pro v3.0 | Advanced Football Prediction System | Data provided by Firebase</p>
             <p>© 2025 Football Analytics Inc. | All predictions are based on historical data analysis</p>
         </div>
+    </div>
+    
+    <div id="profileReminder" class="profile-popup hidden">
+        <div class="popup-content"></div>
     </div>
     <script>
   const timerDisplay = document.getElementById("timer");
@@ -1303,7 +1217,7 @@
             });
         }
 
-        // Analyze odds - FIXED ILLEGAL RETURN ERROR
+        // Analyze odds
         async function analyzeOdds() {
             const homeOdds = parseFloat(homeOddsInput.value);
             const drawOdds = parseFloat(drawOddsInput.value);
@@ -1442,7 +1356,7 @@ if (!isAutoMode) {
 
 
 // Determine prediction using thresholds
-let prediction, confidence, riskLevel, trend;
+let prediction = "No clear prediction", confidence = 0, riskLevel = "risk-high", trend = "trend-down";
 
 if (homeRate >= homeThreshold) {
   prediction = "Home Win";
@@ -1555,33 +1469,32 @@ if (homeRate >= homeThreshold) {
                 `;
             }
             fetchOutcomeStats(homeOdds, drawOdds, awayOdds);
-            // ✅ System Prediction Based on Trends and Underdogsconsole.log("🧠 System prediction script running...");
+            // System Prediction Based on Trends and Underdogs
+            setTimeout(() => {
+                const systemBox = document.getElementById("systemPredictionBox");
+                if (!systemBox) return;
 
-setTimeout(() => {
-  const systemBox = document.getElementById("systemPredictionBox");
-  if (!systemBox) return;
+                let systemPick = prediction || "Unavailable";
+                let comment = "System agrees with main prediction.";
 
-  let systemPick = prediction || "Unavailable";
-  let comment = "System agrees with main prediction.";
+                if (homeOdds > 2.5 && homeRate > 0.55) {
+                    systemPick = "Home Win (Underdog)";
+                    comment = "Underdog trend detected: Home win looks valuable.";
+                } else if (awayOdds > 2.5 && awayRate > 0.55) {
+                    systemPick = "Away Win (Underdog)";
+                    comment = "Away team underdog shows strong past wins.";
+                } else if (drawRate > 0.3 && (homeRate + awayRate < 0.6)) {
+                    systemPick = "Draw";
+                    comment = "Market split suggests a likely draw.";
+                }
 
-  if (homeOdds > 2.5 && homeRate > 0.55) {
-    systemPick = "Home Win (Underdog)";
-    comment = "Underdog trend detected: Home win looks valuable.";
-  } else if (awayOdds > 2.5 && awayRate > 0.55) {
-    systemPick = "Away Win (Underdog)";
-    comment = "Away team underdog shows strong past wins.";
-  } else if (drawRate > 0.3 && (homeRate + awayRate < 0.6)) {
-    systemPick = "Draw";
-    comment = "Market split suggests a likely draw.";
-  }
-
-  systemBox.innerHTML = `
-    <div style="margin-top: 20px; padding: 15px; background: #0f172a; border-left: 5px solid #00caff; border-radius: 8px;">
-      <h4 style="color: #3b82f6;"><i class="fas fa-robot"></i> System Prediction (AI)</h4>
-      <p><strong>${systemPick}</strong> — ${comment}</p>
-    </div>
-  `;
-}, 3000);
+                systemBox.innerHTML = `
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.1); border-left: 5px solid var(--info); border-radius: 8px;">
+                        <h4 style="color: var(--accent);"><i class="fas fa-robot"></i> System Prediction (AI)</h4>
+                        <p><strong>${systemPick}</strong> — ${comment}</p>
+                    </div>
+                `;
+            }, 3000);
         }
 
         // Event Listeners
@@ -1614,328 +1527,234 @@ setTimeout(() => {
                 });
             });
         });
+        
         document.getElementById('toggleSettings').addEventListener('click', () => {
-  const panel = document.getElementById('settingsPanel');
-  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-});
+            const panel = document.getElementById('settingsPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
 
-function adjustThreshold(id, step) {
-  const el = document.getElementById(id);
-  let value = parseInt(el.textContent);
-  value = Math.min(100, Math.max(10, value + step));
-  el.textContent = value;
-}
+        function adjustThreshold(id, step) {
+            const el = document.getElementById(id);
+            let value = parseInt(el.textContent);
+            value = Math.min(100, Math.max(10, value + step));
+            el.textContent = value;
+        }
+        
+        const presets = {
+            safe: {
+                homeThreshold: 70,
+                drawThreshold: 50,
+                awayThreshold: 70,
+                bttsThreshold: 80,
+                over25Threshold: 80
+            },
+            balanced: {
+                homeThreshold: 50,
+                drawThreshold: 40,
+                awayThreshold: 50,
+                bttsThreshold: 50,
+                over25Threshold: 60
+            },
+            aggressive: {
+                homeThreshold: 40,
+                drawThreshold: 30,
+                awayThreshold: 50,
+                bttsThreshold: 60,
+                over25Threshold: 60
+            }
+        };
+
+        function applyPreset(mode) {
+            const preset = presets[mode];
+            if (!preset) return;
+
+            // Apply thresholds
+            for (let key in preset) {
+                const el = document.getElementById(key);
+                if (el) el.textContent = preset[key];
+            }
+
+            // Save to localStorage
+            localStorage.setItem('predictionPreset', mode);
+            localStorage.setItem('thresholdValues', JSON.stringify(preset));
+
+            // Update active button
+            const buttons = document.querySelectorAll('.preset-buttons button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            const buttonIndex = {
+                safe: 0,
+                balanced: 1,
+                aggressive: 2
+            };
+            buttons[buttonIndex[mode]].classList.add('active');
+
+            // Show profile reminder popup
+            showProfileReminder(capitalizeFirst(mode));
+        }
+
+        function showProfileReminder(profileName) {
+            const popup = document.getElementById('profileReminder');
+            popup.querySelector('.popup-content').innerHTML = `
+                <i class="fas fa-bullhorn"></i>
+                You're using the <strong>${profileName}</strong> prediction profile.
+                <br><small>Adjust before placing bets to minimize risk.</small>
+            `;
+            popup.classList.remove('hidden');
+
+            // Auto-hide after 4 seconds
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 4000);
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // AUTO PREDICT toggle
+        const autoToggle = document.getElementById('autoPredictToggle');
+
+        autoToggle.addEventListener('change', () => {
+            const isAuto = autoToggle.checked;
+            localStorage.setItem('autoPredict', isAuto);
+
+            const panel = document.getElementById('settingsPanel');
+            panel.style.display = isAuto ? 'none' : 'block';
+            document.getElementById('autoModeNote').style.display = isAuto ? 'block' : 'none';
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Create profile reminder popup if not exists
+            if (!document.getElementById('profileReminder')) {
+                const popup = document.createElement('div');
+                popup.id = 'profileReminder';
+                popup.className = 'profile-popup hidden';
+                popup.innerHTML = '<div class="popup-content"></div>';
+                document.body.appendChild(popup);
+            }
+            
+            const autoPref = localStorage.getItem('autoPredict');
+            if (autoPref === 'false') {
+                document.getElementById('autoPredictToggle').checked = false;
+                document.getElementById('settingsPanel').style.display = 'block';
+                document.getElementById('autoModeNote').style.display = 'none';
+            } else {
+                document.getElementById('autoPredictToggle').checked = true;
+                document.getElementById('settingsPanel').style.display = 'none';
+                document.getElementById('autoModeNote').style.display = 'block';
+            }
+
+            const saved = localStorage.getItem('thresholdValues');
+            const preset = localStorage.getItem('predictionPreset');
+
+            if (saved) {
+                const values = JSON.parse(saved);
+                for (let key in values) {
+                    const el = document.getElementById(key);
+                    if (el) el.textContent = values[key];
+                }
+            }
+
+            if (preset) {
+                const buttons = document.querySelectorAll('.preset-buttons button');
+                const buttonIndex = {
+                    safe: 0,
+                    balanced: 1,
+                    aggressive: 2
+                };
+                buttons[buttonIndex[preset]].classList.add('active');
+                showProfileReminder(capitalizeFirst(preset));
+            }
+        });
+        
+        async function fetchOutcomeStats(homeOdds, drawOdds, awayOdds, tolerance = 0.3) {
+            const resultBox = document.getElementById('customStatsResult');
+            resultBox.innerHTML = `<p><i class="fas fa-spinner fa-spin"></i> Loading stats...</p>`;
+
+            try {
+                const [homeSnap, drawSnap, awaySnap] = await Promise.all([
+                    db.collection("matches")
+                        .where("odds1", ">=", homeOdds - tolerance)
+                        .where("odds1", "<=", homeOdds + tolerance)
+                        .get(),
+                    db.collection("matches")
+                        .where("oddsX", ">=", drawOdds - tolerance)
+                        .where("oddsX", "<=", drawOdds + tolerance)
+                        .get(),
+                    db.collection("matches")
+                        .where("odds2", ">=", awayOdds - tolerance)
+                        .where("odds2", "<=", awayOdds + tolerance)
+                        .get()
+                ]);
+
+                const homeIDs = new Set(homeSnap.docs.map(doc => doc.id));
+                const drawIDs = new Set(drawSnap.docs.map(doc => doc.id));
+                const awayIDs = new Set(awaySnap.docs.map(doc => doc.id));
+
+                const intersectIDs = [...homeIDs].filter(id => drawIDs.has(id) && awayIDs.has(id));
+                const docsMap = new Map();
+
+                for (const doc of [...homeSnap.docs, ...drawSnap.docs, ...awaySnap.docs]) {
+                    if (intersectIDs.includes(doc.id)) {
+                        docsMap.set(doc.id, doc.data());
+                    }
+                }
+
+                const filteredMatches = Array.from(docsMap.values());
+
+                let homeWins = 0, draws = 0, awayWins = 0;
+                let bttsCount = 0, over25Count = 0;
+                const scoreMap = {};
+
+                filteredMatches.forEach(match => {
+                    const outcome = match.outcome || "";
+                    const [h, a] = (match.result || "-").split("-").map(Number);
+
+                    if (!isNaN(h) && !isNaN(a)) {
+                        if (h > 0 && a > 0) bttsCount++;
+                        if (h + a > 2.5) over25Count++;
+
+                        const score = `${h}-${a}`;
+                        scoreMap[score] = (scoreMap[score] || 0) + 1;
+                    }
+
+                    if (outcome === "1") homeWins++;
+                    else if (outcome === "X") draws++;
+                    else if (outcome === "2") awayWins++;
+                });
+
+                const topScores = Object.entries(scoreMap)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5)
+                    .map(([score, count]) => `<li>${score} — ${count} times</li>`)
+                    .join("");
+
+                const total = filteredMatches.length || 1;
+
+                resultBox.innerHTML = `
+                    <div style="margin-top: 10px;">
+                        <h4>📊 Stats from ${filteredMatches.length} similar matches</h4>
+                        <ul style="line-height: 1.6;">
+                            <li>🏠 Home Wins: <strong>${homeWins}</strong> (${((homeWins/total)*100).toFixed(1)}%)</li>
+                            <li>⚖️ Draws: <strong>${draws}</strong> (${((draws/total)*100).toFixed(1)}%)</li>
+                            <li>🛫 Away Wins: <strong>${awayWins}</strong> (${((awayWins/total)*100).toFixed(1)}%)</li>
+                            <li>🤝 GG (BTTS): <strong>${bttsCount}</strong> (${((bttsCount/total)*100).toFixed(1)}%)</li>
+                            <li>🎯 Over 2.5: <strong>${over25Count}</strong> (${((over25Count/total)*100).toFixed(1)}%)</li>
+                        </ul>
+
+                        ${topScores ? `
+                        <div style="margin-top: 10px;">
+                            <h5>🔢 Most Common Scores:</h5>
+                            <ul>${topScores}</ul>
+                        </div>` : ''}
+                    </div>
+                `;
+            } catch (err) {
+                console.error("Error fetching outcome stats:", err);
+                resultBox.innerHTML = `<p style="color:var(--danger);"><i class="fas fa-exclamation-triangle"></i> ${err.message}</p>`;
+            }
+        }
     </script>
-  
-<script>
-const presets = {
-  safe: {
-    homeThreshold: 70,
-    drawThreshold: 50,
-    awayThreshold: 70,
-    bttsThreshold: 80,
-    over25Threshold: 80
-  },
-  balanced: {
-    homeThreshold: 50,
-    drawThreshold: 40,
-    awayThreshold: 50,
-    bttsThreshold: 50,
-    over25Threshold: 60
-  },
-  aggressive: {
-    homeThreshold: 40,
-    drawThreshold: 30,
-    awayThreshold: 50,
-    bttsThreshold: 60,
-    over25Threshold: 60
-  }
-};
-
-function applyPreset(mode) {
-  const preset = presets[mode];
-  if (!preset) return;
-
-  // Apply thresholds
-  for (let key in preset) {
-    const el = document.getElementById(key);
-    if (el) el.textContent = preset[key];
-  }
-
-  // Save to localStorage
-  localStorage.setItem('predictionPreset', mode);
-  localStorage.setItem('thresholdValues', JSON.stringify(preset));
-
-  // Update active button
-  const buttons = document.querySelectorAll('.preset-buttons button');
-  buttons.forEach(btn => btn.classList.remove('active'));
-
-  const buttonIndex = {
-    safe: 0,
-    balanced: 1,
-    aggressive: 2
-  };
-  buttons[buttonIndex[mode]].classList.add('active');
-
-  // Show profile reminder popup
-  showProfileReminder(capitalizeFirst(mode));
-}
-
-function showProfileReminder(profileName) {
-  const popup = document.getElementById('profileReminder');
-  if (!popup) return;
-
-  popup.querySelector('.popup-content').innerHTML = `
-    <i class="fas fa-bullhorn"></i>
-    You're using the <strong>${profileName}</strong> prediction profile.
-    <br><small>This threshold is influenced by real market behavior. Adjust before placing your bet to avoid risk.</small>
-  `;
-  popup.classList.remove('hidden');
-
-  // Auto-hide after 4 seconds
-  setTimeout(() => {
-    popup.classList.add('hidden');
-  }, 4000);
-}
-
-function capitalizeFirst(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-
-// AUTO PREDICT toggle
-const autoToggle = document.getElementById('autoPredictToggle');
-
-autoToggle.addEventListener('change', () => {
-  const isAuto = autoToggle.checked;
-  localStorage.setItem('autoPredict', isAuto);
-
-  const panel = document.getElementById('settingsPanel');
-  panel.style.display = isAuto ? 'none' : 'block';
-  document.getElementById('autoModeNote').style.display = isAuto ? 'block' : 'none';
-});
-
-
-window.addEventListener('DOMContentLoaded', () => {
-  
-  const autoPref = localStorage.getItem('autoPredict');
-  if (autoPref === 'false') {
-    document.getElementById('autoPredictToggle').checked = false;
-    document.getElementById('settingsPanel').style.display = 'block';
-    document.getElementById('autoModeNote').style.display = 'none';
-  } else {
-    document.getElementById('autoPredictToggle').checked = true;
-    document.getElementById('settingsPanel').style.display = 'none';
-    document.getElementById('autoModeNote').style.display = 'block';
-  }
-
-  const saved = localStorage.getItem('thresholdValues');
-
-  const preset = localStorage.getItem('predictionPreset');
-
-  if (saved) {
-    const values = JSON.parse(saved);
-    for (let key in values) {
-      const el = document.getElementById(key);
-      if (el) el.textContent = values[key];
-    }
-  }
-
-  if (preset) {
-    const buttons = document.querySelectorAll('.preset-buttons button');
-    const buttonIndex = {
-      safe: 0,
-      balanced: 1,
-      aggressive: 2
-    };
-    buttons[buttonIndex[preset]].classList.add('active');
-    showProfileReminder(capitalizeFirst(preset));
-  }
-});
-</script>
-<script>
-async function fetchOutcomeStats(homeOdds, drawOdds, awayOdds, tolerance = 0.3) {
-  const db = firebase.firestore();
-
-  // Show loading
-  const resultBox = document.getElementById('customStatsResult');
-  resultBox.innerHTML = `<p><i class="fas fa-spinner fa-spin"></i> Loading stats...</p>`;
-
-  try {
-    const [homeSnap, drawSnap, awaySnap] = await Promise.all([
-      db.collection("matches")
-        .where("odds1", ">=", homeOdds - tolerance)
-        .where("odds1", "<=", homeOdds + tolerance)
-        .get(),
-      db.collection("matches")
-        .where("oddsX", ">=", drawOdds - tolerance)
-        .where("oddsX", "<=", drawOdds + tolerance)
-        .get(),
-      db.collection("matches")
-        .where("odds2", ">=", awayOdds - tolerance)
-        .where("odds2", "<=", awayOdds + tolerance)
-        .get()
-    ]);
-
-    const homeIDs = new Set(homeSnap.docs.map(doc => doc.id));
-    const drawIDs = new Set(drawSnap.docs.map(doc => doc.id));
-    const awayIDs = new Set(awaySnap.docs.map(doc => doc.id));
-
-    const intersectIDs = [...homeIDs].filter(id => drawIDs.has(id) && awayIDs.has(id));
-    const docsMap = new Map();
-
-    for (const doc of [...homeSnap.docs, ...drawSnap.docs, ...awaySnap.docs]) {
-      if (intersectIDs.includes(doc.id)) {
-        docsMap.set(doc.id, doc.data());
-      }
-    }
-
-    const filteredMatches = Array.from(docsMap.values());
-
-    let homeWins = 0, draws = 0, awayWins = 0;
-    let bttsCount = 0, over25Count = 0;
-    const scoreMap = {};
-
-    filteredMatches.forEach(match => {
-      const outcome = match.outcome || "";
-      const [h, a] = (match.result || "-").split("-").map(Number);
-
-      if (!isNaN(h) && !isNaN(a)) {
-        if (h > 0 && a > 0) bttsCount++;
-        if (h + a > 2.5) over25Count++;
-
-        const score = `${h}-${a}`;
-        scoreMap[score] = (scoreMap[score] || 0) + 1;
-      }
-
-      if (outcome === "1") homeWins++;
-      else if (outcome === "X") draws++;
-      else if (outcome === "2") awayWins++;
-    });
-
-    const topScores = Object.entries(scoreMap)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([score, count]) => `<li>${score} — ${count} times</li>`)
-      .join("");
-
-    const total = filteredMatches.length || 1;
-
-    resultBox.innerHTML = `
-      <div style="margin-top: 10px;">
-        <h4>📊 Stats from ${filteredMatches.length} similar matches</h4>
-        <ul style="line-height: 1.6;">
-          <li>🏠 Home Wins: <strong>${homeWins}</strong> (${((homeWins/total)*100).toFixed(1)}%)</li>
-          <li>⚖️ Draws: <strong>${draws}</strong> (${((draws/total)*100).toFixed(1)}%)</li>
-          <li>🛫 Away Wins: <strong>${awayWins}</strong> (${((awayWins/total)*100).toFixed(1)}%)</li>
-          <li>🤝 GG (BTTS): <strong>${bttsCount}</strong> (${((bttsCount/total)*100).toFixed(1)}%)</li>
-          <li>🎯 Over 2.5: <strong>${over25Count}</strong> (${((over25Count/total)*100).toFixed(1)}%)</li>
-        </ul>
-
-        ${topScores ? `
-        <div style="margin-top: 10px;">
-          <h5>🔢 Common Scores:</h5>
-          <ul>${topScores}</ul>
-        </div>` : ''}
-      </div>
-    `;
-  } catch (err) {
-    console.error("Error fetching outcome stats:", err);
-    resultBox.innerHTML = `<p style="color:red;"><i class="fas fa-exclamation-triangle"></i> ${err.message}</p>`;
-  }
-}
-</script>
-<script>
-// ✅ FUNCTION TO FETCH OUTCOME STATS FROM SIMILAR ODDS
-async function fetchOutcomeStats(homeOdds, drawOdds, awayOdds, tolerance = 0.3) {
-  const db = firebase.firestore();
-
-  const resultBox = document.getElementById('customStatsResult');
-  resultBox.innerHTML = `<p><i class="fas fa-spinner fa-spin"></i> Loading stats...</p>`;
-
-  try {
-    const [homeSnap, drawSnap, awaySnap] = await Promise.all([
-      db.collection("matches")
-        .where("odds1", ">=", homeOdds - tolerance)
-        .where("odds1", "<=", homeOdds + tolerance)
-        .get(),
-      db.collection("matches")
-        .where("oddsX", ">=", drawOdds - tolerance)
-        .where("oddsX", "<=", drawOdds + tolerance)
-        .get(),
-      db.collection("matches")
-        .where("odds2", ">=", awayOdds - tolerance)
-        .where("odds2", "<=", awayOdds + tolerance)
-        .get()
-    ]);
-
-    const homeIDs = new Set(homeSnap.docs.map(doc => doc.id));
-    const drawIDs = new Set(drawSnap.docs.map(doc => doc.id));
-    const awayIDs = new Set(awaySnap.docs.map(doc => doc.id));
-
-    const intersectIDs = [...homeIDs].filter(id => drawIDs.has(id) && awayIDs.has(id));
-    const docsMap = new Map();
-
-    for (const doc of [...homeSnap.docs, ...drawSnap.docs, ...awaySnap.docs]) {
-      if (intersectIDs.includes(doc.id)) {
-        docsMap.set(doc.id, doc.data());
-      }
-    }
-
-    const filteredMatches = Array.from(docsMap.values());
-
-    let homeWins = 0, draws = 0, awayWins = 0;
-    let bttsCount = 0, over25Count = 0;
-    const scoreMap = {};
-
-    filteredMatches.forEach(match => {
-      const outcome = match.outcome || "";
-      const [h, a] = (match.result || "-").split("-").map(Number);
-
-      if (!isNaN(h) && !isNaN(a)) {
-        if (h > 0 && a > 0) bttsCount++;
-        if (h + a > 2.5) over25Count++;
-
-        const score = `${h}-${a}`;
-        scoreMap[score] = (scoreMap[score] || 0) + 1;
-      }
-
-      if (outcome === "1") homeWins++;
-      else if (outcome === "X") draws++;
-      else if (outcome === "2") awayWins++;
-    });
-
-    const topScores = Object.entries(scoreMap)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([score, count]) => `<li>${score} — ${count} times</li>`)
-      .join("");
-
-    const total = filteredMatches.length || 1;
-
-    resultBox.innerHTML = `
-      <div style="margin-top: 10px;">
-        <h4>📊 Stats from ${filteredMatches.length} similar matches</h4>
-        <ul style="line-height: 1.6;">
-          <li>🏠 Home Wins: <strong>${homeWins}</strong> (${((homeWins/total)*100).toFixed(1)}%)</li>
-          <li>⚖️ Draws: <strong>${draws}</strong> (${((draws/total)*100).toFixed(1)}%)</li>
-          <li>🛫 Away Wins: <strong>${awayWins}</strong> (${((awayWins/total)*100).toFixed(1)}%)</li>
-          <li>🤝 GG (BTTS): <strong>${bttsCount}</strong> (${((bttsCount/total)*100).toFixed(1)}%)</li>
-          <li>🎯 Over 2.5: <strong>${over25Count}</strong> (${((over25Count/total)*100).toFixed(1)}%)</li>
-        </ul>
-
-        ${topScores ? `
-        <div style="margin-top: 10px;">
-          <h5>🔢 Most Common Scores:</h5>
-          <ul>${topScores}</ul>
-        </div>` : ''}
-      </div>
-    `;
-  } catch (err) {
-    console.error("Error fetching outcome stats:", err);
-    resultBox.innerHTML = `<p style="color:red;"><i class="fas fa-exclamation-triangle"></i> ${err.message}</p>`;
-  }
-}
-</script>
 </body>
 </html>
