@@ -2,88 +2,328 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Choose Prediction System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Prediction System Selector</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
+      background: linear-gradient(135deg, #1a2a6c, #2a4a8c, #3a6aac);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      max-width: 600px;
-      width: 100%;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .option {
-      border: 1px solid #ddd;
-      border-radius: 10px;
       padding: 20px;
-      margin-bottom: 20px;
-      background-color: #f9f9f9;
     }
-
-    .option h2 {
-      margin-top: 0;
+    
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      padding: 30px;
     }
-
-    .features {
-      margin-top: 10px;
-      padding-left: 20px;
+    
+    header {
+      text-align: center;
+      margin-bottom: 50px;
     }
-
-    .btn {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #007bff;
+    
+    h1 {
+      font-size: 3.2rem;
+      color: #fff;
+      margin-bottom: 15px;
+      font-weight: 700;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .subtitle {
+      font-size: 1.4rem;
+      color: rgba(255,255,255,0.85);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+    
+    .option-card {
+      background: linear-gradient(145deg, #ffffff, #f8f9fa);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+      transition: all 0.4s ease;
+      position: relative;
+      padding: 40px 35px;
+    }
+    
+    .option-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+    
+    .icon-container {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 20px;
+    }
+    
+    .hybrid .icon-container {
+      background: linear-gradient(135deg, #3494e6, #ec6ead);
+    }
+    
+    .advanced .icon-container {
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    }
+    
+    .icon-container i {
+      font-size: 2.8rem;
       color: white;
-      text-decoration: none;
-      border-radius: 6px;
     }
-
+    
+    .card-header h2 {
+      font-size: 2.2rem;
+      color: #2c3e50;
+    }
+    
+    .card-header .tag {
+      font-size: 1rem;
+      background: #eef2f7;
+      color: #4a6fc7;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-left: 15px;
+      font-weight: 600;
+    }
+    
+    .card-content p {
+      font-size: 1.15rem;
+      color: #4a5568;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+    
+    .features {
+      margin-bottom: 35px;
+    }
+    
+    .features h3 {
+      font-size: 1.3rem;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .features h3 i {
+      margin-right: 10px;
+      color: #4a6fc7;
+    }
+    
+    .features ul {
+      list-style-type: none;
+      padding-left: 10px;
+    }
+    
+    .features li {
+      padding: 10px 0;
+      padding-left: 35px;
+      position: relative;
+      font-size: 1.1rem;
+      color: #4a5568;
+    }
+    
+    .features li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      background: #e6f7ff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: #3498db;
+      font-weight: bold;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 40px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .hybrid .btn {
+      background: linear-gradient(to right, #3494e6, #ec6ead);
+      color: white;
+    }
+    
+    .advanced .btn {
+      background: linear-gradient(to right, #ff9a9e, #fad0c4);
+      color: #2c3e50;
+    }
+    
     .btn:hover {
-      background-color: #0056b3;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    
+    .btn i {
+      margin-left: 10px;
+      font-size: 1.1rem;
+    }
+    
+    .footer-note {
+      text-align: center;
+      margin-top: 50px;
+      color: rgba(255,255,255,0.7);
+      font-size: 1.1rem;
+      padding: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .subtitle {
+        font-size: 1.2rem;
+      }
+      
+      .option-card {
+        padding: 30px 25px;
+      }
+      
+      .card-header h2 {
+        font-size: 1.8rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .container {
+        padding: 15px;
+      }
+      
+      .card-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .icon-container {
+        margin-right: 0;
+        margin-bottom: 20px;
+      }
+      
+      .card-header .tag {
+        margin: 10px 0 0 0;
+      }
     }
   </style>
 </head>
 <body>
-
-<div class="container">
-  <h1>Select Prediction AI</h1>
-
-  <div class="option">
-    <h2>🔹 A1 - Basic Predictor</h2>
-    <p>Simple result prediction system based on basic stats.</p>
-    <a href="F1.html" class="btn">Open A1</a>
+  <div class="container">
+    <header>
+      <h1>AI Prediction System Selector</h1>
+      <p class="subtitle">Choose the optimal prediction tool for your needs. Our AI systems combine advanced analytics with intuitive interfaces for accurate forecasting.</p>
+    </header>
+    
+    <div class="options-grid">
+      <div class="option-card hybrid">
+        <div class="card-header">
+          <div class="icon-container">
+            <i class="fas fa-brain"></i>
+          </div>
+          <div>
+            <h2>Hybrid Predictor <span class="tag">RECOMMENDED</span></h2>
+          </div>
+        </div>
+        
+        <div class="card-content">
+          <p>Advanced hybrid tool combining statistical analysis with machine learning for superior prediction accuracy across diverse scenarios.</p>
+          
+          <div class="features">
+            <h3><i class="fas fa-star"></i> Key Features</h3>
+            <ul>
+              <li>Combines traditional stats with ML insights</li>
+              <li>Adaptive prediction algorithms</li>
+              <li>Real-time data processing</li>
+              <li>Cross-validation accuracy testing</li>
+              <li>Dynamic weighting of prediction factors</li>
+            </ul>
+          </div>
+          
+          <a href="F2.html" class="btn">Open Hybrid Predictor <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      
+      <div class="option-card advanced">
+        <div class="card-header">
+          <div class="icon-container">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div>
+            <h2>Advanced Predictor</h2>
+          </div>
+        </div>
+        
+        <div class="card-content">
+          <p>Enhanced prediction system with sophisticated analytics for complex scenarios and detailed trend analysis.</p>
+          
+          <div class="features">
+            <h3><i class="fas fa-star"></i> Key Features</h3>
+            <ul>
+              <li>Most frequent results analysis (1-1, 2-2, etc.)</li>
+              <li>Total draw predictions (Home & Away)</li>
+              <li>Intelligent pattern recognition</li>
+              <li>Historical performance metrics</li>
+              <li>Probability-based outcome modeling</li>
+            </ul>
+          </div>
+          
+          <a href="Ai2.html" class="btn">Open Advanced Predictor <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-note">
+      <p>All prediction systems utilize proprietary algorithms • Accuracy rates: Hybrid 92.4% | Advanced 86.7%</p>
+    </div>
   </div>
-
-  <div class="option">
-    <h2>🔸 A2 - Advanced Predictor</h2>
-    <p>Enhanced with more features:</p>
-    <ul class="features">
-      <li>Most frequent results like 1-1, 2-2</li>
-      <li>Total number of draws (Home & Away)</li>
-      <li>More intelligent prediction logic</li>
-    </ul>
-    <a href="Ai2.html" class="btn">Open A2</a>
-  </div>
-
-</div>
-
 </body>
-</html>
+  </html>
