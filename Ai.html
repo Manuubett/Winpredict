@@ -14,7 +14,7 @@
     }
     
     body {
-      background: linear-gradient(135deg, #1a2a6c, #2a4a8c, #3a6aac);
+      background: linear-gradient(135deg, #1a1f2d, #2d3a5c);
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -23,7 +23,7 @@
     }
     
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       width: 100%;
       padding: 30px;
     }
@@ -44,14 +44,14 @@
     .subtitle {
       font-size: 1.4rem;
       color: rgba(255,255,255,0.85);
-      max-width: 700px;
+      max-width: 800px;
       margin: 0 auto;
       line-height: 1.6;
     }
     
     .options-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
       gap: 30px;
       margin-top: 30px;
     }
@@ -64,6 +64,9 @@
       transition: all 0.4s ease;
       position: relative;
       padding: 40px 35px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
     
     .option-card:hover {
@@ -87,6 +90,10 @@
       margin-right: 20px;
     }
     
+    .f1 .icon-container {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+    
     .hybrid .icon-container {
       background: linear-gradient(135deg, #3494e6, #ec6ead);
     }
@@ -108,11 +115,29 @@
     .card-header .tag {
       font-size: 1rem;
       background: #eef2f7;
-      color: #4a6fc7;
       padding: 4px 12px;
       border-radius: 20px;
       margin-left: 15px;
       font-weight: 600;
+    }
+    
+    .f1 .tag {
+      color: #4facfe;
+      background: #e6f7ff;
+    }
+    
+    .hybrid .tag {
+      color: #ec6ead;
+      background: #fceef5;
+    }
+    
+    .advanced .tag {
+      color: #ff9a9e;
+      background: #fff0f1;
+    }
+    
+    .card-content {
+      flex: 1;
     }
     
     .card-content p {
@@ -136,7 +161,18 @@
     
     .features h3 i {
       margin-right: 10px;
-      color: #4a6fc7;
+    }
+    
+    .f1 .features h3 i {
+      color: #4facfe;
+    }
+    
+    .hybrid .features h3 i {
+      color: #3494e6;
+    }
+    
+    .advanced .features h3 i {
+      color: #ff9a9e;
     }
     
     .features ul {
@@ -152,7 +188,7 @@
       color: #4a5568;
     }
     
-    .features li:before {
+    .f1 .features li:before {
       content: "✓";
       position: absolute;
       left: 0;
@@ -166,8 +202,106 @@
       align-items: center;
       justify-content: center;
       font-size: 0.9rem;
-      color: #3498db;
+      color: #4facfe;
       font-weight: bold;
+    }
+    
+    .hybrid .features li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      background: #e6f7ff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: #3494e6;
+      font-weight: bold;
+    }
+    
+    .advanced .features li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      background: #fff0f1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: #ff9a9e;
+      font-weight: bold;
+    }
+    
+    .odds-scale {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      border-left: 4px solid #4facfe;
+    }
+    
+    .odds-scale h4 {
+      font-size: 1.2rem;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .odds-scale h4 i {
+      margin-right: 10px;
+      color: #4facfe;
+    }
+    
+    .scale-bar {
+      height: 30px;
+      background: #e9ecef;
+      border-radius: 15px;
+      overflow: hidden;
+      position: relative;
+      margin: 15px 0;
+    }
+    
+    .scale-fill {
+      height: 100%;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      width: 85%;
+      border-radius: 15px;
+      position: relative;
+    }
+    
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #6c757d;
+      margin-top: 8px;
+    }
+    
+    .scale-markers {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .scale-marker {
+      width: 2px;
+      height: 100%;
+      background: rgba(255,255,255,0.5);
     }
     
     .btn {
@@ -183,6 +317,13 @@
       border: none;
       cursor: pointer;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      text-align: center;
+    }
+    
+    .f1 .btn {
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: white;
     }
     
     .hybrid .btn {
@@ -211,13 +352,44 @@
       color: rgba(255,255,255,0.7);
       font-size: 1.1rem;
       padding: 20px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .accuracy-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      margin-top: 15px;
+      font-size: 1.1rem;
+    }
+    
+    .f1 .accuracy-badge {
+      background: rgba(79, 172, 254, 0.15);
+      color: #4facfe;
+    }
+    
+    .hybrid .accuracy-badge {
+      background: rgba(52, 148, 230, 0.15);
+      color: #3494e6;
+    }
+    
+    .advanced .accuracy-badge {
+      background: rgba(255, 154, 158, 0.15);
+      color: #ff9a9e;
+    }
+    
+    @media (max-width: 1200px) {
+      .options-grid {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      }
     }
     
     @media (max-width: 768px) {
-      .options-grid {
-        grid-template-columns: 1fr;
-      }
-      
       h1 {
         font-size: 2.5rem;
       }
@@ -264,6 +436,61 @@
     </header>
     
     <div class="options-grid">
+      <!-- F1 Predictor Card -->
+      <div class="option-card f1">
+        <div class="card-header">
+          <div class="icon-container">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <div>
+            <h2>F1 Predictor <span class="tag">HIGH ODDS</span></h2>
+          </div>
+        </div>
+        
+        <div class="card-content">
+          <p>Specialized in identifying high-risk, high-reward opportunities with odds scores from 3+ to 7+. Perfect for strategic betting and maximizing returns.</p>
+          
+          <div class="odds-scale">
+            <h4><i class="fas fa-bolt"></i> Odds Score Scale</h4>
+            <div class="scale-bar">
+              <div class="scale-fill"></div>
+              <div class="scale-markers">
+                <div class="scale-marker"></div>
+                <div class="scale-marker"></div>
+                <div class="scale-marker"></div>
+                <div class="scale-marker"></div>
+                <div class="scale-marker"></div>
+              </div>
+            </div>
+            <div class="scale-labels">
+              <span>Low Risk</span>
+              <span>3+</span>
+              <span>5+</span>
+              <span>7+</span>
+              <span>High Reward</span>
+            </div>
+          </div>
+          
+          <div class="features">
+            <h3><i class="fas fa-star"></i> Key Features</h3>
+            <ul>
+              <li>Focus on highest odds scores (3+ to 7+)</li>
+              <li>Risk-reward analysis for strategic betting</li>
+              <li>Value betting identification</li>
+              <li>Odds movement tracking</li>
+              <li>Probability-based high-return selections</li>
+            </ul>
+          </div>
+          
+          <div class="accuracy-badge">
+            <i class="fas fa-trophy"></i> High Reward Potential: 7.2x
+          </div>
+          
+          <a href="Dom.html" class="btn">Open F1 Predictor <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      
+      <!-- Hybrid Predictor Card -->
       <div class="option-card hybrid">
         <div class="card-header">
           <div class="icon-container">
@@ -288,10 +515,15 @@
             </ul>
           </div>
           
+          <div class="accuracy-badge">
+            <i class="fas fa-trophy"></i> Accuracy Rate: 92.4%
+          </div>
+          
           <a href="F3.html" class="btn">Open Hybrid Predictor <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
       
+      <!-- Advanced Predictor Card -->
       <div class="option-card advanced">
         <div class="card-header">
           <div class="icon-container">
@@ -316,14 +548,18 @@
             </ul>
           </div>
           
+          <div class="accuracy-badge">
+            <i class="fas fa-trophy"></i> Accuracy Rate: 86.7%
+          </div>
+          
           <a href="Ai2.html" class="btn">Open Advanced Predictor <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
     </div>
     
     <div class="footer-note">
-      <p>All prediction systems utilize proprietary algorithms • Accuracy rates: Hybrid 92.4% | Advanced 86.7%</p>
+      <p>All prediction systems utilize proprietary algorithms • Real-time data processing • Updated every 15 minutes</p>
     </div>
   </div>
 </body>
-  </html>
+</html>
