@@ -1,469 +1,731 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced Soccer Predictor Pro</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bett Officials – Football Tips (Public)</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="realbet bot.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <style>
+    :root {
+      --bett-primary: #121826;
+      --bett-accent: #e6007e;
+      --bett-secondary: #1d293b;
+      --bett-light: #f0f4f8;
+      --bett-success: #4caf50;
+      --bett-danger: #f44336;
+      --bett-warning: #ff9800;
+      --bett-card-bg: #1d293b;
+      --bett-text: #f0f4f8;
+      --bett-text-secondary: #a0aec0;
+      --bett-bg: #0f172a;
+      --bett-header-bg: rgba(13, 18, 30, 0.95);
+      --bett-border: rgba(255,255,255,0.1);
+    }
+
+    .light-theme {
+      --bett-primary: #f8f9fa;
+      --bett-accent: #e6007e;
+      --bett-secondary: #e9ecef;
+      --bett-light: #121826;
+      --bett-success: #4caf50;
+      --bett-danger: #f44336;
+      --bett-warning: #ff9800;
+      --bett-card-bg: #ffffff;
+      --bett-text: #121826;
+      --bett-text-secondary: #4a5568;
+      --bett-bg: #f0f4f8;
+      --bett-header-bg: rgba(248, 249, 250, 0.95);
+      --bett-border: rgba(0,0,0,0.1);
+    }
+
+    body {
+      background: var(--bett-bg);
+      color: var(--bett-text);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 3rem;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    /* Header styles */
+    .header {
+      background: var(--bett-header-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--bett-border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: all 0.4s ease;
+    }
+    
+    .logo {
+      height: 45px;
+      margin-right: 15px;
+      filter: drop-shadow(0 0 5px rgba(230, 0, 126, 0.5));
+    }
+    
+    .header-title {
+      font-weight: 700;
+      font-size: 1.8rem;
+      background: linear-gradient(to right, #ffafcc, var(--bett-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    /* Profile section */
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-left: auto;
+    }
+    
+    .profile-pic {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--bett-accent);
+      box-shadow: 0 0 10px rgba(230, 0, 126, 0.3);
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+    }
+    
+    .theme-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, #2d3746, #1a2435);
+      transition: .4s;
+      border-radius: 34px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background: white;
+      transition: .4s;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ff9800;
+    }
+    
+    input:checked + .toggle-slider {
+      background: linear-gradient(90deg, #ffafcc, var(--bett-accent));
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(30px);
+      content: "\f185";
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      color: #ff9800;
+    }
+    
+    input:not(:checked) + .toggle-slider:before {
+      content: "\f186";
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      color: #4a5568;
+    }
+
+    /* Navigation styles */
+    .nav-container {
+      background: var(--bett-secondary);
+      border-radius: 12px;
+      padding: 0.5rem;
+      margin: 2rem auto;
+      max-width: 500px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.4s ease;
+    }
+    
+    .nav-pills .nav-link {
+      color: var(--bett-text-secondary);
+      font-weight: 500;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .nav-pills .nav-link.active {
+      color: white;
+      background: linear-gradient(90deg, var(--bett-accent), #ff6b9c);
+      box-shadow: 0 4px 15px rgba(230, 0, 126, 0.4);
+      transform: translateY(-2px);
+    }
+    
+    .nav-pills .nav-link:not(.active):hover {
+      color: var(--bett-text);
+      background: rgba(230, 0, 126, 0.1);
+    }
+
+    /* Card styles */
+    .prediction-card {
+      background: var(--bett-card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--bett-border);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    
+    .prediction-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+    
+    .card-header {
+      background: linear-gradient(90deg, #2d3746, #1a2435);
+      border-bottom: 1px solid var(--bett-border);
+      padding: 1.25rem 1.5rem;
+      font-weight: 600;
+      font-size: 1.25rem;
+      position: relative;
+      color: var(--bett-text);
+    }
+    
+    /* Stamp styles */
+    .bett-stamp {
+      position: absolute;
+      top: -15px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(90deg, var(--bett-accent), #ff6b9c);
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(230, 0, 126, 0.4);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      z-index: 2;
+      animation: pulse 2.5s infinite;
+      color: white;
+    }
+    
+    .bett-stamp i {
+      font-size: 1.2rem;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Table styles */
+    .prediction-table {
+      color: var(--bett-text);
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+    }
+    
+    .prediction-table thead th {
+      background: rgba(45, 55, 70, 0.5);
+      padding: 1rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--bett-border);
+    }
+    
+    .prediction-table tbody td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--bett-border);
+    }
+    
+    .prediction-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .prediction-table tbody tr {
+      transition: background 0.2s;
+    }
+    
+    .prediction-table tbody tr:hover {
+      background: rgba(230, 0, 126, 0.03);
+    }
+    
+    /* Status indicators */
+    .match-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .status-live {
+      background: rgba(244, 67, 54, 0.15);
+      color: var(--bett-danger);
+    }
+    
+    .status-upcoming {
+      background: rgba(255, 152, 0, 0.15);
+      color: var(--bett-warning);
+    }
+    
+    .status-completed {
+      background: rgba(76, 175, 80, 0.15);
+      color: var(--bett-success);
+    }
+    
+    /* Result indicators */
+    .result-indicator {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-weight: bold;
+    }
+    
+    .result-right {
+      background: rgba(76, 175, 80, 0.2);
+      color: var(--bett-success);
+      border: 2px solid var(--bett-success);
+    }
+    
+    .result-wrong {
+      background: rgba(244, 67, 54, 0.2);
+      color: var(--bett-danger);
+      border: 2px solid var(--bett-danger);
+    }
+    
+    .result-pending {
+      background: rgba(255, 152, 0, 0.2);
+      color: var(--bett-warning);
+      border: 2px solid var(--bett-warning);
+    }
+    
+    /* Odds styling */
+    .odds-value {
+      font-weight: 600;
+      color: var(--bett-accent);
+    }
+    
+    /* Loading spinner */
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .spinner {
+      width: 4rem;
+      height: 4rem;
+      border: 4px solid var(--bett-border);
+      border-top: 4px solid var(--bett-accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--bett-text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .prediction-table thead {
+        display: none;
+      }
+      
+      .prediction-table, .prediction-table tbody, 
+      .prediction-table tr, .prediction-table td {
+        display: block;
+        width: 100%;
+      }
+      
+      .prediction-table tr {
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        overflow: hidden;
+        background: rgba(230, 0, 126, 0.03);
+      }
+      
+      .prediction-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border-bottom: 1px solid var(--bett-border);
+      }
+      
+      .prediction-table td:last-child {
+        border-bottom: none;
+      }
+      
+      .prediction-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        width: calc(50% - 1rem);
+        text-align: left;
+        font-weight: 500;
+        color: var(--bett-text-secondary);
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .profile-section {
+        margin: 15px 0 0 0;
+        align-self: flex-end;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1><i class="fas fa-futbol"></i> Soccer Predictor Pro</h1>
-      <p>Advanced match predictions using W/D/L form and goal statistics with Poisson distribution</p>
-    </header>
-    
-    <div class="dashboard">
-      <div class="card">
-        <div class="card-header">
-          <h2><i class="fas fa-plus-circle"></i> Add Matches</h2>
-          <div>Matches: <span id="matchCount">1</span></div>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center header-content">
+        <div class="d-flex align-items-center">
+          <div class="bett-stamp">
+            <i class="fas fa-certificate"></i>
+            <span>Official</span>
+          </div>
+          <h1 class="header-title">Bett Officials</h1>
         </div>
         
-        <div class="card-body">
-          <div id="matches">
-            <!-- Matches will be added here -->
+        <div class="profile-section">
+          <div class="d-flex align-items-center me-3">
+            <i class="fas fa-sun me-2" style="color: var(--bett-warning);"></i>
+            <label class="theme-toggle">
+              <input type="checkbox" id="themeToggle">
+              <span class="toggle-slider"></span>
+            </label>
+            <i class="fas fa-moon ms-2" style="color: #4a5568;"></i>
           </div>
-          
-          <div class="actions">
-            <button class="btn btn-add" onclick="addMatch()">
-              <i class="fas fa-plus"></i> Add Match
-            </button>
-            <button class="btn btn-predict" onclick="predictResults()">
-              <i class="fas fa-calculator"></i> Predict Results
-            </button>
-          </div>
+          <img src="https://i.ibb.co/RTspjkdT/07732cbf7233.png" alt="Profile" class="profile-pic">
         </div>
       </div>
       
-      <div class="card">
-        <div class="card-header">
-          <h2><i class="fas fa-chart-line"></i> Prediction Summary</h2>
-          <div>Accuracy: 89%</div>
-        </div>
-        <div class="card-body">
-          <div class="prediction-card">
-            <div class="match-info">
-              <div class="teams-names">Team A vs Team B</div>
-              <div class="prediction-details">
-                <div class="detail-card">
-                  <div class="detail-title">Avg Goals Scored</div>
-                  <div class="detail-value">1.75</div>
-                </div>
-                <div class="detail-card">
-                  <div class="detail-title">Avg Goals Conceded</div>
-                  <div class="detail-value">1.25</div>
-                </div>
-              </div>
-              <div class="prediction-outcome">
-                <i class="fas fa-trophy"></i> Team A likely to win
-              </div>
-            </div>
-            <div class="probability">
-              <div class="score-prediction">2-1</div>
-              <div class="confidence">89% confidence</div>
-              <div class="win-probabilities">
-                <div class="prob-item">
-                  <div class="prob-title">Home Win</div>
-                  <div class="prob-value home-win">62%</div>
-                </div>
-                <div class="prob-item">
-                  <div class="prob-title">Draw</div>
-                  <div class="prob-value draw">23%</div>
-                </div>
-                <div class="prob-item">
-                  <div class="prob-title">Away Win</div>
-                  <div class="prob-value away-win">15%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <p class="text-center mb-0 mt-3" style="color: var(--bett-text-secondary);">
+        Professional Football Predictions
+      </p>
+    </div>
+  </header>
+
+  <div class="container py-4">
+    <!-- Navigation -->
+    <div class="nav-container">
+      <ul class="nav nav-pills justify-content-center" id="filterNav">
+        <li class="nav-item">
+          <button class="nav-link active" data-filter="live">
+            <i class="fas fa-bolt me-2"></i>Live Games
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-filter="previous">
+            <i class="fas fa-history me-2"></i>Previous Tips
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Live Container -->
+    <div id="liveContainer">
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Loading live predictions...</p>
       </div>
     </div>
-    
-    <div class="prediction-results">
-      <div class="results-header">
-        <h2><i class="fas fa-list"></i> All Predicted Matches</h2>
-        <div>Total Predictions: <span id="predictionCount">0</span></div>
-      </div>
-      
-      <div class="results-container" id="results">
-        <!-- Predicted matches will appear here -->
-        <div class="prediction-card">
-          <div class="match-info">
-            <div class="teams-names">Arsenal vs Chelsea</div>
-            <div class="prediction-details">
-              <div class="detail-card">
-                <div class="detail-title">Avg Goals Scored</div>
-                <div class="detail-value">1.82</div>
-              </div>
-              <div class="detail-card">
-                <div class="detail-title">Avg Goals Conceded</div>
-                <div class="detail-value">0.95</div>
-              </div>
-            </div>
-            <div class="prediction-outcome">
-              <i class="fas fa-trophy"></i> Arsenal likely to win
-            </div>
-          </div>
-          <div class="probability">
-            <div class="score-prediction">2-0</div>
-            <div class="confidence">87% confidence</div>
-            <div class="win-probabilities">
-              <div class="prob-item">
-                <div class="prob-title">Home Win</div>
-                <div class="prob-value home-win">72%</div>
-              </div>
-              <div class="prob-item">
-                <div class="prob-title">Draw</div>
-                <div class="prob-value draw">18%</div>
-              </div>
-              <div class="prob-item">
-                <div class="prob-title">Away Win</div>
-                <div class="prob-value away-win">10%</div>
-              </div>
-            </div>
-          </div>
-        </div>
+
+    <!-- Previous Container -->
+    <div id="previousContainer" class="d-none">
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Loading previous predictions...</p>
       </div>
     </div>
-    
-    <footer>
-      <p>© 2023 Soccer Predictor Pro | Advanced match forecasting using Poisson distribution</p>
-    </footer>
   </div>
-  <div id="countdown" class="text-end text-muted small mt-2 me-2"></div>
-  
-  <script>
-  const tool = "real"; // Update this for other tools
-  const countdownEl = document.getElementById("countdown");
-  const expiresAt = parseInt(localStorage.getItem(`accessExpiresAt_${tool}`), 10);
 
-  function redirectToVerification() {
-    alert("Your access has expired. Please verify again.");
-    window.location.href = "bay.html"; // or use your specific verification page
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Bett Officials. All rights reserved.</p>
+      <p>Professional football predictions and analysis</p>
+    </div>
+  </footer>
+
+<script>
+/* ---------- Firebase ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyAKtfTZ5j3KYvHynIV5vfNKpclbEmrU794",
+  authDomain: "community-caa4a.firebaseapp.com",
+  databaseURL: "https://community-caa4a-default-rtdb.firebaseio.com",
+  projectId: "community-caa4a",
+  storageBucket: "community-caa4a.appspot.com",
+  messagingSenderId: "51051822203",
+  appId: "1:51051822203:web:0cd43a4e1f23594f0a36de"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ---------- Theme Toggle ---------- */
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('theme');
+
+// Apply saved theme or default to dark
+if (savedTheme === 'light') {
+  document.body.classList.add('light-theme');
+  themeToggle.checked = true;
+} else {
+  document.body.classList.remove('light-theme');
+}
+
+// Toggle theme when switch is clicked
+themeToggle.addEventListener('change', function() {
+  if (this.checked) {
+    document.body.classList.add('light-theme');
+    localStorage.setItem('theme', 'light');
+  } else {
+    document.body.classList.remove('light-theme');
+    localStorage.setItem('theme', 'dark');
   }
+});
 
-  function updateCountdown() {
-    const now = Date.now();
-    const remaining = expiresAt - now;
+/* ---------- helpers ---------- */
+const tzOffset = 3; // Africa/Nairobi
+const todayKey = new Date().toISOString().split('T')[0];
 
-    if (isNaN(expiresAt) || remaining <= 0) {
-      redirectToVerification();
+function toDateToday(t) {
+  const [h, m] = t.split(':').map(Number);
+  const d = new Date(); 
+  d.setHours(h - tzOffset, m, 0, 0);
+  return d;
+}
+
+/* ------------ build single card ------------ */
+function buildTable(title, tips) {
+  const card = document.createElement('div');
+  card.className = 'prediction-card';
+  
+  card.innerHTML = `
+    <div class="card-header">
+      ${title}
+      <div class="bett-stamp">
+        <i class="fas fa-star"></i>
+        <span>Premium</span>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <table class="prediction-table">
+        <thead>
+          <tr>
+            <th>Match</th>
+            <th>Status</th>
+            <th>Tip</th>
+            <th>Time</th>
+            <th>Odds</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  `;
+  
+  const tbody = card.querySelector('tbody');
+  
+  // Sort tips: newest first
+  tips.sort((a, b) => {
+    const tA = a.time.padStart(5, '0');
+    const tB = b.time.padStart(5, '0');
+    return tB.localeCompare(tA);
+  });
+  
+  const now = new Date();
+  
+  tips.forEach(t => {
+    const tr = document.createElement('tr');
+    
+    // Determine status
+    const matchTime = t.time ? toDateToday(t.time) : null;
+    let status = '';
+    
+    if (matchTime) {
+      if (matchTime > now) {
+        status = '<span class="match-status status-upcoming"><i class="fas fa-clock"></i> Upcoming</span>';
+      } else if (matchTime <= now && matchTime >= new Date(now - 2*60*60*1000)) {
+        status = '<span class="match-status status-live"><i class="fas fa-play-circle"></i> Live</span>';
+      } else {
+        status = '<span class="match-status status-completed"><i class="fas fa-check-circle"></i> Completed</span>';
+      }
+    }
+    
+    // Determine result indicator
+    let result = '<span class="result-indicator result-pending">-</span>';
+    if (t.result === 'right') {
+      result = '<span class="result-indicator result-right"><i class="fas fa-check"></i></span>';
+    } else if (t.result === 'wrong') {
+      result = '<span class="result-indicator result-wrong"><i class="fas fa-times"></i></span>';
+    }
+    
+    tr.innerHTML = `
+      <td data-label="Match">${t.matchup || '-'}</td>
+      <td data-label="Status">${status}</td>
+      <td data-label="Tip">${t.prediction || '-'}</td>
+      <td data-label="Time">${t.time || '-'}</td>
+      <td data-label="Odds"><span class="odds-value">${t.odds || '-'}</span></td>
+      <td data-label="Result">${result}</td>
+    `;
+    
+    tbody.appendChild(tr);
+  });
+  
+  return card;
+}
+
+/* ------------ load + render ------------ */
+function loadToday() {
+  const liveDiv = document.getElementById('liveContainer');
+  const prevDiv = document.getElementById('previousContainer');
+  
+  // Show loading state
+  liveDiv.innerHTML = '<div class="loading-container"><div class="spinner"></div><p>Loading live predictions...</p></div>';
+  prevDiv.innerHTML = '<div class="loading-container"><div class="spinner"></div><p>Loading previous predictions...</p></div>';
+  
+  db.ref(`tips/${todayKey}`).once('value').then(snap => {
+    const data = snap.val(); 
+    if (!data) {
+      liveDiv.innerHTML = '<div class="text-center py-5"><i class="fas fa-exclamation-circle fa-2x mb-3"></i><p>No live predictions available</p></div>';
+      prevDiv.innerHTML = '<div class="text-center py-5"><i class="fas fa-exclamation-circle fa-2x mb-3"></i><p>No previous predictions available</p></div>';
       return;
     }
-
-    const mins = Math.floor(remaining / 60000);
-    const secs = Math.floor((remaining % 60000) / 1000);
-    countdownEl.textContent = `Access expires in ${mins}:${secs.toString().padStart(2, '0')}`;
-
-    setTimeout(updateCountdown, 1000);
-  }
-
-  updateCountdown();
-  </script>
-  <script>
-    let matchCount = 0;
-    const matchesContainer = document.getElementById('matches');
-    const matchCountElement = document.getElementById('matchCount');
-    const resultsContainer = document.getElementById('results');
-    const predictionCountElement = document.getElementById('predictionCount');
     
-    // Initialize with first match
-    document.addEventListener('DOMContentLoaded', () => {
-      addMatch();
+    liveDiv.innerHTML = '';
+    prevDiv.innerHTML = '';
+    
+    const now = new Date();
+    
+    // Gather tables with their latest kickoff for top-level sorting
+    const liveCards = [];
+    const prevCards = [];
+    
+    Object.entries(data).forEach(([title, { tips = [] }]) => {
+      const live = [];
+      const prev = [];
+      
+      tips.forEach(t => {
+        const graded = t.result === 'right' || t.result === 'wrong';
+        const past = t.time ? toDateToday(t.time) <= now : false;
+        
+        if (graded || past) {
+          prev.push(t);
+        } else {
+          live.push(t);
+        }
+      });
+      
+      if (live.length) {
+        const latest = live.reduce((mx, t) => mx > t.time ? mx : t.time, '00:00');
+        liveCards.push({ title, tips: live, latest });
+      }
+      
+      if (prev.length) {
+        const latest = prev.reduce((mx, t) => mx > t.time ? mx : t.time, '00:00');
+        prevCards.push({ title, tips: prev, latest });
+      }
     });
     
-    function addMatch() {
-      matchCount++;
-      matchCountElement.textContent = matchCount;
-      
-      const matchDiv = document.createElement('div');
-      matchDiv.className = 'match';
-      matchDiv.innerHTML = `
-        <div class="match-header">
-          <h3>Match ${matchCount}</h3>
-          <button class="remove-match" onclick="removeMatch(this)">×</button>
-        </div>
-        
-        <div class="teams">
-          <div class="team-input">
-            <input type="text" placeholder="Home Team" class="teamA" value="Team ${matchCount}A">
-          </div>
-          <div class="vs">VS</div>
-          <div class="team-input">
-            <input type="text" placeholder="Away Team" class="teamB" value="Team ${matchCount}B">
-          </div>
-        </div>
-        
-        <div class="form-section">
-          <div class="section-title">
-            <i class="fas fa-history"></i> Team Form (Last 5 Matches)
-          </div>
-          
-          <div class="form-input">
-            <div class="form-group">
-              <div class="section-title">Home Team Form</div>
-              <div class="wdl-box" id="formA-${matchCount}">
-                ${createWDLButtons(`A-${matchCount}`)}
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <div class="section-title">Away Team Form</div>
-              <div class="wdl-box" id="formB-${matchCount}">
-                ${createWDLButtons(`B-${matchCount}`)}
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-section">
-          <div class="section-title">
-            <i class="fas fa-futbol"></i> Goal History (Last 5 Matches)
-          </div>
-          
-          <div class="form-input">
-            <div class="goals-input">
-              <div class="section-title">Home Team Goals</div>
-              <input type="text" class="goal-input goalsA" 
-                     placeholder="e.g. 2-1,1-0,3-2" 
-                     oninput="formatGoals(this)"
-                     value="1-0,2-1,0-0,3-2,1-1">
-            </div>
-            
-            <div class="goals-input">
-              <div class="section-title">Away Team Goals</div>
-              <input type="text" class="goal-input goalsB" 
-                     placeholder="e.g. 1-0,0-2,2-2" 
-                     oninput="formatGoals(this)"
-                     value="0-1,1-2,2-0,1-3,0-0">
-            </div>
-          </div>
-        </div>
-      `;
-      
-      matchesContainer.appendChild(matchDiv);
+    // Newest table first
+    liveCards.sort((a, b) => b.latest.localeCompare(a.latest));
+    prevCards.sort((a, b) => b.latest.localeCompare(a.latest));
+    
+    if (liveCards.length) {
+      liveCards.forEach(c => liveDiv.appendChild(buildTable(c.title, c.tips)));
+    } else {
+      liveDiv.innerHTML = '<div class="text-center py-5"><i class="fas fa-futbol fa-2x mb-3"></i><p>No live predictions at the moment</p><p class="text-muted">Check back later for new tips</p></div>';
     }
     
-    function removeMatch(button) {
-      const matchDiv = button.closest('.match');
-      matchDiv.remove();
-      matchCount--;
-      matchCountElement.textContent = matchCount;
+    if (prevCards.length) {
+      prevCards.forEach(c => prevDiv.appendChild(buildTable(c.title, c.tips)));
+    } else {
+      prevDiv.innerHTML = '<div class="text-center py-5"><i class="fas fa-history fa-2x mb-3"></i><p>No previous predictions available</p></div>';
     }
-    
-    function createWDLButtons(idPrefix) {
-      return [0, 1, 2, 3, 4].map(i => `
-        <button class="wdl-btn ${i < 2 ? 'win' : i < 4 ? 'draw' : 'loss'} ${i < 2 ? 'active' : ''}" 
-                onclick="toggleWDL(this)" 
-                data-value="${i < 2 ? 'W' : i < 4 ? 'D' : 'L'}">
-          ${i < 2 ? 'W' : i < 4 ? 'D' : 'L'}
-        </button>
-      `).join('');
-    }
-    
-    function toggleWDL(button) {
-      const values = ['W', 'D', 'L'];
-      const current = button.dataset.value;
-      const currentIndex = values.indexOf(current);
-      const nextIndex = (currentIndex + 1) % values.length;
-      const nextValue = values[nextIndex];
-      
-      button.dataset.value = nextValue;
-      button.textContent = nextValue;
-      
-      // Update button classes
-      button.classList.remove('win', 'draw', 'loss', 'active');
-      if (nextValue === 'W') {
-        button.classList.add('win', 'active');
-      } else if (nextValue === 'D') {
-        button.classList.add('draw', 'active');
-      } else {
-        button.classList.add('loss', 'active');
-      }
-    }
-    
-    function formatGoals(input) {
-      let cleaned = input.value.replace(/\s+/g, '').replace(/[^0-9,-]/g, '');
-      let parts = cleaned.split(',');
-      
-      let formatted = parts.map(score => {
-        score = score.replace(/[^0-9]/g, '');
-        if (score.length === 1) return score + '-';
-        if (score.length === 2) return score[0] + '-' + score[1];
-        return score.slice(0, 1) + '-' + score.slice(1, 2);
-      });
-      
-      input.value = formatted.join(',').replace(/,,+/g, ',');
-    }
-    
-    function parseGoals(data) {
-      let totalScored = 0;
-      let totalConceded = 0;
-      let count = 0;
-      
-      data.split(',').forEach(score => {
-        const parts = score.trim().split('-');
-        if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-          totalScored += parseInt(parts[0]);
-          totalConceded += parseInt(parts[1]);
-          count++;
-        }
-      });
-      
-      return {
-        avgScored: count ? (totalScored / count) : 0,
-        avgConceded: count ? (totalConceded / count) : 0,
-        totalScored,
-        totalConceded,
-        count
-      };
-    }
-    
-    function calculatePoisson(lambda, k) {
-      return (Math.exp(-lambda) * Math.pow(lambda, k)) / factorial(k);
-    }
-    
-    function factorial(n) {
-      if (n === 0) return 1;
-      let result = 1;
-      for (let i = 2; i <= n; i++) {
-        result *= i;
-      }
-      return result;
-    }
-    
-    function predictResults() {
-      resultsContainer.innerHTML = '';
-      const predictions = [];
-      
-      const matches = document.querySelectorAll('.match');
-      matches.forEach((match, index) => {
-        const teamA = match.querySelector('.teamA').value || `Team A ${index + 1}`;
-        const teamB = match.querySelector('.teamB').value || `Team B ${index + 1}`;
-        const goalsA = match.querySelector('.goalsA').value;
-        const goalsB = match.querySelector('.goalsB').value;
-        
-        const statsA = parseGoals(goalsA);
-        const statsB = parseGoals(goalsB);
-        
-        // Calculate attack and defense strength
-        const homeAttackStrength = statsA.avgScored;
-        const awayAttackStrength = statsB.avgScored;
-        const homeDefenseStrength = statsA.avgConceded;
-        const awayDefenseStrength = statsB.avgConceded;
-        
-        // Calculate expected goals
-        const homeExpectedGoals = homeAttackStrength * awayDefenseStrength;
-        const awayExpectedGoals = awayAttackStrength * homeDefenseStrength;
-        
-        // Calculate outcome probabilities using Poisson distribution
-        let homeWinProb = 0;
-        let drawProb = 0;
-        let awayWinProb = 0;
-        let likelyScore = "0-0";
-        let maxProb = 0;
-        
-        // Calculate probabilities for scores up to 5 goals
-        for (let i = 0; i <= 5; i++) {
-          for (let j = 0; j <= 5; j++) {
-            const prob = calculatePoisson(homeExpectedGoals, i) * calculatePoisson(awayExpectedGoals, j);
-            
-            if (i > j) homeWinProb += prob;
-            else if (i === j) drawProb += prob;
-            else awayWinProb += prob;
-            
-            if (prob > maxProb) {
-              maxProb = prob;
-              likelyScore = `${i}-${j}`;
-            }
-          }
-        }
-        
-        // Convert to percentages
-        homeWinProb = Math.round(homeWinProb * 100);
-        drawProb = Math.round(drawProb * 100);
-        awayWinProb = Math.round(awayWinProb * 100);
-        
-        // Determine most likely outcome
-        let outcome;
-        if (homeWinProb > awayWinProb && homeWinProb > drawProb) {
-          outcome = `${teamA} likely to win`;
-        } else if (awayWinProb > homeWinProb && awayWinProb > drawProb) {
-          outcome = `${teamB} likely to win`;
-        } else {
-          outcome = `Draw likely`;
-        }
-        
-        // Save prediction
-        predictions.push({
-          teamA,
-          teamB,
-          statsA,
-          statsB,
-          homeWinProb,
-          drawProb,
-          awayWinProb,
-          outcome,
-          likelyScore,
-          confidence: Math.max(homeWinProb, drawProb, awayWinProb)
-        });
-      });
-      
-      // Display all predictions
-      displayPredictions(predictions);
-    }
-    
-    function displayPredictions(predictions) {
-      resultsContainer.innerHTML = '';
-      predictionCountElement.textContent = predictions.length;
-      
-      predictions.forEach(prediction => {
-        const predictionDiv = document.createElement('div');
-        predictionDiv.className = 'prediction-card';
-        predictionDiv.innerHTML = `
-          <div class="match-info">
-            <div class="teams-names">${prediction.teamA} vs ${prediction.teamB}</div>
-            <div class="prediction-details">
-              <div class="detail-card">
-                <div class="detail-title">${prediction.teamA} Goals</div>
-                <div class="detail-value">${prediction.statsA.avgScored.toFixed(2)}</div>
-              </div>
-              <div class="detail-card">
-                <div class="detail-title">${prediction.teamB} Goals</div>
-                <div class="detail-value">${prediction.statsB.avgScored.toFixed(2)}</div>
-              </div>
-            </div>
-            <div class="prediction-outcome">
-              <i class="fas fa-trophy"></i> ${prediction.outcome}
-            </div>
-          </div>
-          <div class="probability">
-            <div class="score-prediction">${prediction.likelyScore}</div>
-            <div class="confidence">${prediction.confidence}% confidence</div>
-            <div class="win-probabilities">
-              <div class="prob-item">
-                <div class="prob-title">${prediction.teamA} Win</div>
-                <div class="prob-value home-win">${prediction.homeWinProb}%</div>
-              </div>
-              <div class="prob-item">
-                <div class="prob-title">Draw</div>
-                <div class="prob-value draw">${prediction.drawProb}%</div>
-              </div>
-              <div class="prob-item">
-                <div class="prob-title">${prediction.teamB} Win</div>
-                <div class="prob-value away-win">${prediction.awayWinProb}%</div>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        resultsContainer.appendChild(predictionDiv);
-      });
-    }
-  </script>
+  }).catch(error => {
+    console.error("Error loading data:", error);
+    liveDiv.innerHTML = '<div class="text-center py-5"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><p>Failed to load predictions</p><p class="text-muted">Please try again later</p></div>';
+    prevDiv.innerHTML = '<div class="text-center py-5"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><p>Failed to load predictions</p><p class="text-muted">Please try again later</p></div>';
+  });
+}
+
+// Initial load
+loadToday();
+setInterval(loadToday, 90_000);
+
+/* ------------ filter nav ------------ */
+document.querySelectorAll('#filterNav .nav-link').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('#filterNav .nav-link').forEach(n => n.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.getElementById('liveContainer').classList.toggle('d-none', f !== 'live');
+    document.getElementById('previousContainer').classList.toggle('d-none', f !== 'previous');
+  };
+});
+</script>
 </body>
-      </html>
+</html>
