@@ -754,6 +754,42 @@
     <button class="migration-btn" onclick="migrateTeamData()">
         <i class="fas fa-tools"></i> Fix Team Names
     </button>
+    <script>
+  const timerDisplay = document.getElementById("timer");
+  const endTime = parseInt(localStorage.getItem("countdown_end_time"));
+
+  if (!endTime || isNaN(endTime)) {
+    window.location.href = "home 2.html";
+  }
+
+  function updateCountdown() {
+    const now = Date.now();
+    const remaining = endTime - now;
+
+    if (remaining <= 0) {
+      timerDisplay.textContent = "Expired";
+      localStorage.removeItem("countdown_end_time");
+      timerDisplay.style.background = "#333";
+      timerDisplay.style.color = "#ff4444";
+      timerDisplay.style.fontSize = "2.5rem";
+
+      setTimeout(() => {
+        window.location.href = "home 2.html";
+      }, 2000);
+    } else {
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+      timerDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      requestAnimationFrame(updateCountdown);
+    }
+  }
+
+  updateCountdown();
+</script>
+ 
 
     <script>
         // Firebase configuration
