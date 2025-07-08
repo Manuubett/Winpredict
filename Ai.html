@@ -1,4 +1,4 @@
-lol<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -23,71 +23,76 @@ lol<!DOCTYPE html>
     }
     
     .container {
-      max-width: 1400px;
+      max-width: 1200px;
       width: 100%;
-      padding: 30px;
+      padding: 20px;
     }
     
     header {
       text-align: center;
-      margin-bottom: 50px;
+      margin-bottom: 40px;
     }
     
     h1 {
-      font-size: 3.2rem;
+      font-size: 2.8rem;
       color: #fff;
       margin-bottom: 15px;
       font-weight: 700;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
     
     .subtitle {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       color: rgba(255,255,255,0.85);
-      max-width: 800px;
+      max-width: 700px;
       margin: 0 auto;
       line-height: 1.6;
     }
     
     .options-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: 30px;
-      margin-top: 30px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      margin-bottom: 25px;
+    }
+    
+    @media (max-width: 768px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
     }
     
     .option-card {
-      background: linear-gradient(145deg, #ffffff, #f8f9fa);
-      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-      transition: all 0.4s ease;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
       position: relative;
-      padding: 40px 35px;
+      padding: 30px;
       display: flex;
       flex-direction: column;
       height: 100%;
     }
     
     .option-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.2);
     }
     
     .card-header {
       display: flex;
       align-items: center;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
     
     .icon-container {
-      width: 80px;
-      height: 80px;
-      border-radius: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 20px;
+      margin-right: 15px;
     }
     
     .f1 .icon-container {
@@ -103,21 +108,22 @@ lol<!DOCTYPE html>
     }
     
     .icon-container i {
-      font-size: 2.8rem;
+      font-size: 1.8rem;
       color: white;
     }
     
     .card-header h2 {
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       color: #2c3e50;
+      font-weight: 600;
     }
     
     .card-header .tag {
-      font-size: 1rem;
+      font-size: 0.9rem;
       background: #eef2f7;
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-left: 15px;
+      padding: 4px 10px;
+      border-radius: 16px;
+      margin-left: 10px;
       font-weight: 600;
     }
     
@@ -141,26 +147,33 @@ lol<!DOCTYPE html>
     }
     
     .card-content p {
-      font-size: 1.15rem;
+      font-size: 1rem;
       color: #4a5568;
-      line-height: 1.7;
-      margin-bottom: 25px;
+      line-height: 1.6;
+      margin-bottom: 20px;
     }
     
     .features {
-      margin-bottom: 35px;
+      margin-bottom: 20px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+    
+    .features.active {
+      max-height: 500px;
     }
     
     .features h3 {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       color: #2c3e50;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
     }
     
     .features h3 i {
-      margin-right: 10px;
+      margin-right: 8px;
     }
     
     .f1 .features h3 i {
@@ -177,146 +190,107 @@ lol<!DOCTYPE html>
     
     .features ul {
       list-style-type: none;
-      padding-left: 10px;
+      padding-left: 0;
     }
     
     .features li {
-      padding: 10px 0;
-      padding-left: 35px;
+      padding: 8px 0;
+      padding-left: 28px;
       position: relative;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: #4a5568;
     }
     
-    .f1 .features li:before {
+    .features li:before {
       content: "✓";
       position: absolute;
       left: 0;
       top: 50%;
       transform: translateY(-50%);
-      width: 26px;
-      height: 26px;
-      background: #e6f7ff;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
-      color: #4facfe;
+      font-size: 0.8rem;
       font-weight: bold;
+    }
+    
+    .f1 .features li:before {
+      background: #e6f7ff;
+      color: #4facfe;
     }
     
     .hybrid .features li:before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 26px;
-      height: 26px;
-      background: #e6f7ff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      color: #3494e6;
-      font-weight: bold;
+      background: #fceef5;
+      color: #ec6ead;
     }
     
     .advanced .features li:before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 26px;
-      height: 26px;
       background: #fff0f1;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
       color: #ff9a9e;
-      font-weight: bold;
     }
     
-    .odds-scale {
+    .toggle-btn {
+      display: inline-block;
       background: #f8f9fa;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 20px 0;
-      border-left: 4px solid #4facfe;
-    }
-    
-    .odds-scale h4 {
-      font-size: 1.2rem;
-      color: #2c3e50;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
       margin-bottom: 15px;
-      display: flex;
-      align-items: center;
+      border: none;
+      width: 100%;
+      text-align: center;
+      color: #4a5568;
     }
     
-    .odds-scale h4 i {
-      margin-right: 10px;
+    .f1 .toggle-btn {
+      background: #e6f7ff;
       color: #4facfe;
     }
     
-    .scale-bar {
-      height: 30px;
-      background: #e9ecef;
-      border-radius: 15px;
-      overflow: hidden;
-      position: relative;
-      margin: 15px 0;
+    .hybrid .toggle-btn {
+      background: #fceef5;
+      color: #ec6ead;
     }
     
-    .scale-fill {
-      height: 100%;
-      background: linear-gradient(to right, #4facfe, #00f2fe);
-      width: 85%;
-      border-radius: 15px;
-      position: relative;
+    .advanced .toggle-btn {
+      background: #fff0f1;
+      color: #ff9a9e;
     }
     
-    .scale-labels {
-      display: flex;
-      justify-content: space-between;
+    .toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .toggle-btn i {
+      margin-left: 8px;
       font-size: 0.9rem;
-      color: #6c757d;
-      margin-top: 8px;
+      transition: transform 0.3s ease;
     }
     
-    .scale-markers {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: space-between;
-    }
-    
-    .scale-marker {
-      width: 2px;
-      height: 100%;
-      background: rgba(255,255,255,0.5);
+    .toggle-btn.active i {
+      transform: rotate(180deg);
     }
     
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 16px 40px;
-      border-radius: 12px;
-      font-size: 1.2rem;
+      padding: 14px 30px;
+      border-radius: 10px;
+      font-size: 1.1rem;
       font-weight: 600;
       text-decoration: none;
       transition: all 0.3s ease;
       border: none;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       width: 100%;
       text-align: center;
     }
@@ -338,92 +312,42 @@ lol<!DOCTYPE html>
     
     .btn:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
     }
     
     .btn i {
-      margin-left: 10px;
-      font-size: 1.1rem;
+      margin-left: 8px;
+      font-size: 1rem;
     }
     
     .footer-note {
       text-align: center;
-      margin-top: 50px;
+      margin-top: 30px;
       color: rgba(255,255,255,0.7);
-      font-size: 1.1rem;
-      padding: 20px;
+      font-size: 1rem;
+      padding: 15px;
       background: rgba(0,0,0,0.2);
-      border-radius: 12px;
-      max-width: 800px;
+      border-radius: 10px;
+      max-width: 700px;
       margin-left: auto;
       margin-right: auto;
     }
     
-    .accuracy-badge {
-      display: inline-block;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      margin-top: 15px;
-      font-size: 1.1rem;
-    }
-    
-    .f1 .accuracy-badge {
-      background: rgba(79, 172, 254, 0.15);
-      color: #4facfe;
-    }
-    
-    .hybrid .accuracy-badge {
-      background: rgba(52, 148, 230, 0.15);
-      color: #3494e6;
-    }
-    
-    .advanced .accuracy-badge {
-      background: rgba(255, 154, 158, 0.15);
-      color: #ff9a9e;
-    }
-    
-    @media (max-width: 1200px) {
-      .options-grid {
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      }
-    }
-    
     @media (max-width: 768px) {
       h1 {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
       }
       
       .subtitle {
-        font-size: 1.2rem;
+        font-size: 1rem;
       }
       
       .option-card {
-        padding: 30px 25px;
+        padding: 25px;
       }
       
       .card-header h2 {
-        font-size: 1.8rem;
-      }
-    }
-    
-    @media (max-width: 576px) {
-      .container {
-        padding: 15px;
-      }
-      
-      .card-header {
-        flex-direction: column;
-        text-align: center;
-      }
-      
-      .icon-container {
-        margin-right: 0;
-        margin-bottom: 20px;
-      }
-      
-      .card-header .tag {
-        margin: 10px 0 0 0;
+        font-size: 1.5rem;
       }
     }
   </style>
@@ -432,7 +356,7 @@ lol<!DOCTYPE html>
   <div class="container">
     <header>
       <h1>AI Prediction System Selector</h1>
-      <p class="subtitle">Choose the optimal prediction tool for your needs. Our AI systems combine advanced analytics with intuitive interfaces for accurate forecasting.</p>
+      <p class="subtitle">Choose the optimal prediction tool for your needs. Our AI systems combine analytics with intuitive interfaces for accurate forecasting.</p>
     </header>
     
     <div class="options-grid">
@@ -448,28 +372,9 @@ lol<!DOCTYPE html>
         </div>
         
         <div class="card-content">
-          <p>Specialized in identifying high-risk, high-reward opportunities with odds scores from 3+ to 7+. Perfect for strategic betting and maximizing returns.</p>
+          <p>Specialized in high-risk, high-reward opportunities with odds scores from 3+ to 7+.</p>
           
-          <div class="odds-scale">
-            <h4><i class="fas fa-bolt"></i> Odds Score Scale</h4>
-            <div class="scale-bar">
-              <div class="scale-fill"></div>
-              <div class="scale-markers">
-                <div class="scale-marker"></div>
-                <div class="scale-marker"></div>
-                <div class="scale-marker"></div>
-                <div class="scale-marker"></div>
-                <div class="scale-marker"></div>
-              </div>
-            </div>
-            <div class="scale-labels">
-              <span>Low Risk</span>
-              <span>3+</span>
-              <span>5+</span>
-              <span>7+</span>
-              <span>High Reward</span>
-            </div>
-          </div>
+          <button class="toggle-btn">View Features <i class="fas fa-chevron-down"></i></button>
           
           <div class="features">
             <h3><i class="fas fa-star"></i> Key Features</h3>
@@ -480,10 +385,6 @@ lol<!DOCTYPE html>
               <li>Odds movement tracking</li>
               <li>Probability-based high-return selections</li>
             </ul>
-          </div>
-          
-          <div class="accuracy-badge">
-            <i class="fas fa-trophy"></i> High Reward Potential: 7.2x
           </div>
           
           <a href="Dom.html" class="btn">Open F1 Predictor <i class="fas fa-arrow-right"></i></a>
@@ -502,7 +403,9 @@ lol<!DOCTYPE html>
         </div>
         
         <div class="card-content">
-          <p>Advanced hybrid tool combining statistical analysis with machine learning for superior prediction accuracy across diverse scenarios.</p>
+          <p>Combines statistical analysis with machine learning for superior prediction accuracy.</p>
+          
+          <button class="toggle-btn">View Features <i class="fas fa-chevron-down"></i></button>
           
           <div class="features">
             <h3><i class="fas fa-star"></i> Key Features</h3>
@@ -515,43 +418,8 @@ lol<!DOCTYPE html>
             </ul>
           </div>
           
-          <div class="accuracy-badge">
-            <i class="fas fa-trophy"></i> Accuracy Rate: 92.4%
-          </div>
-          
           <a href="F3.html" class="btn">Open Hybrid Predictor <i class="fas fa-arrow-right"></i></a>
         </div>
-      </div>
-      <div class="option-card hybrid">
-  <div class="card-header">
-    <div class="icon-container">
-      <i class="fas fa-brain"></i>
-    </div>
-    <div>
-      <h2>AI for Correct Score Prediction <span class="tag">RECOMMENDED</span></h2>
-    </div>
-  </div>
-  
-  <div class="card-content">
-    <p>Powered by artificial intelligence, this tool delivers highly accurate correct score predictions using deep learning, team patterns, and real-time match analysis.</p>
-    
-    <div class="features">
-      <h3><i class="fas fa-star"></i> Key Features</h3>
-      <ul>
-        <li>AI-trained on thousands of historical match outcomes</li>
-        <li>Focuses on exact final score forecasting</li>
-        <li>Real-time input from live stats and lineups</li>
-        <li>Pattern recognition for frequent scores</li>
-        <li>Confidence score per prediction</li>
-      </ul>
-    </div>
-    
-    <div class="accuracy-badge">
-      <i class="fas fa-trophy"></i> Accuracy Rate: 89.7%
-    </div>
-    
-    <a href="contact.html" class="btn">Try Score Predictor <i class="fas fa-arrow-right"></i></a>
-  </div>
       </div>
       
       <!-- Advanced Predictor Card -->
@@ -566,12 +434,14 @@ lol<!DOCTYPE html>
         </div>
         
         <div class="card-content">
-          <p>Enhanced prediction system with sophisticated analytics for complex scenarios and detailed trend analysis.</p>
+          <p>Sophisticated analytics for complex scenarios and detailed trend analysis.</p>
+          
+          <button class="toggle-btn">View Features <i class="fas fa-chevron-down"></i></button>
           
           <div class="features">
             <h3><i class="fas fa-star"></i> Key Features</h3>
             <ul>
-              <li>Most frequent results analysis (1-1, 2-2, etc.)</li>
+              <li>Most frequent results analysis</li>
               <li>Total draw predictions (Home & Away)</li>
               <li>Intelligent pattern recognition</li>
               <li>Historical performance metrics</li>
@@ -579,11 +449,38 @@ lol<!DOCTYPE html>
             </ul>
           </div>
           
-          <div class="accuracy-badge">
-            <i class="fas fa-trophy"></i> Accuracy Rate: 86.7%
+          <a href="Ai2.html" class="btn">Open Advanced Predictor <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      
+      <!-- Score Predictor Card -->
+      <div class="option-card hybrid">
+        <div class="card-header">
+          <div class="icon-container">
+            <i class="fas fa-futbol"></i>
+          </div>
+          <div>
+            <h2>Score Predictor <span class="tag">NEW</span></h2>
+          </div>
+        </div>
+        
+        <div class="card-content">
+          <p>AI-powered tool for highly accurate correct score predictions.</p>
+          
+          <button class="toggle-btn">View Features <i class="fas fa-chevron-down"></i></button>
+          
+          <div class="features">
+            <h3><i class="fas fa-star"></i> Key Features</h3>
+            <ul>
+              <li>Trained on historical match outcomes</li>
+              <li>Exact final score forecasting</li>
+              <li>Real-time stats and lineups analysis</li>
+              <li>Pattern recognition for frequent scores</li>
+              <li>Confidence score per prediction</li>
+            </ul>
           </div>
           
-          <a href="Ai2.html" class="btn">Open Advanced Predictor <i class="fas fa-arrow-right"></i></a>
+          <a href="contact.html" class="btn">Try Score Predictor <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
     </div>
@@ -592,5 +489,26 @@ lol<!DOCTYPE html>
       <p>All prediction systems utilize proprietary algorithms • Real-time data processing • Updated every 15 minutes</p>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleButtons = document.querySelectorAll('.toggle-btn');
+      
+      toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const features = this.nextElementSibling;
+          this.classList.toggle('active');
+          features.classList.toggle('active');
+          
+          // Update button text
+          if (this.classList.contains('active')) {
+            this.innerHTML = 'Hide Features <i class="fas fa-chevron-up"></i>';
+          } else {
+            this.innerHTML = 'View Features <i class="fas fa-chevron-down"></i>';
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
