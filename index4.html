@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinPredict Pro | AI-Powered Soccer Predictions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0c2461;
+            --secondary: #1e3799;
+            --accent: #4a69bd;
+            --light: #f8f9ff;
+            --text: #333;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --card-shadow: 0 10px 30px rgba(12, 36, 97, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            background: linear-gradient(135deg, #f8f9ff, #eef2ff);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-button {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            background: transparent;
+            border: 2px solid var(--accent);
+        }
+
+        .nav-button:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            top: -100px;
+            right: -100px;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            bottom: -80px;
+            left: -80px;
+        }
+
+        .hero-content {
+            max-width: 700px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 35px;
+            background: var(--success);
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn:hover {
+            background: #219653;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: var(--primary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        /* Featured Matches Section */
+        .featured-matches {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .match-card {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 105, 189, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .match-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent), var(--secondary));
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .league {
+            background: rgba(74, 105, 189, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .match-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+        }
+
+        .team-logo {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid #f0f0f0;
+        }
+
+        .team-logo img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .team-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .vs {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .match-time {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .match-prediction {
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .prediction-title {
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 5px;
+        }
+
+        .prediction-result {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .confidence {
+            display: inline-block;
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .match-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .view-btn {
+            background: var(--accent);
+            color: white;
+        }
+
+        .view-btn:hover {
+            background: #3a5cad;
+        }
+
+        .predict-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .predict-btn:hover {
+            background: #219653;
+        }
+
+        .features {
+            padding: 100px 0;
+            background: linear-gradient(to bottom, white, #f8f9ff);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(74, 105, 189, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(12, 36, 97, 0.15);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            color: #555;
+        }
+
+        .stats {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+        }
+
+        .stats h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .stats h2::after {
+            content: "";
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .cta {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .cta .container {
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .cta p {
+            max-width: 700px;
+            margin: 0 auto 40px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+            box-shadow: 0 5px 15px rgba(74, 105, 189, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #3a5cad;
+            box-shadow: 0 8px 20px rgba(74, 105, 189, 0.4);
+        }
+
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(74, 105, 189, 0.2);
+            border-top: 5px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            text-align: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        /* Filter controls */
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            background: var(--light);
+            border: 1px solid var(--accent);
+            border-radius: 30px;
+            color: var(--accent);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .hero {
+                padding: 70px 0;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-card {
+                padding: 30px 20px;
+            }
+            
+            .team-logo {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .team-logo img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-futbol"></i>
+                    WinPredict <span>Pro</span>
+                </div>
+                <div class="nav-buttons">
+                    <a href="select.html" class="nav-button">
+                        <i class="fas fa-trophy"></i> Odi league
+                    </a>
+                    <a href="real.html" class="nav-button">
+                        <i class="fas fa-chart-line"></i> Real Bet Prediction
+                    </a>
+                    <a href="today.html" class="nav-button">
+                        <i class="fas fa-chart-line"></i> Today Games
+                    </a>
+                    <a href="analysis.html" class="nav-button">
+                        <i class="fas fa-chart-pie"></i> Analysis
+                    </a>
+                    <button id="botModalBtn" class="nav-button">
+                        <i class="fas fa-robot"></i> Prediction Bot
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>AI-Powered Soccer Predictions</h1>
+                <p>Our advanced algorithm analyzes hundreds of data points to deliver match predictions with 89% accuracy. Experience the power of data-driven insights.</p>
+                <a href="payment.html" class="btn" id="heroJoinBtn">Get Predictions</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Featured Matches Section -->
+    <section class="featured-matches">
+        <div class="container">
+            <h2 class="section-title">Today's Featured Matches</h2>
+            
+            <!-- Filter Controls -->
+            <div class="filters">
+                <button class="filter-btn active" data-league="all">All Leagues</button>
+                <button class="filter-btn" data-league="Premier League">Premier League</button>
+                <button class="filter-btn" data-league="La Liga">La Liga</button>
+                <button class="filter-btn" data-league="Serie A">Serie A</button>
+                <button class="filter-btn" data-league="Bundesliga">Bundesliga</button>
+            </div>
+            
+            <!-- Loading indicator -->
+            <div id="loading" class="loading-text">
+                <div class="spinner"></div>
+                <p>Loading real-time matches...</p>
+            </div>
+            
+            <!-- Matches will be injected here -->
+            <div class="matches-grid" id="matches-container">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </section>
+    
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose Our Prediction Tool</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                    <h3>Advanced AI Analysis</h3>
+                    <p>Our system processes team stats, player performance, weather conditions and historical data to generate precise predictions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bullseye"></i></div>
+                    <h3>Proven Accuracy</h3>
+                    <p>Consistent 89% accuracy rate verified across multiple soccer leagues worldwide.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-rocket"></i></div>
+                    <h3>Immediate Insights</h3>
+                    <p>Get actionable predictions within seconds to make timely, informed decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="stats">
+        <div class="container">
+            <h2>Our Predictive Excellence</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>89%</h3>
+                    <p>Prediction Accuracy</p>
+                </div>
+                <div class="stat-item">
+                    <h3>10,000+</h3>
+                    <p>Matches Analyzed</p>
+                </div>
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p>Real-time Updates</p>
+                </div>
+                <div class="stat-item">
+                    <h3>15+</h3>
+                    <p>Leagues Covered</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Enhance Your Strategy?</h2>
+            <p>Access our premium prediction tool today for just Ksh 49 and start making data-driven decisions with confidence.</p>
+            <a href="payment.html" class="btn btn-secondary" id="bottomJoinBtn">Get Started Today</a>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 WinPredict Pro. All rights reserved.</p>
+            <p>AI-Powered Soccer Predictions | Data-Driven Insights</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // API configuration
+            const API_URL = 'https://api.football-data.org/v4/matches';
+            const API_KEY = 'YOUR_API_KEY'; // Replace with your actual API key
+            
+            // DOM elements
+            const matchesContainer = document.getElementById('matches-container');
+            const loadingElement = document.getElementById('loading');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            // Store matches data
+            let matchesData = [];
+            
+            // Function to fetch matches from API
+            async function fetchMatches() {
+                try {
+                    const response = await fetch(API_URL, {
+                        headers: {
+                            'X-Auth-Token': API_KEY
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch matches');
+                    }
+                    
+                    const data = await response.json();
+                    return data.matches;
+                } catch (error) {
+                    console.error('Error fetching matches:', error);
+                    // Fallback to mock data if API fails
+                    return getMockMatches();
+                }
+            }
+            
+            // Function to generate mock matches (fallback)
+            function getMockMatches() {
+                return [
+                    {
+                        id: 1,
+                        competition: { name: 'Premier League' },
+                        utcDate: new Date(Date.now() + 2*3600000).toISOString(), // 2 hours from now
+                        homeTeam: { 
+                            name: 'Liverpool', 
+                            crest: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg'
+                        },
+                        awayTeam: { 
+                            name: 'Manchester United', 
+                            crest: 'https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg'
+                        }
+                    },
+                    {
+                        id: 2,
+                        competition: { name: 'La Liga' },
+                        utcDate: new Date(Date.now() + 3*3600000).toISOString(), // 3 hours from now
+                        homeTeam: { 
+                            name: 'Barcelona', 
+                            crest: 'https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg'
+                        },
+                        awayTeam: { 
+                            name: 'Real Madrid', 
+                            crest: 'https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg'
+                        }
+                    },
+                    {
+                        id: 3,
+                        competition: { name: 'Serie A' },
+                        utcDate: new Date(Date.now() + 1.5*3600000).toISOString(), // 1.5 hours from now
+                        homeTeam: { 
+                            name: 'Inter Milan', 
+                            crest: 'https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg'
+                        },
+                        awayTeam: { 
+                            name: 'AC Milan', 
+                            crest: 'https://upload.wikimedia.org/wikipedia/commons/1/16/AC_Milan.svg'
+                        }
+                    },
+                    {
+                        id: 4,
+                        competition: { name: 'Bundesliga' },
+                        utcDate: new Date(Date.now() + 4*3600000).toISOString(), // 4 hours from now
+                        homeTeam: { 
+                            name: 'Bayern Munich', 
+                            crest: 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Bayern_M%C3%BCnchen_logo_%282017%29.svg'
+                        },
+                        awayTeam: { 
+                            name: 'Dortmund', 
+                            crest: 'https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg'
+                        }
+                    }
+                ];
+            }
+            
+            // Function to generate AI predictions
+            function generatePrediction(homeTeam, awayTeam) {
+                // Simulate AI prediction logic
+                const outcomes = [
+                    `${homeTeam} Win`,
+                    `${awayTeam} Win`,
+                    'Draw'
+                ];
+                
+                const scores = [
+                    '1-0', '2-0', '2-1', '3-0', '3-1', '3-2', '0-0', '1-1', '2-2'
+                ];
+                
+                // Randomly select outcome and score
+                const outcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+                const score = scores[Math.floor(Math.random() * scores.length)];
+                
+                // Generate confidence level (between 75-95%)
+                const confidence = Math.floor(Math.random() * 21) + 75;
+                
+                return {
+                    outcome: outcome,
+                    score: score,
+                    confidence: confidence
+                };
+            }
+            
+            // Function to format date
+            function formatMatchDate(dateString) {
+                const matchDate = new Date(dateString);
+                const now = new Date();
+                
+                // Check if match is today
+                if (matchDate.toDateString() === now.toDateString()) {
+                    return `Today, ${matchDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})`;
+                }
+                
+                // Check if match is tomorrow
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                if (matchDate.toDateString() === tomorrow.toDateString()) {
+                    return `Tomorrow, ${matchDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})`;
+                }
+                
+                // Otherwise, return date
+                return matchDate.toLocaleDateString([], {weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'});
+            }
+            
+            // Function to render matches
+            function renderMatches(leagueFilter = 'all') {
+                matchesContainer.innerHTML = '';
+                
+                const filteredMatches = leagueFilter === 'all' 
+                    ? matchesData 
+                    : matchesData.filter(match => match.competition.name === leagueFilter);
+                
+                if (filteredMatches.length === 0) {
+                    matchesContainer.innerHTML = '<p class="loading-text">No matches found for this league.</p>';
+                    return;
+                }
+                
+                filteredMatches.forEach(match => {
+                    const prediction = generatePrediction(match.homeTeam.name, match.awayTeam.name);
+                    
+                    const matchCard = document.createElement('div');
+                    matchCard.className = 'match-card';
+                    matchCard.innerHTML = `
+                        <div class="match-header">
+                            <div class="league">${match.competition.name}</div>
+                            <div class="date">${formatMatchDate(match.utcDate)}</div>
+                        </div>
+                        <div class="match-content">
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="${match.homeTeam.crest || 'https://via.placeholder.com/50?text=LOGO'}" alt="${match.homeTeam.name}">
+                                </div>
+                                <div class="team-name">${match.homeTeam.name}</div>
+                            </div>
+                            <div class="vs">VS</div>
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="${match.awayTeam.crest || 'https://via.placeholder.com/50?text=LOGO'}" alt="${match.awayTeam.name}">
+                                </div>
+                                <div class="team-name">${match.awayTeam.name}</div>
+                            </div>
+                        </div>
+                        <div class="match-prediction">
+                            <div class="prediction-title">AI Prediction</div>
+                            <div class="prediction-result">${prediction.outcome} (${prediction.score})</div>
+                            <div class="confidence">${prediction.confidence}% Confidence</div>
+                        </div>
+                        <div class="match-actions">
+                            <button class="action-btn view-btn">View Analysis</button>
+                            <button class="action-btn predict-btn">Get Full Prediction</button>
+                        </div>
+                    `;
+                    
+                    matchesContainer.appendChild(matchCard);
+                });
+                
+                // Add animations to match cards
+                const matchCards = document.querySelectorAll('.match-card');
+                matchCards.forEach((card, index) => {
+                    card.style.opacity = "0";
+                    card.style.transform = "translateY(30px)";
+                    card.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+                    
+                    setTimeout(() => {
+                        card.style.opacity = "1";
+                        card.style.transform = "translateY(0)";
+                    }, 300 + (index * 100));
+                });
+            }
+            
+            // Initialize the page
+            async function init() {
+                // Show loading state
+                loadingElement.style.display = 'block';
+                
+                // Fetch matches
+                matchesData = await fetchMatches();
+                
+                // Hide loading state
+                loadingElement.style.display = 'none';
+                
+                // Render matches
+                renderMatches();
+            }
+            
+            // Add event listeners for filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    // Filter matches
+                    renderMatches(button.dataset.league);
+                });
+            });
+            
+            // Add hover effect to match cards
+            matchesContainer.addEventListener('mouseover', function(e) {
+                if (e.target.closest('.match-card')) {
+                    const card = e.target.closest('.match-card');
+                    card.style.boxShadow = "0 15px 40px rgba(12, 36, 97, 0.2)";
+                }
+            });
+            
+            matchesContainer.addEventListener('mouseout', function(e) {
+                if (e.target.closest('.match-card')) {
+                    const card = e.target.closest('.match-card');
+                    card.style.boxShadow = "0 10px 30px rgba(12, 36, 97, 0.1)";
+                }
+            });
+            
+            // Button animations
+            document.addEventListener('mouseover', function(e) {
+                if (e.target.matches('.btn, .action-btn')) {
+                    e.target.style.transform = "translateY(-3px)";
+                }
+            });
+            
+            document.addEventListener('mouseout', function(e) {
+                if (e.target.matches('.btn, .action-btn')) {
+                    e.target.style.transform = "translateY(0)";
+                }
+            });
+            
+            // Initialize the application
+            init();
+        });
+    </script>
+</body>
+</html>
