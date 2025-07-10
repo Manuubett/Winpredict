@@ -1064,7 +1064,21 @@
         </div>
       </div>
     </div>
-      
+    <div class="team-select">
+  <label for="inputOdds1"><i class="fas fa-money-bill-wave"></i> Odds for Home Win (1)</label>
+  <input type="number" step="0.01" id="inputOdds1" placeholder="e.g. 2.10">
+</div>
+
+<div class="team-select">
+  <label for="inputOddsX"><i class="fas fa-minus-circle"></i> Odds for Draw (X)</label>
+  <input type="number" step="0.01" id="inputOddsX" placeholder="e.g. 3.30">
+</div>
+
+<div class="team-select">
+  <label for="inputOdds2"><i class="fas fa-plane-departure"></i> Odds for Away Win (2)</label>
+  <input type="number" step="0.01" id="inputOdds2" placeholder="e.g. 3.50">
+</div>
+      <div id="similarOddsInfo" style="margin: 10px 0; font-weight: bold; color: #17a2b8;"></div>
       <div class="controls">
         <div class="team-select">
           <label for="team1Select"><i class="fas fa-home"></i> Home Team</label>
@@ -1102,7 +1116,10 @@
         </div>
       </div>
     </div>
-    
+    <div id="suggestionsCard" style="display: none;">
+  <h3><i class="fas fa-lightbulb"></i> Suggestions</h3>
+  <div id="suggestionContent" style="font-size: 1.1rem; line-height: 1.6;"></div>
+</div>
 
     
     <footer>
@@ -1127,8 +1144,32 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+
+function oddsToProbabilities(odds1, oddsX, odds2) {
+  const implied1 = 1 / odds1;
+  const impliedX = 1 / oddsX;
+  const implied2 = 1 / odds2;
+  const total = implied1 + impliedX + implied2;
+  return {
+    p1: (implied1 / total) * 100,
+    pX: (impliedX / total) * 100,
+    p2: (implied2 / total) * 100
+  };
+}
+
+
     let matches = [];
-    let currentHistory = [];
+    let currentHistory = [];function findGlobalOddsMatches(enteredOdds, matchData, range = 0.15) {
+  const { o1, oX, o2 } = enteredOdds;
+
+  return matchData.filter(m => {
+    return (
+      Math.abs(m.odds1 - o1) <= range &&
+      Math.abs(m.oddsX - oX) <= range &&
+      Math.abs(m.odds2 - o2) <= range
+    );
+  });
+}
 
     // Function to generate random scores based on outcome
     function generateScore(outcome) {
@@ -1741,143 +1782,64 @@
       `;
     }
 
-    function displayPrediction(team1, team2, history, prediction, p1, p2, pd, commonScores, opponentsAnalysis, markets) {
-  const predictionClass = prediction.includes("Win") ? "win-prediction" : "draw-prediction";
-
-  const predictionHTML = `
-    <h3 class="prediction-header">Match Prediction</h3>
     
-    <div class="prediction-result ${predictionClass}">${prediction}</div>
-
-    <div class="probability-container">
-      <div class="probability-card team1-probability">
-        <div class="probability-title">${team1} Win</div>
-        <div class="probability-value">${p1}%</div>
-      </div>
-
-      <div class="probability-card draw-probability">
-        <div class="probability-title">Draw</div>
-        <div class="probability-value">${pd}%</div>
-      </div>
-
-      <div class="probability-card team2-probability">
-        <div class="probability-title">${team2} Win</div>
-        <div class="probability-value">${p2}%</div>
-      </div>
-    </div>
-
-    <div class="progress-container">
-      <div class="progress-labels">
-        <span>${team1}</span>
-        <span>Draw</span>
-        <span>${team2}</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: ${p1}%">
-          <div class="team1-fill" style="width: 100%"></div>
-        </div>
-        <div class="progress-fill" style="width: ${pd}%">
-          <div class="draw-fill" style="width: 100%"></div>
-        </div>
-        <div class="progress-fill" style="width: ${p2}%">
-          <div class="team2-fill" style="width: 100%"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 📊 Market Predictions shown right after outcome -->
-    ${displayMarkets(markets)}
-
-    <!-- 🔽 Extra info section (kept at bottom) -->
-    <div class="extra-info-section">
-      ${displayCommonScores(commonScores)}
-      ${displayTeamPerformance(team1, team2, history)}
-      ${displayCommonOpponents(opponentsAnalysis, team1, team2)}
-    </div>
-
-    <div class="history-info">
-      <i class="fas fa-info-circle"></i> Analysis based on ${history.length} historical matches
-    </div>
-  `;
-
-  document.getElementById("predictionOutput").innerHTML = predictionHTML;
+function bayesianAdjust(actualRate, n, prior = 0.33, m = 10) {
+  return ((actualRate * n) + (prior * m)) / (n + m);
 }
+function findTeamOddsMatches(team1, team2, enteredOdds, matchData, range = 0.15) {
+  const { o1, oX, o2 } = enteredOdds;
 
-    function analyzeMatch(team1, team2, history) {
-  if (history.length === 0) {
-    return {
-      prediction: "Insufficient Data",
-      p1: "0.0",
-      p2: "0.0",
-      pd: "0.0",
-      commonScores: [],
-      markets: {
-        ggPercentage: "0.0",
-        over25Percentage: "0.0",
-        doubleChance: "N/A",
-        goalsRange: "N/A",
-        asianHandicap: "N/A",
-        bttsResult: "N/A"
-      }
-    };
-  }
+  return matchData.filter(m => {
+    const match = m.match.toLowerCase();
+    const teamsMatch =
+      match.includes(team1.toLowerCase()) && match.includes(team2.toLowerCase());
 
-  let team1Score = 0, team2Score = 0, drawScore = 0;
-  const scoreCounts = {};
+    const oddsMatch =
+      Math.abs(m.odds1 - o1) <= range &&
+      Math.abs(m.oddsX - oX) <= range &&
+      Math.abs(m.odds2 - o2) <= range;
 
-  history.forEach(match => {
-    const outcome = match.outcome.trim();
-    const odds = {
-      "1": match.odds1 || 1.0,
-      "X": match.oddsX || 1.0,
-      "2": match.odds2 || 1.0
-    };
+    return teamsMatch && oddsMatch && m.score;
+  });
+}function analyzeOddsOutcome(matches) {
+  let count1 = 0, countX = 0, count2 = 0;
+  let gg = 0, over25 = 0;
+  let goals0_1 = 0, goals2_3 = 0, goals4plus = 0;
 
-    if (match.score) {
-      scoreCounts[match.score] = (scoreCounts[match.score] || 0) + 1;
-    }
+  matches.forEach(m => {
+    const outcome = m.outcome.trim();
+    if (outcome === "1") count1++;
+    else if (outcome === "X") countX++;
+    else if (outcome === "2") count2++;
 
-    if (match.match.includes(team1) && match.match.includes(team2)) {
-      if (outcome === "1" && match.match.startsWith(team1)) {
-        team1Score += 1 + ((odds["1"] - 1) * 0.5);
-      } else if (outcome === "2" && match.match.endsWith(team1)) {
-        team1Score += 1 + ((odds["2"] - 1) * 0.5);
-      } else if (outcome === "2" && match.match.startsWith(team2)) {
-        team2Score += 1 + ((odds["2"] - 1) * 0.5);
-      } else if (outcome === "1" && match.match.endsWith(team2)) {
-        team2Score += 1 + ((odds["1"] - 1) * 0.5);
-      } else if (outcome === "X") {
-        drawScore += 1 + ((odds["X"] - 1) * 0.3);
-      }
-    }
+    const [homeGoals, awayGoals] = m.score.split("-").map(Number);
+    const totalGoals = homeGoals + awayGoals;
+
+    if (homeGoals > 0 && awayGoals > 0) gg++;
+    if (totalGoals > 2) over25++;
+
+    if (totalGoals <= 1) goals0_1++;
+    else if (totalGoals <= 3) goals2_3++;
+    else goals4plus++;
   });
 
-  const total = team1Score + team2Score + drawScore || 1;
-  const p1 = ((team1Score / total) * 100).toFixed(1);
-  const p2 = ((team2Score / total) * 100).toFixed(1);
-  const pd = ((drawScore / total) * 100).toFixed(1);
-
-  let prediction = "";
-  if (team1Score > team2Score && team1Score > drawScore) prediction = `${team1} to Win`;
-  else if (team2Score > team1Score && team2Score > drawScore) prediction = `${team2} to Win`;
-  else prediction = `Likely Draw`;
-
-  const commonScores = Object.entries(scoreCounts)
-    .map(([score, count]) => ({ score, count }))
-    .sort((a, b) => b.count - a.count);
-
-  // ✅ FIXED HERE: pass p1, pd, p2
-  const markets = analyzeMarkets(history, team1, team2, p1, pd, p2);
+  const total = matches.length || 1;
 
   return {
-    prediction,
-    p1,
-    p2,
-    pd,
-    commonScores,
-    markets
+    count: total,
+    win1: ((count1 / total) * 100).toFixed(1),
+    draw: ((countX / total) * 100).toFixed(1),
+    win2: ((count2 / total) * 100).toFixed(1),
+    gg: ((gg / total) * 100).toFixed(1),
+    over25: ((over25 / total) * 100).toFixed(1),
+    range: {
+      "0–1 Goals": goals0_1,
+      "2–3 Goals": goals2_3,
+      "4+ Goals": goals4plus
+    }
   };
 }
+    
     function searchOdds(minOdds) {
       if (!minOdds || minOdds < 1) {
         displayHistory(currentHistory);
@@ -1893,70 +1855,134 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       loadMatches();
+      
+// Utility 
+function findGlobalOddsMatches(enteredOdds, matchData, range = 0.15) {
+  const { o1, oX, o2 } = enteredOdds;
 
-      document.getElementById("predictBtn").addEventListener("click", () => {
-        const team1 = document.getElementById("team1Select").value;
-        const team2 = document.getElementById("team2Select").value;
+  return matchData.filter(m => {
+    return (
+      Math.abs(m.odds1 - o1) <= range &&
+      Math.abs(m.oddsX - oX) <= range &&
+      Math.abs(m.odds2 - o2) <= range
+    );
+  });
+}
 
-        if (!team1 || !team2 || team1 === team2) {
-          document.getElementById("predictionOutput").innerHTML = `
-            <div class="prediction-error">
-              <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #dc3545; margin-bottom: 15px;"></i>
-              <h3 style="color: #dc3545;">Selection Error</h3>
-              <p>Please select two different teams</p>
-            </div>
-          `;
-          return;
-        }
+document.getElementById("predictBtn").addEventListener("click", () => {
+  const team1 = document.getElementById("team1Select").value;
+  const team2 = document.getElementById("team2Select").value;
 
-        const history = matches.filter(m => {
-          const match = m.match.toLowerCase();
-          return match.includes(team1.toLowerCase()) && match.includes(team2.toLowerCase());
-        });
+  if (!team1 || !team2 || team1 === team2) {
+    document.getElementById("predictionOutput").innerHTML = `
+      <div class="prediction-error">
+        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #dc3545; margin-bottom: 15px;"></i>
+        <h3 style="color: #dc3545;">Selection Error</h3>
+        <p>Please select two different teams</p>
+      </div>
+    `;
+    return;
+  }
 
-        // Store current history for search
-        currentHistory = history;
-        
-        // Display historical matches
-        displayHistory(history);
-        
-        // Analyze common opponents
-        const opponentsAnalysis = analyzeCommonOpponents(team1, team2, matches);
-        
-        // Analyze and display prediction
-        const result = analyzeMatch(team1, team2, history);
+  // Odds input
+  const enteredOdds = {
+    o1: parseFloat(document.getElementById("inputOdds1").value),
+    oX: parseFloat(document.getElementById("inputOddsX").value),
+    o2: parseFloat(document.getElementById("inputOdds2").value)
+  };
 
-displayPrediction(
-  team1,
-  team2,
-  history,
-  result.prediction,
-  result.p1,
-  result.p2,
-  result.pd,
-  result.commonScores,
-  opponentsAnalysis,
-  result.markets
-);
-      });
+  // Historical head-to-head matches
+  const history = matches.filter(m => {
+    const match = m.match.toLowerCase();
+    return match.includes(team1.toLowerCase()) && match.includes(team2.toLowerCase());
+  });
 
-      document.getElementById("resetBtn").addEventListener("click", () => {
-        document.getElementById("team1Select").selectedIndex = 0;
-        document.getElementById("team2Select").selectedIndex = 0;
-        document.getElementById("oddsSearch").value = '';
-        document.getElementById("predictionOutput").innerHTML = `
-          <div class="prediction-placeholder">
-            <i class="fas fa-poll-h" style="font-size: 3rem; color: #dee2e6; margin-bottom: 15px;"></i>
-            <p>Select two teams and click "Predict Outcome" to see the prediction</p>
-          </div>
-        `;
-        document.getElementById("historyOutput").innerHTML = `
-          <div class="empty-history">
-            <i class="fas fa-inbox" style="font-size: 2.5rem; margin-bottom: 15px;"></i>
-            <p>No match history to display</p>
-          </div>
-        `;
-      });
+  // Team-specific odds pattern
+  const relevantMatches = findTeamOddsMatches(team1, team2, enteredOdds, matches);
+  const patternStats = analyzeOddsOutcome(relevantMatches);
+
+  document.getElementById("similarOddsInfo").textContent =
+    `📊 ${relevantMatches.length} historical matches found with similar odds`;
+
+  // Global odds pattern
+  const globalOddsMatches = findGlobalOddsMatches(enteredOdds, matches);
+  const globalOddsStats = analyzeOddsOutcome(globalOddsMatches);
+
+  // Show suggestions
+  document.getElementById("suggestionsCard").style.display = "block";
+  document.getElementById("suggestionContent").innerHTML = `
+    <p><strong>🔍 Based on ${patternStats.count} past ${team1} vs ${team2} matches with similar odds:</strong></p>
+    <ul>
+      <li>🏆 ${team1} win: ${patternStats.win1}%</li>
+      <li>🤝 Draw: ${patternStats.draw}%</li>
+      <li>📉 ${team2} win: ${patternStats.win2}%</li>
+      <li>🎯 GG: ${patternStats.gg}%, Over 2.5: ${patternStats.over25}%</li>
+      <li>⚽ Goal Ranges:
+        <ul>
+          <li>0–1 goals: ${patternStats.range["0–1 Goals"]}</li>
+          <li>2–3 goals: ${patternStats.range["2–3 Goals"]}</li>
+          <li>4+ goals: ${patternStats.range["4+ Goals"]}</li>
+        </ul>
+      </li>
+    </ul>
+    <hr style="margin: 15px 0;">
+    <p><strong>🌍 Global Odds Performance for Similar Odds:</strong></p>
+    <ul>
+      <li>🏠 Home wins: ${globalOddsStats.win1}%</li>
+      <li>🤝 Draws: ${globalOddsStats.draw}%</li>
+      <li>🚀 Away wins: ${globalOddsStats.win2}%</li>
+      <li>🎯 GG (Both score): ${globalOddsStats.gg}%</li>
+      <li>📈 Over 2.5: ${globalOddsStats.over25}%</li>
+    </ul>
+    <p style="color: #888;">(Based on ${globalOddsStats.count} matches globally)</p>
+  `;
+
+  // Display match history
+  currentHistory = history;
+  displayHistory(history);
+
+  // Opponent comparison
+  const opponentsAnalysis = analyzeCommonOpponents(team1, team2, matches);
+
+  // Final AI analysis
+  const result = analyzeMatch(team1, team2, history, enteredOdds, globalOddsStats);
+
+  displayPrediction(
+    team1,
+    team2,
+    history,
+    result.prediction,
+    result.p1,
+    result.p2,
+    result.pd,
+    result.commonScores,
+    opponentsAnalysis,
+    result.markets
+  );
+});
+
+// Reset button
+document.getElementById("resetBtn").addEventListener("click", () => {
+  document.getElementById("team1Select").selectedIndex = 0;
+  document.getElementById("team2Select").selectedIndex = 0;
+  document.getElementById("similarOddsInfo").textContent = '';
+  document.getElementById("oddsSearch").value = '';
+  document.getElementById("suggestionContent").innerHTML = '';
+  document.getElementById("suggestionsCard").style.display = "none";
+  document.getElementById("predictionOutput").innerHTML = `
+    <div class="prediction-placeholder">
+      <i class="fas fa-poll-h" style="font-size: 3rem; color: #dee2e6; margin-bottom: 15px;"></i>
+      <p>Select two teams and click "Predict Outcome" to see the prediction</p>
+    </div>
+  `;
+  document.getElementById("historyOutput").innerHTML = `
+    <div class="empty-history">
+      <i class="fas fa-inbox" style="font-size: 2.5rem; margin-bottom: 15px;"></i>
+      <p>No match history to display</p>
+    </div>
+  `;
+});
+
 
       document.getElementById("searchBtn").addEventListener("click", () => {
         const minOdds = parseFloat(document.getElementById("oddsSearch").value);
@@ -1978,6 +2004,122 @@ displayPrediction(
   }, 5000);
 });
     });
-  </script>
+  
+function analyzeMatch(team1, team2, history, enteredOdds, globalOddsStats) {
+  if (history.length === 0) {
+    return {
+      prediction: "Insufficient Data",
+      p1: "0.0",
+      p2: "0.0",
+      pd: "0.0",
+      commonScores: [],
+      markets: {
+        ggPercentage: "0.0",
+        over25Percentage: "0.0",
+        doubleChance: "N/A",
+        goalsRange: "N/A",
+        asianHandicap: "N/A",
+        bttsResult: "N/A"
+      }
+    };
+  }
+
+  const impliedProbs = oddsToProbabilities(
+    enteredOdds.o1,
+    enteredOdds.oX,
+    enteredOdds.o2
+  );
+
+  let team1Score = 0, team2Score = 0, drawScore = 0;
+  const scoreCounts = {};
+
+  for (const match of history) {
+    const [score1, score2] = match.score.split("-").map(Number);
+    const outcome = match.outcome.trim();
+    if (outcome === "1") team1Score++;
+    else if (outcome === "2") team2Score++;
+    else drawScore++;
+
+    const key = `${score1}-${score2}`;
+    scoreCounts[key] = (scoreCounts[key] || 0) + 1;
+  }
+
+  const total = team1Score + team2Score + drawScore || 1;
+  const rawP1 = team1Score / total;
+  const rawP2 = team2Score / total;
+  const rawPD = drawScore / total;
+  const n = history.length;
+
+  const p1Hist = bayesianAdjust(rawP1, n) * 100;
+  const p2Hist = bayesianAdjust(rawP2, n) * 100;
+  const pdHist = bayesianAdjust(rawPD, n) * 100;
+
+  // ⚠️ NEW: Blend in global odds stats
+  const finalP1 = (
+    p1Hist * 0.4 + impliedProbs.p1 * 0.3 + parseFloat(globalOddsStats.win1) * 0.3
+  ).toFixed(1);
+
+  const finalPD = (
+    pdHist * 0.4 + impliedProbs.pX * 0.3 + parseFloat(globalOddsStats.draw) * 0.3
+  ).toFixed(1);
+
+  const finalP2 = (
+    p2Hist * 0.4 + impliedProbs.p2 * 0.3 + parseFloat(globalOddsStats.win2) * 0.3
+  ).toFixed(1);
+
+  // Determine final prediction
+  const mostLikely = Math.max(finalP1, finalPD, finalP2);
+  const prediction = mostLikely == finalP1 ? team1 :
+                     mostLikely == finalP2 ? team2 : "Draw";
+
+  // Common scores
+  const sortedScores = Object.entries(scoreCounts)
+    .map(([score, count]) => ({ score, count }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    prediction,
+    p1: finalP1,
+    pd: finalPD,
+    p2: finalP2,
+    commonScores: sortedScores,
+    markets: analyzeMarkets(history, team1, team2, finalP1, finalPD, finalP2)
+  };
+}
+
+function displayPrediction(team1, team2, history, prediction, p1, p2, pd, commonScores, opponentsAnalysis, markets) {
+  const container = document.getElementById("predictionOutput");
+  container.innerHTML = `
+    <div class="prediction-header">Predicted Outcome</div>
+    <div class="prediction-result win-prediction">${prediction}</div>
+
+    <div class="section-title"><i class="fas fa-percentage"></i> Win Probabilities</div>
+    <div class="probability-container">
+      <div class="probability-card team1-probability">
+        <div class="probability-title">${team1} Win</div>
+        <div class="probability-value">${p1}%</div>
+      </div>
+      <div class="probability-card draw-probability">
+        <div class="probability-title">Draw</div>
+        <div class="probability-value">${pd}%</div>
+      </div>
+      <div class="probability-card team2-probability">
+        <div class="probability-title">${team2} Win</div>
+        <div class="probability-value">${p2}%</div>
+      </div>
+    </div>
+
+    ${displayMarkets(markets)}
+    ${displayTeamPerformance(team1, team2, history)}
+    ${displayCommonOpponents(opponentsAnalysis, team1, team2)}
+    ${displayCommonScores(commonScores)}
+  `;
+
+
+
+  document.getElementById("predictionOutput").innerHTML = predictionHTML;
+}
+
+</script>
 </body>
 </html>
