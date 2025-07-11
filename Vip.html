@@ -663,15 +663,15 @@
         localStorage.setItem("name", name);
         
         // Save to Firebase - fixed path
-        const userRef = db.ref("subscriptions/" + mobile);
-        await userRef.set({ 
-          name, 
-          mobile,
-          status: "pending",
-          plan: "vip",
-          amount: 37,
-          timestamp: firebase.database.ServerValue.TIMESTAMP
-        });
+        const userRef = db.ref("subscriptions/" + mobile);await userRef.set({ 
+  name, 
+  mobile,
+  status: "pending",
+  plan: "vip",
+  amount: 37,
+  unseenMessage: "VIP",
+  timestamp: firebase.database.ServerValue.TIMESTAMP
+});
         
         // Success message
         showStatus('VIP payment details submitted successfully!', 'success');
