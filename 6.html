@@ -2124,19 +2124,17 @@ function displayPrediction(team1, team2, history, prediction, p1, p2, pd, common
   document.getElementById("predictionOutput").innerHTML = predictionHTML;
 }
 </script>
+
 <script>
   const timerDisplay = document.getElementById("timer");
-
-  // Unique countdown key
   const countdownKey = "countdown_end_time_fifo";
   const endTime = parseInt(localStorage.getItem(countdownKey));
-  console.log("Loaded countdown_end_time_fifo:", endTime);
 
-  // Redirect if countdown is missing or invalid
-  if (!endTime || isNaN(endTime)) {
-    console.warn("No valid countdown found, redirecting...");
-    window.location.href = "Vip.html";
+  if (!endTime || isNaN(endTime) || Date.now() >= endTime) {
+    console.warn("Subscription invalid or expired. Redirecting to vip.html...");
+    window.location.href = "vip.html";
   } else {
+    console.log("Access granted until:", new Date(endTime).toLocaleString());
     updateCountdown();
   }
 
@@ -2147,12 +2145,8 @@ function displayPrediction(team1, team2, history, prediction, p1, p2, pd, common
     if (remaining <= 0) {
       timerDisplay.textContent = "Expired";
       localStorage.removeItem(countdownKey);
-      timerDisplay.style.background = "#333";
-      timerDisplay.style.color = "#ff4444";
-      timerDisplay.style.fontSize = "2.5rem";
-
       setTimeout(() => {
-        window.location.href = "Vip.html";
+        window.location.href = "vip.html";
       }, 2000);
     } else {
       const hours = Math.floor(remaining / (1000 * 60 * 60));
@@ -2165,6 +2159,5 @@ function displayPrediction(team1, team2, history, prediction, p1, p2, pd, common
     }
   }
 </script>
-
 </body>
 </html>

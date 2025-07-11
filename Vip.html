@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Renew Subscription</title>
+  <title>VIP Subscription Renewal</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   <style>
     :root {
-      --primary-color: #4361ee;
-      --primary-hover: #3a56d4;
+      --primary-color: #8a63d2;
+      --primary-hover: #7a55c2;
       --success-color: #4cc9f0;
       --error-color: #f72585;
+      --vip-color: #ffd700;
       --text-color: #2b2d42;
       --text-light: #8d99ae;
       --bg-color: #f8f9fa;
@@ -29,7 +30,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background-color: var(--bg-color);
+      background: linear-gradient(135deg, #f5f7fa 0%, #e6e9ff 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -43,57 +44,163 @@
 
     .container {
       width: 100%;
-      max-width: 420px;
+      max-width: 480px;
       text-align: center;
     }
 
-    .logo {
+    .header {
+      text-align: center;
       margin-bottom: 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
       font-weight: 700;
-      font-size: 24px;
+      font-size: 28px;
       color: var(--primary-color);
     }
 
-    h2 {
-      font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 16px;
+    .vip-badge {
+      background: linear-gradient(45deg, #ffd700, #ffb700);
+      color: #000;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-left: 10px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .vip-badge i {
+      margin-right: 4px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(45deg, var(--primary-color), #6a4fbb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: var(--text-light);
+      margin-bottom: 24px;
     }
 
     .payment-card {
       background-color: var(--card-bg);
-      padding: 24px;
+      padding: 28px;
       border-radius: var(--border-radius);
       box-shadow: var(--box-shadow);
       margin-bottom: 24px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(138, 99, 210, 0.2);
     }
 
-    .payment-amount {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--primary-color);
-      margin: 8px 0;
-    }
-
-    .payment-number {
-      font-size: 18px;
-      font-weight: 600;
-      margin: 8px 0 16px;
+    .payment-card:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), #6a4fbb);
     }
 
     .payment-instruction {
-      font-size: 14px;
+      font-size: 15px;
       color: var(--text-light);
       margin-bottom: 8px;
     }
 
+    .payment-amount {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--primary-color);
+      margin: 12px 0;
+      position: relative;
+      display: inline-block;
+    }
+
+    .payment-amount:after {
+      content: "VIP";
+      position: absolute;
+      top: -12px;
+      right: -40px;
+      background: var(--vip-color);
+      color: #000;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      transform: rotate(15deg);
+    }
+
+    .payment-number {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 16px 0;
+      padding: 12px;
+      background-color: rgba(138, 99, 210, 0.08);
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .feature {
+      background: rgba(138, 99, 210, 0.08);
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    .feature i {
+      margin-right: 6px;
+      color: var(--primary-color);
+    }
+
     form {
       background-color: var(--card-bg);
-      padding: 24px;
+      padding: 28px;
       border-radius: var(--border-radius);
       box-shadow: var(--box-shadow);
       width: 100%;
+      border: 1px solid rgba(138, 99, 210, 0.1);
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-header h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-header p {
+      font-size: 14px;
+      color: var(--text-light);
     }
 
     .form-group {
@@ -106,72 +213,92 @@
       display: block;
       margin-bottom: 8px;
       font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    label i {
+      margin-right: 8px;
+      color: var(--primary-color);
     }
 
     input {
       width: 100%;
-      padding: 12px 16px;
+      padding: 14px 16px;
       border: 1px solid #e0e0e0;
       border-radius: 8px;
       font-size: 15px;
-      transition: border-color 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     input:focus {
       outline: none;
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+      box-shadow: 0 0 0 3px rgba(138, 99, 210, 0.2);
     }
 
     button {
       width: 100%;
-      background-color: var(--primary-color);
+      background: linear-gradient(45deg, var(--primary-color), #6a4fbb);
       color: white;
       border: none;
-      padding: 14px;
+      padding: 16px;
       border-radius: 8px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(138, 99, 210, 0.3);
     }
 
     button:hover {
-      background-color: var(--primary-hover);
-      transform: translateY(-1px);
+      background: linear-gradient(45deg, var(--primary-hover), #5a3fa2);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(138, 99, 210, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     button:disabled {
-      background-color: #cccccc;
+      background: #cccccc;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
 
     .status-message {
       margin-top: 20px;
       font-size: 14px;
-      padding: 12px;
+      padding: 14px;
       border-radius: 8px;
       display: none;
+      text-align: center;
     }
 
     .status-message.success {
       background-color: rgba(76, 201, 240, 0.1);
       color: var(--success-color);
       display: block;
+      border: 1px solid rgba(76, 201, 240, 0.3);
     }
 
     .status-message.error {
       background-color: rgba(247, 37, 133, 0.1);
       color: var(--error-color);
       display: block;
+      border: 1px solid rgba(247, 37, 133, 0.3);
     }
 
     .status-message.info {
-      background-color: rgba(67, 97, 238, 0.1);
+      background-color: rgba(138, 99, 210, 0.1);
       color: var(--primary-color);
       display: block;
+      border: 1px solid rgba(138, 99, 210, 0.3);
     }
 
     .loading {
@@ -193,11 +320,12 @@
     .verification-status {
       margin-top: 20px;
       padding: 16px;
-      background-color: rgba(67, 97, 238, 0.1);
+      background-color: rgba(138, 99, 210, 0.1);
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
+      border: 1px solid rgba(138, 99, 210, 0.2);
     }
 
     .verification-status .loading {
@@ -206,6 +334,24 @@
 
     .verification-status span {
       margin-left: 8px;
+      font-weight: 500;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 13px;
+      color: var(--text-light);
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
     }
 
     @media (max-width: 480px) {
@@ -216,35 +362,74 @@
       form, .payment-card {
         padding: 20px;
       }
+
+      .payment-amount {
+        font-size: 32px;
+      }
+
+      .payment-number {
+        font-size: 18px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div class="container">
-    <div class="logo">YourLogo</div>
-    
-    <h2>Renew Your Subscription</h2>
+    <div class="header">
+      <div class="logo">
+        Premium Access
+        <span class="vip-badge">
+          <i class="fas fa-crown"></i>VIP
+        </span>
+      </div>
+      <h1>Renew Your VIP Subscription</h1>
+      <p class="subtitle">Continue enjoying premium benefits with uninterrupted access</p>
+    </div>
     
     <div class="payment-card">
-      <div class="payment-instruction">Send payment to:</div>
-      <div class="payment-amount">29 KSH</div>
-      <div class="payment-number">0797612155</div>
-      <div class="payment-instruction">Include your name as reference</div>
+      <div class="payment-instruction">Send payment to the following number:</div>
+      <div class="payment-amount">37 KSH</div>
+      <div class="payment-number">
+        <i class="fas fa-mobile-alt"></i> 0797612155
+      </div>
+      <div class="payment-instruction">Include your name as the payment reference</div>
+      
+      <div class="features">
+        <div class="feature">
+          <i class="fas fa-bolt"></i> Instant Activation
+        </div>
+        <div class="feature">
+          <i class="fas fa-shield-alt"></i> Secure Payment
+        </div>
+        <div class="feature">
+          <i class="fas fa-headset"></i> 24/7 Support
+        </div>
+      </div>
     </div>
 
     <form id="subscriptionForm">
+      <div class="form-header">
+        <h3>Payment Verification</h3>
+        <p>Enter your details to complete subscription renewal</p>
+      </div>
+      
       <div class="form-group">
-        <label for="name">Full Name</label>
+        <label for="name"><i class="fas fa-user"></i> Full Name</label>
         <input type="text" id="name" placeholder="Enter your full name" required>
       </div>
       
       <div class="form-group">
-        <label for="mobile">Mobile Number</label>
+        <label for="mobile"><i class="fas fa-phone"></i> Mobile Number</label>
         <input type="tel" id="mobile" placeholder="07XXXXXXXX" required>
       </div>
       
       <button type="submit" id="submitBtn">
-        <span id="buttonText">Submit Payment Details</span>
+        <span id="buttonText">Verify VIP Payment</span>
       </button>
     </form>
 
@@ -253,6 +438,11 @@
     <div id="verificationStatus" class="verification-status" style="display: none;">
       <div class="loading"></div>
       <span>Checking verification status...</span>
+    </div>
+
+    <div class="footer">
+      <p>Your payment information is securely processed. For assistance, contact support@premiumaccess.com or call +254 797 612 155</p>
+      <p>© 2023 Premium Access VIP. All rights reserved. <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
     </div>
   </div>
 
@@ -300,7 +490,7 @@
         submitBtn.insertAdjacentHTML('beforeend', '<div class="loading"></div>');
       } else {
         submitBtn.disabled = false;
-        buttonText.textContent = 'Submit Payment Details';
+        buttonText.textContent = 'Verify VIP Payment';
         const loadingElement = submitBtn.querySelector('.loading');
         if (loadingElement) loadingElement.remove();
       }
@@ -312,34 +502,37 @@
     }
 
     // Listen for verification updates
-    // Listen for verification updates
-function listenForVerification(mobile) {
-  verificationStatus.style.display = 'flex';
-  showStatus('We\'ve received your details. Please complete payment to continue.', 'info');
-  
-  const userRef = db.ref("subscriptions/" + mobile);
-  
-  userRef.on("value", (snapshot) => {
-    const data = snapshot.val();
-    if (data && data.status === "verified") {
-      // Set a unique countdown key for this page
-      const countdownDuration = 4 * 60 * 1000; // 12 hours
-      const uniqueKey = "countdown_end_time_fifo";  // Unique key for this page
-      const endTime = Date.now() + countdownDuration;
-      localStorage.setItem(uniqueKey, endTime.toString());
+    function listenForVerification(mobile) {
+      verificationStatus.style.display = 'flex';
+      showStatus('We\'ve received your VIP payment details. Please complete payment to continue.', 'info');
 
-      // Clear stored mobile
-      localStorage.removeItem("mobile");
+      const userRef = db.ref("vip_subscriptions/" + mobile);
 
-      // Redirect to fifo.html
-      window.location.href = "index.html";
+      userRef.on("value", (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.status === "verified") {
+          // Set countdown
+          const countdownDuration = 12 * 60 * 60 * 1000; // 12 hours
+          const endTime = Date.now() + countdownDuration;
+          localStorage.setItem("vip_countdown_end_time", endTime.toString());
+
+          // Clear mobile & name from localStorage
+          localStorage.removeItem("vip_mobile");
+          localStorage.removeItem("vip_name");
+
+          // Show success and redirect
+          showStatus('✅ VIP subscription successfully renewed! Redirecting to premium content...', 'success');
+          
+          setTimeout(() => {
+            window.location.href = "vip-dashboard.html";
+          }, 2000);
+        }
+      });
     }
-  });
-}
 
     // Check for existing verification on page load
     window.addEventListener("load", () => {
-      const savedMobile = localStorage.getItem("mobile");
+      const savedMobile = localStorage.getItem("vip_mobile");
       if (savedMobile) {
         mobileInput.value = savedMobile;
         document.getElementById("name").focus();
@@ -381,14 +574,17 @@ function listenForVerification(mobile) {
       
       try {
         // Save to localStorage
-        localStorage.setItem("mobile", mobile);
+        localStorage.setItem("vip_mobile", mobile);
+        localStorage.setItem("vip_name", name);
         
         // Save to Firebase
-        const userRef = db.ref("subscriptions/" + mobile);
+        const userRef = db.ref("vip_subscriptions/" + mobile);
         await userRef.set({ 
           name, 
           mobile,
           status: "pending",
+          plan: "vip",
+          amount: 37,
           timestamp: firebase.database.ServerValue.TIMESTAMP
         });
         
@@ -405,6 +601,8 @@ function listenForVerification(mobile) {
       const mobile = formatMobileNumber(this.value);
       if (mobile && !validateMobileNumber(mobile)) {
         showStatus('Please enter a valid Kenyan mobile number', 'error');
+      } else {
+        statusMsg.style.display = 'none';
       }
     });
   </script>
