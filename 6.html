@@ -2127,18 +2127,18 @@ function displayPrediction(team1, team2, history, prediction, p1, p2, pd, common
 <script>
   const timerDisplay = document.getElementById("timer");
 
-  // Unique countdown key for fifo.html
+  // Unique countdown key
   const countdownKey = "countdown_end_time_fifo";
-  let endTime = parseInt(localStorage.getItem(countdownKey));
+  const endTime = parseInt(localStorage.getItem(countdownKey));
+  console.log("Loaded countdown_end_time_fifo:", endTime);
 
-  // If no valid end time, set new 1-hour countdown
+  // Redirect if countdown is missing or invalid
   if (!endTime || isNaN(endTime)) {
-    console.warn("No valid countdown found. Creating new 1-hour countdown.");
-    endTime = Date.now() + 60 * 60 * 1000; // 1 hour
-    localStorage.setItem(countdownKey, endTime);
+    console.warn("No valid countdown found, redirecting...");
+    window.location.href = "Vip.html";
+  } else {
+    updateCountdown();
   }
-
-  console.log("Countdown ends at:", new Date(endTime).toLocaleTimeString());
 
   function updateCountdown() {
     const now = Date.now();
@@ -2164,8 +2164,6 @@ function displayPrediction(team1, team2, history, prediction, p1, p2, pd, common
       requestAnimationFrame(updateCountdown);
     }
   }
-
-  updateCountdown();
 </script>
 
 </body>
