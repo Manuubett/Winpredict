@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renew Subscription</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --primary-hover: #3a56d4;
+      --success-color: #4cc9f0;
+      --error-color: #f72585;
+      --text-color: #2b2d42;
+      --text-light: #8d99ae;
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --border-radius: 12px;
+      --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .logo {
+      margin-bottom: 24px;
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .payment-card {
+      background-color: var(--card-bg);
+      padding: 24px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .payment-amount {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 8px 0;
+    }
+
+    .payment-number {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 8px 0 16px;
+    }
+
+    .payment-instruction {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    form {
+      background-color: var(--card-bg);
+      padding: 24px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      width: 100%;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+    }
+
+    button {
+      width: 100%;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-message {
+      margin-top: 20px;
+      font-size: 14px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .status-message.success {
+      background-color: rgba(76, 201, 240, 0.1);
+      color: var(--success-color);
+      display: block;
+    }
+
+    .status-message.error {
+      background-color: rgba(247, 37, 133, 0.1);
+      color: var(--error-color);
+      display: block;
+    }
+
+    .status-message.info {
+      background-color: rgba(67, 97, 238, 0.1);
+      color: var(--primary-color);
+      display: block;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .verification-status {
+      margin-top: 20px;
+      padding: 16px;
+      background-color: rgba(67, 97, 238, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .verification-status .loading {
+      border-top-color: var(--primary-color);
+    }
+
+    .verification-status span {
+      margin-left: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0;
+      }
+      
+      form, .payment-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">YourLogo</div>
+    
+    <h2>Renew Your Subscription</h2>
+    
+    <div class="payment-card">
+      <div class="payment-instruction">Send payment to:</div>
+      <div class="payment-amount">29 KSH</div>
+      <div class="payment-number">0797612155</div>
+      <div class="payment-instruction">Include your name as reference</div>
+    </div>
+
+    <form id="subscriptionForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="Enter your full name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="mobile">Mobile Number</label>
+        <input type="tel" id="mobile" placeholder="07XXXXXXXX" required>
+      </div>
+      
+      <button type="submit" id="submitBtn">
+        <span id="buttonText">Submit Payment Details</span>
+      </button>
+    </form>
+
+    <div id="statusMessage" class="status-message"></div>
+    
+    <div id="verificationStatus" class="verification-status" style="display: none;">
+      <div class="loading"></div>
+      <span>Checking verification status...</span>
+    </div>
+  </div>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDthFB2btT_r6slyX_xa5jeDOX8KDxsmdo",
+      authDomain: "store-1d9e8.firebaseapp.com",
+      projectId: "store-1d9e8",
+      storageBucket: "store-1d9e8.appspot.com",
+      messagingSenderId: "869478006120",
+      appId: "1:869478006120:web:2045cbb98db8a3755e6add",
+      measurementId: "G-3GCBWGCYPG"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // DOM Elements
+    const form = document.getElementById("subscriptionForm");
+    const statusMsg = document.getElementById("statusMessage");
+    const submitBtn = document.getElementById("submitBtn");
+    const buttonText = document.getElementById("buttonText");
+    const verificationStatus = document.getElementById("verificationStatus");
+    const mobileInput = document.getElementById("mobile");
+
+    // Validate Kenyan mobile number
+    function validateMobileNumber(number) {
+      const regex = /^0[17]\d{8}$/;
+      return regex.test(number);
+    }
+
+    // Show status message
+    function showStatus(message, type = 'info') {
+      statusMsg.textContent = message;
+      statusMsg.className = 'status-message ' + type;
+    }
+
+    // Toggle loading state
+    function setLoading(isLoading) {
+      if (isLoading) {
+        submitBtn.disabled = true;
+        buttonText.innerHTML = 'Processing...';
+        submitBtn.insertAdjacentHTML('beforeend', '<div class="loading"></div>');
+      } else {
+        submitBtn.disabled = false;
+        buttonText.textContent = 'Submit Payment Details';
+        const loadingElement = submitBtn.querySelector('.loading');
+        if (loadingElement) loadingElement.remove();
+      }
+    }
+
+    // Format mobile number
+    function formatMobileNumber(number) {
+      return number.trim().replace(/\D/g, '');
+    }
+
+    // Listen for verification updates
+    // Listen for verification updates
+function listenForVerification(mobile) {
+  verificationStatus.style.display = 'flex';
+  showStatus('We\'ve received your details. Please complete payment to continue.', 'info');
+  
+  const userRef = db.ref("subscriptions/" + mobile);
+  
+  userRef.on("value", (snapshot) => {
+    const data = snapshot.val();
+    if (data && data.status === "verified") {
+      // Set a unique countdown key for this page
+      const countdownDuration = 4 * 60 * 1000; // 12 hours
+      const uniqueKey = "countdown_end_time_fifo";  // Unique key for this page
+      const endTime = Date.now() + countdownDuration;
+      localStorage.setItem(uniqueKey, endTime.toString());
+
+      // Clear stored mobile
+      localStorage.removeItem("mobile");
+
+      // Redirect to fifo.html
+      window.location.href = "index.html";
+    }
+  });
+}
+
+    // Check for existing verification on page load
+    window.addEventListener("load", () => {
+      const savedMobile = localStorage.getItem("mobile");
+      if (savedMobile) {
+        mobileInput.value = savedMobile;
+        document.getElementById("name").focus();
+        listenForVerification(savedMobile);
+        setLoading(false);
+      }
+    });
+
+    // Form submission handler
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById("name").value.trim();
+      let mobile = formatMobileNumber(document.getElementById("mobile").value);
+      
+      // Validate inputs
+      if (!name) {
+        showStatus('Please enter your full name', 'error');
+        document.getElementById("name").focus();
+        return;
+      }
+      
+      if (!validateMobileNumber(mobile)) {
+        showStatus('Please enter a valid Kenyan mobile number (e.g. 0712345678)', 'error');
+        document.getElementById("mobile").focus();
+        return;
+      }
+      
+      // Add country code if not present
+      if (!mobile.startsWith('254')) {
+        if (mobile.startsWith('0')) {
+          mobile = '254' + mobile.substring(1);
+        } else {
+          mobile = '254' + mobile;
+        }
+      }
+      
+      setLoading(true);
+      
+      try {
+        // Save to localStorage
+        localStorage.setItem("mobile", mobile);
+        
+        // Save to Firebase
+        const userRef = db.ref("subscriptions/" + mobile);
+        await userRef.set({ 
+          name, 
+          mobile,
+          status: "pending",
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+        
+        listenForVerification(mobile);
+      } catch (error) {
+        console.error("Error saving data:", error);
+        showStatus('An error occurred. Please try again.', 'error');
+        setLoading(false);
+      }
+    });
+
+    // Input validation on blur
+    mobileInput.addEventListener('blur', function() {
+      const mobile = formatMobileNumber(this.value);
+      if (mobile && !validateMobileNumber(mobile)) {
+        showStatus('Please enter a valid Kenyan mobile number', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

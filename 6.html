@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Match Predictor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --border: #dee2e6;
+      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --radius: 8px;
+      --goal-green: #28a745;
+      --goal-blue: #17a2b8;
+      --goal-red: #dc3545;
+      --odds-high: #e63946;
+      --odds-medium: #f77f00;
+      --odds-low: #2a9d8f;
+      --gg-market: #9d4edd;
+      --over25-market: #ff9e00;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: var(--shadow);
+    }
+    
+    h1 {
+      color: white;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .subtitle {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .card-title i {
+      color: var(--secondary);
+    }
+    
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .team-select {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+    
+    select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background-color: white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    select:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    .vs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: var(--gray);
+      margin: 0 10px;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      flex: 1;
+    }
+    
+    .btn-primary:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+      background: var(--light);
+      color: var(--gray);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      background: #e9ecef;
+    }
+    
+    #loader {
+      padding: 15px;
+      background: #e9f7fe;
+      border-radius: var(--radius);
+      text-align: center;
+      font-weight: 500;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .prediction-container {
+      padding: 25px;
+      background: #f8f9fa;
+      border-radius: var(--radius);
+      margin-top: 20px;
+      text-align: center;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .prediction-header {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: var(--dark);
+    }
+    
+    .prediction-result {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      padding: 15px 30px;
+      border-radius: var(--radius);
+      background: white;
+      display: inline-block;
+      box-shadow: var(--shadow);
+    }
+    
+    .win-prediction {
+      color: #28a745;
+      background: rgba(40, 167, 69, 0.1);
+    }
+    
+    .draw-prediction {
+      color: #ffc107;
+      background: rgba(255, 193, 7, 0.1);
+    }
+    
+    .probability-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+      width: 100%;
+    }
+    
+    .probability-card {
+      flex: 1;
+      min-width: 150px;
+      padding: 15px;
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: var(--shadow);
+    }
+    
+    .probability-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--gray);
+    }
+    
+    .probability-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    .team1-probability .probability-value {
+      color: var(--primary);
+    }
+    
+    .draw-probability .probability-value {
+      color: #ffc107;
+    }
+    
+    .team2-probability .probability-value {
+      color: #dc3545;
+    }
+    
+    .progress-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 20px auto;
+    }
+    
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+    
+    .progress-bar {
+      height: 20px;
+      background: #e9ecef;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      display: flex;
+      transition: width 1s ease;
+    }
+    
+    .team1-fill {
+      background: var(--primary);
+    }
+    
+    .draw-fill {
+      background: #ffc107;
+    }
+    
+    .team2-fill {
+      background: #dc3545;
+    }
+    
+    .history-info {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-top: 15px;
+    }
+    
+    .match-history {
+      margin-top: 30px;
+    }
+    
+    .history-title {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .history-container {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    
+    .history-item {
+      padding: 15px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+    }
+    
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    
+    .match-teams {
+      flex: 1;
+      font-weight: 500;
+    }
+    
+    .match-outcome {
+      width: 100px;
+      text-align: center;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    
+    .outcome-home {
+      background: rgba(67, 97, 238, 0.1);
+      color: var(--primary);
+    }
+    
+    .outcome-draw {
+      background: rgba(255, 193, 7, 0.1);
+      color: #ffc107;
+    }
+    
+    .outcome-away {
+      background: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+    }
+    
+    .match-odds {
+      width: 160px;
+      text-align: center;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-around;
+    }
+    
+    .odds-value {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    
+    .odds-home {
+      background: rgba(67, 97, 238, 0.1);
+      color: var(--primary);
+    }
+    
+    .odds-draw {
+      background: rgba(255, 193, 7, 0.1);
+      color: #ffc107;
+    }
+    
+    .odds-away {
+      background: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+    }
+    
+    .odds-high {
+      background-color: rgba(230, 57, 70, 0.2);
+      color: var(--odds-high);
+    }
+    
+    .odds-medium {
+      background-color: rgba(247, 127, 0, 0.2);
+      color: var(--odds-medium);
+    }
+    
+    .odds-low {
+      background-color: rgba(42, 157, 143, 0.2);
+      color: var(--odds-low);
+    }
+    
+    .match-date {
+      width: 100px;
+      text-align: center;
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+    
+    .match-score {
+      width: 80px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .empty-history {
+      padding: 30px;
+      text-align: center;
+      color: var(--gray);
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      padding: 20px;
+    }
+    
+    /* Common scores styles */
+    .common-scores-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    
+    .common-score-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 15px;
+      min-width: 120px;
+      text-align: center;
+    }
+    
+    .common-score-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+    
+    .common-score-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    
+    .common-score-count {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-top: 5px;
+    }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 25px 0 15px;
+      color: var(--dark);
+      font-size: 1.3rem;
+    }
+    
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .score-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: white;
+      padding: 12px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    
+    .score-display {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .score-frequency {
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+    
+    .home-goal {
+      color: var(--goal-green);
+    }
+    
+    .away-goal {
+      color: var(--goal-blue);
+    }
+    
+    /* Search bar styles */
+    .search-container {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f1f3f5;
+      border-radius: var(--radius);
+    }
+    
+    .search-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      color: var(--dark);
+    }
+    
+    .search-box {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+    
+    .search-input input {
+      width: 100%;
+      padding: 12px 15px 12px 40px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+    }
+    
+    .search-input i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+    }
+    
+    .search-button {
+      padding: 12px 25px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .search-button:hover {
+      background: var(--secondary);
+    }
+    
+    .odds-key {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 15px;
+      font-size: 0.85rem;
+    }
+    
+    .key-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .key-color {
+      width: 15px;
+      height: 15px;
+      border-radius: 3px;
+    }
+    
+    .key-high {
+      background-color: rgba(230, 57, 70, 0.2);
+    }
+    
+    .key-medium {
+      background-color: rgba(247, 127, 0, 0.2);
+    }
+    
+    .key-low {
+      background-color: rgba(42, 157, 143, 0.2);
+    }
+    
+    /* New styles for markets and performance */
+    .markets-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    
+    .market-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 15px;
+      min-width: 220px;
+      text-align: center;
+      border-top: 4px solid var(--gg-market);
+    }
+    
+    .market-card.over25 {
+      border-top-color: var(--over25-market);
+    }
+    
+    .market-title {
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .market-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .market-label {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-top: 5px;
+    }
+    
+    .performance-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 25px;
+    }
+    
+    .performance-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    
+    .performance-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: var(--radius);
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--gray);
+      text-align: center;
+    }
+    
+    .common-opponents {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .opponent-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .opponent-item:last-child {
+      border-bottom: none;
+    }
+    
+    .opponent-name {
+      font-weight: 500;
+    }
+    
+    .opponent-stats {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .opponent-stat {
+      text-align: center;
+      min-width: 70px;
+    }
+    
+    .opponent-value {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    
+    .opponent-label {
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+    
+    @media (max-width: 768px) {
+      .controls {
+        flex-direction: column;
+      }
+      
+      .vs {
+        margin: 10px 0;
+      }
+      
+      .probability-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .probability-card {
+        width: 100%;
+        max-width: 300px;
+      }
+      
+      .history-item {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .match-teams {
+        width: 100%;
+      }
+      
+      .match-outcome,
+      .match-score,
+      .match-odds,
+      .match-date {
+        width: auto;
+        flex: 1;
+      }
+      
+      .common-scores-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .common-score-card {
+        width: 100%;
+        max-width: 200px;
+      }
+      
+      .search-box {
+        flex-direction: column;
+      }
+      
+      .search-button {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .markets-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .market-card {
+        width: 100%;
+        max-width: 300px;
+      }
+      
+      .performance-container {
+        grid-template-columns: 1fr;
+      }
+      #pageLoader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  flex-direction: column;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.loader-content {
+  text-align: center;
+  padding: 30px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.loader-content h2 {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+.dev-info {
+  font-size: 1.05rem;
+  color: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.inline-pic {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  object-fit: cover;
+  box-shadow: 0 0 4px #fff;
+}
+
+.loader-spinner {
+  font-size: 1.8rem;
+  color: #ffffff;
+}.vip-desc {
+  font-size: 1rem;
+  color: #f1f1f1;
+  margin: 15px auto 18px;
+  max-width: 500px;
+  line-height: 1.6;
+  text-align: center;
+  opacity: 0.9;
+}
+.dev-info {
+  font-size: 1.1rem;
+  color: #ffdd57;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  font-style: italic;
+  font-weight: 500;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+
+.dev-text {
+  font-style: italic;
+  color: #ffd700; /* gold-style to stand out */
+}
+
+.inline-pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  object-fit: cover;
+  box-shadow: 0 0 5px #fff;
+}
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-futbol"></i> Advanced Match Predictor</h1>
+      <p class="subtitle">Predict outcomes with common opponents analysis and market predictions</p>
+      <div style="font-size: 0.9rem; color: yellow;">
+  Subscription ends in <span id="timer">--:--:--</span>
+</div>
+    </header><div id="pageLoader">
+  <div class="loader-content">
+    <h2>Welcome to VIP Membership</h2>
+    
+
+    <p class="vip-desc">
+      Unlock exclusive football predictions, in-depth match analysis, and priority access to accurate insights. Elevate your game — bet smarter, win bigger.
+    </p>
+    <br>
+<p class="dev-info">
+  <img src="https://i.ibb.co/RTspjkdT/07732cbf7233.png" alt="Bett" class="inline-pic" />
+  <span class="dev-text"><span class="dev-text" style="position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: 'Segoe UI', sans-serif;">
+  <!-- Torch Light Icon -->
+  <i class="fas fa-lightbulb animated-multi-torch"></i>
+
+  <!-- Light Beam Effect -->
+  <span class="animated-multi-beam"></span>
+
+  <!-- Developer Text -->
+  <i class="animated-multi-text">Developer Bett Ke</i> -
+</span>
+
+<style>
+  /* Torch animation with multi-color glow */
+  .animated-multi-torch {
+    font-size: 1.3em;
+    transform: rotate(25deg);
+    position: relative;
+    z-index: 2;
+    color: #ffffff;
+    animation: torchColorCycle 5s infinite linear;
+  }
+
+  /* Light beam color cycle */
+  .animated-multi-beam {
+    position: absolute;
+    left: 20px;
+    top: -12px;
+    width: 160px;
+    height: 60px;
+    background: radial-gradient(circle at left, rgba(255,255,255,0.6), transparent 80%);
+    filter: blur(14px);
+    z-index: 1;
+    pointer-events: none;
+    animation: beamColorCycle 5s infinite linear;
+  }
+
+  /* Text glow color cycle */
+  .animated-multi-text {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1rem;
+    color: #ffffff;
+    position: relative;
+    z-index: 2;
+    animation: textColorCycle 5s infinite linear;
+  }
+
+  /* Torch glow filter animation */
+  @keyframes torchColorCycle {
+    0%   { color: #ffffff; filter: drop-shadow(0 0 6px white); }
+    25%  { color: pink; filter: drop-shadow(0 0 10px #69f0ae); }
+    50%  { color: blue; filter: drop-shadow(0 0 10px #ffeb3b); }
+    75%  { color: purple; filter: drop-shadow(0 0 10px #ff80ab); }
+    100% { color: #ffffff; filter: drop-shadow(0 0 6px white); }
+  }
+
+  /* Beam glow background animation */
+  @keyframes beamColorCycle {
+    0%   { background: radial-gradient(circle at left, rgba(255,255,255,0.6), transparent 80%); }
+    25%  { background: radial-gradient(circle at left, rgba(105,240,174,0.5), transparent 80%); }
+    50%  { background: radial-gradient(circle at left, rgba(255,235,59,0.5), transparent 80%); }
+    75%  { background: radial-gradient(circle at left, rgba(255,128,171,0.5), transparent 80%); }
+    100% { background: radial-gradient(circle at left, rgba(255,255,255,0.6), transparent 80%); }
+  }
+
+  /* Text shadow animated through colors */
+  @keyframes textColorCycle {
+    0%   { text-shadow: 0 0 10px white, 0 0 20px #ccc; }
+    25%  { text-shadow: 0 0 12px #69f0ae, 0 0 24px #00e676; }
+    50%  { text-shadow: 0 0 12px #ffeb3b, 0 0 24px #fbc02d; }
+    75%  { text-shadow: 0 0 12px #ff80ab, 0 0 24px #ff4081; }
+    100% { text-shadow: 0 0 10px white, 0 0 20px #ccc; }
+  }
+</style>
+</p>
+
+    <div class="loader-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+    </div>
+  </div>
+</div>
+
+    
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-database"></i> Match Data</h2>
+      <div id="loader">
+        <i class="fas fa-spinner fa-spin"></i> Loading match database...
+      </div>
+          <div class="search-container">
+      <div class="search-title">
+        <i class="fas fa-search"></i>
+        <h3>Search Historical Matches by Odds</h3>
+      </div>
+      <div class="search-box">
+        <div class="search-input">
+          <i class="fas fa-filter"></i>
+          <input type="number" id="oddsSearch" placeholder="Enter minimum odds to search..." min="1" step="0.1">
+        </div>
+        <button id="searchBtn" class="search-button">
+          <i class="fas fa-search"></i> Search Odds
+        </button>
+      </div>
+      <div class="odds-key">
+        <div class="key-item">
+          <div class="key-color key-high"></div>
+          <span>High Odds (> 3.0)</span>
+        </div>
+        <div class="key-item">
+          <div class="key-color key-medium"></div>
+          <span>Medium Odds (2.0-3.0)</span>
+        </div>
+        <div class="key-item">
+          <div class="key-color key-low"></div>
+          <span>Low Odds (< 2.0)</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card match-history">
+      <h2 class="card-title"><i class="fas fa-history"></i> Historical Matches</h2>
+      <div id="historyOutput" class="history-container">
+        <div class="empty-history">
+          <i class="fas fa-inbox" style="font-size: 2.5rem; margin-bottom: 15px;"></i>
+          <p>No match history to display</p>
+        </div>
+      </div>
+    </div>
+    <div class="team-select">
+  <label for="inputOdds1"><i class="fas fa-money-bill-wave"></i> Odds for Home Win (1)</label>
+  <input type="number" step="0.01" id="inputOdds1" placeholder="e.g. 2.10">
+</div>
+
+<div class="team-select">
+  <label for="inputOddsX"><i class="fas fa-minus-circle"></i> Odds for Draw (X)</label>
+  <input type="number" step="0.01" id="inputOddsX" placeholder="e.g. 3.30">
+</div>
+
+<div class="team-select">
+  <label for="inputOdds2"><i class="fas fa-plane-departure"></i> Odds for Away Win (2)</label>
+  <input type="number" step="0.01" id="inputOdds2" placeholder="e.g. 3.50">
+</div>
+      <div id="similarOddsInfo" style="margin: 10px 0; font-weight: bold; color: #17a2b8;"></div>
+      <div class="controls">
+        <div class="team-select">
+          <label for="team1Select"><i class="fas fa-home"></i> Home Team</label>
+          <select id="team1Select">
+            <option value="">Select a team</option>
+          </select>
+        </div>
+        
+        <div class="vs">VS</div>
+        
+        <div class="team-select">
+          <label for="team2Select"><i class="fas fa-away"></i> Away Team</label>
+          <select id="team2Select">
+            <option value="">Select a team</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="buttons">
+        <button id="predictBtn" class="btn-primary">
+          <i class="fas fa-calculator"></i> Predict Outcome
+        </button>
+        <button id="resetBtn" class="btn-secondary">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-chart-line"></i> Prediction Result</h2>
+      <div id="predictionOutput" class="prediction-container">
+        <div class="prediction-placeholder">
+          <i class="fas fa-poll-h" style="font-size: 3rem; color: #dee2e6; margin-bottom: 15px;"></i>
+          <p>Select two teams and click "Predict Outcome" to see the prediction</p>
+        </div>
+      </div>
+    </div>
+    <div id="suggestionsCard" style="display: none;">
+  <h3><i class="fas fa-lightbulb"></i> Suggestions</h3>
+  <div id="suggestionContent" style="font-size: 1.1rem; line-height: 1.6;"></div>
+</div>
+
+    
+    <footer>
+      <p>Advanced Match Predictor &copy; 2023 | Predictive analysis with common opponents and market predictions</p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, limit } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDthFB2btT_r6slyX_xa5jeDOX8KDxsmdo",
+      authDomain: "store-1d9e8.firebaseapp.com",
+      projectId: "store-1d9e8",
+      storageBucket: "store-1d9e8.appspot.com",
+      messagingSenderId: "869478006120",
+      appId: "1:869478006120:web:2045cbb98db8a3755e6add",
+      measurementId: "G-3GCBWGCYPG"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+
+function oddsToProbabilities(odds1, oddsX, odds2) {
+  const implied1 = 1 / odds1;
+  const impliedX = 1 / oddsX;
+  const implied2 = 1 / odds2;
+  const total = implied1 + impliedX + implied2;
+  return {
+    p1: (implied1 / total) * 100,
+    pX: (impliedX / total) * 100,
+    p2: (implied2 / total) * 100
+  };
+}
+
+
+    let matches = [];
+    let currentHistory = [];function findGlobalOddsMatches(enteredOdds, matchData, range = 0.15) {
+  const { o1, oX, o2 } = enteredOdds;
+
+  return matchData.filter(m => {
+    return (
+      Math.abs(m.odds1 - o1) <= range &&
+      Math.abs(m.oddsX - oX) <= range &&
+      Math.abs(m.odds2 - o2) <= range
+    );
+  });
+}
+
+    // Function to generate random scores based on outcome
+    function generateScore(outcome) {
+      if (outcome === '1') {
+        const homeGoals = Math.floor(Math.random() * 4) + 1; // 1-4 goals
+        const awayGoals = Math.floor(Math.random() * homeGoals); // 0 to homeGoals-1
+        return `${homeGoals}-${awayGoals}`;
+      } else if (outcome === '2') {
+        const awayGoals = Math.floor(Math.random() * 4) + 1; // 1-4 goals
+        const homeGoals = Math.floor(Math.random() * awayGoals); // 0 to awayGoals-1
+        return `${homeGoals}-${awayGoals}`;
+      } else { // draw
+        const goals = Math.floor(Math.random() * 4); // 0-3 goals
+        return `${goals}-${goals}`;
+      }
+    }
+
+    // Get odds class based on value
+    function getOddsClass(value) {
+      if (value > 3.0) return "odds-high";
+      if (value >= 2.0 && value <= 3.0) return "odds-medium";
+      return "odds-low";
+    }
+
+    // Analyze team performance against common opponents
+    function analyzeCommonOpponents(team1, team2, allMatches) {
+      // Get all opponents for team1
+      const team1Opponents = new Set();
+      allMatches.forEach(match => {
+        const [home, away] = match.match.split(" vs ");
+        if (home.trim() === team1) {
+          team1Opponents.add(away.trim());
+        } else if (away.trim() === team1) {
+          team1Opponents.add(home.trim());
+        }
+      });
+      
+      // Get all opponents for team2
+      const team2Opponents = new Set();
+      allMatches.forEach(match => {
+        const [home, away] = match.match.split(" vs ");
+        if (home.trim() === team2) {
+          team2Opponents.add(away.trim());
+        } else if (away.trim() === team2) {
+          team2Opponents.add(home.trim());
+        }
+      });
+      
+      // Find common opponents
+      const commonOpponents = [...team1Opponents].filter(opponent => 
+        team2Opponents.has(opponent) && opponent !== team1 && opponent !== team2
+      );
+      
+      const results = [];
+      
+      commonOpponents.forEach(opponent => {
+        // Find team1 matches against this opponent
+        const team1Matches = allMatches.filter(match => {
+          const [home, away] = match.match.split(" vs ");
+          return (home.trim() === team1 && away.trim() === opponent) || 
+                 (home.trim() === opponent && away.trim() === team1);
+        });
+        
+        // Find team2 matches against this opponent
+        const team2Matches = allMatches.filter(match => {
+          const [home, away] = match.match.split(" vs ");
+          return (home.trim() === team2 && away.trim() === opponent) || 
+                 (home.trim() === opponent && away.trim() === team2);
+        });
+        
+        if (team1Matches.length > 0 && team2Matches.length > 0) {
+          // Analyze team1 performance
+          let team1Wins = 0, team1Draws = 0, team1Losses = 0;
+          let team1GoalsFor = 0, team1GoalsAgainst = 0;
+          
+          team1Matches.forEach(match => {
+            const [home, away] = match.match.split(" vs ");
+            const [homeGoals, awayGoals] = match.score.split("-").map(Number);
+            
+            if (home.trim() === team1) {
+              team1GoalsFor += homeGoals;
+              team1GoalsAgainst += awayGoals;
+              
+              if (homeGoals > awayGoals) team1Wins++;
+              else if (homeGoals < awayGoals) team1Losses++;
+              else team1Draws++;
+            } else {
+              team1GoalsFor += awayGoals;
+              team1GoalsAgainst += homeGoals;
+              
+              if (awayGoals > homeGoals) team1Wins++;
+              else if (awayGoals < homeGoals) team1Losses++;
+              else team1Draws++;
+            }
+          });
+          
+          // Analyze team2 performance
+          let team2Wins = 0, team2Draws = 0, team2Losses = 0;
+          let team2GoalsFor = 0, team2GoalsAgainst = 0;
+          
+          team2Matches.forEach(match => {
+            const [home, away] = match.match.split(" vs ");
+            const [homeGoals, awayGoals] = match.score.split("-").map(Number);
+            
+            if (home.trim() === team2) {
+              team2GoalsFor += homeGoals;
+              team2GoalsAgainst += awayGoals;
+              
+              if (homeGoals > awayGoals) team2Wins++;
+              else if (homeGoals < awayGoals) team2Losses++;
+              else team2Draws++;
+            } else {
+              team2GoalsFor += awayGoals;
+              team2GoalsAgainst += homeGoals;
+              
+              if (awayGoals > homeGoals) team2Wins++;
+              else if (awayGoals < homeGoals) team2Losses++;
+              else team2Draws++;
+            }
+          });
+          
+          // Calculate performance difference
+          const team1Points = (team1Wins * 3) + team1Draws;
+          const team2Points = (team2Wins * 3) + team2Draws;
+          const pointDifference = team1Points - team2Points;
+          
+          results.push({
+            opponent,
+            team1: {
+              wins: team1Wins,
+              draws: team1Draws,
+              losses: team1Losses,
+              goalsFor: team1GoalsFor,
+              goalsAgainst: team1GoalsAgainst,
+              points: team1Points
+            },
+            team2: {
+              wins: team2Wins,
+              draws: team2Draws,
+              losses: team2Losses,
+              goalsFor: team2GoalsFor,
+              goalsAgainst: team2GoalsAgainst,
+              points: team2Points
+            },
+            pointDifference
+          });
+        }
+      });
+      
+      return results;
+    }
+
+    // Analyze GG and Over 2.5 markets
+    function analyzeMarkets(history, team1, team2, p1, pd, p2) {
+  if (history.length === 0) {
+    return {
+      ggPercentage: 0,
+      over25Percentage: 0,
+      doubleChance: "N/A",
+      goalsRange: "N/A",
+      asianHandicap: "N/A",
+      bttsResult: "N/A"
+    };
+  }
+
+  let ggCount = 0, over25Count = 0, lowGoals = 0, midGoals = 0, highGoals = 0;
+
+  history.forEach(match => {
+    const [homeGoals, awayGoals] = match.score.split("-").map(Number);
+    const totalGoals = homeGoals + awayGoals;
+
+    if (homeGoals > 0 && awayGoals > 0) ggCount++;
+    if (totalGoals > 2) over25Count++;
+
+    if (totalGoals <= 1) lowGoals++;
+    else if (totalGoals <= 3) midGoals++;
+    else highGoals++;
+  });
+
+  // Double Chance suggestion
+  let doubleChance = "N/A";
+  const p1f = parseFloat(p1), p2f = parseFloat(p2), pdf = parseFloat(pd);
+  if (p1f > p2f && p1f > pdf) doubleChance = "1X";
+  else if (p2f > p1f && p2f > pdf) doubleChance = "X2";
+  else doubleChance = "12";
+
+  // Goals Range
+  const maxGoals = Math.max(lowGoals, midGoals, highGoals);
+  let goalsRange = "2–3 Goals";
+  if (maxGoals === lowGoals) goalsRange = "0–1 Goals";
+  else if (maxGoals === highGoals) goalsRange = "4+ Goals";
+
+  // Asian Handicap
+  const goalDiffs = history.map(match => {
+    const [home, away] = match.match.split(" vs ");
+    const [h, a] = match.score.split("-").map(Number);
+    if (home.trim() === team1) return h - a;
+    if (away.trim() === team1) return a - h;
+    return 0;
+  });
+  const avgDiff = goalDiffs.reduce((a, b) => a + b, 0) / goalDiffs.length;
+  const asianHandicap = avgDiff > 0.7 ? `${team1} -1` : avgDiff < -0.7 ? `${team1} +1` : "Even";
+
+  // BTTS + Result
+  const likelyOutcome = p1f > p2f && p1f > pdf ? `${team1} Win` : p2f > p1f ? `${team2} Win` : "Draw";
+  const bttsResult = (ggCount / history.length) > 0.55 ? `GG + ${likelyOutcome}` : `NG + ${likelyOutcome}`;
+
+  return {
+    ggPercentage: ((ggCount / history.length) * 100).toFixed(1),
+    over25Percentage: ((over25Count / history.length) * 100).toFixed(1),
+    doubleChance,
+    goalsRange,
+    asianHandicap,
+    bttsResult
+  };
+}
+    
+
+    async function loadMatches() {
+  const loader = document.getElementById("loader");
+  loader.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Loading match database...`;
+
+  const localData = localStorage.getItem("matchData");
+  const localTimestamp = localStorage.getItem("matchDataTimestamp");
+  const now = Date.now();
+
+  const fiveMinutes = 1* 60 * 1000;
+  const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+  const shouldUseLocal =
+    localData &&
+    localTimestamp &&
+    now - parseInt(localTimestamp) < sevenDays &&
+    now - parseInt(localTimestamp) < fiveMinutes;
+
+  if (shouldUseLocal) {
+    const parsedData = JSON.parse(localData);
+    matches = parsedData.matches;
+    populateDropdowns(parsedData.teams);
+    loader.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745;"></i> Loaded ${matches.length} matches from local cache`;
+    return;
+  }
+
+  try {
+    const q = query(collection(db, "matches"));
+    const snapshot = await getDocs(q);
+    matches = [];
+    const teamSet = new Set();
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.match && data.outcome && data.odds1 !== undefined) {
+        const startDate = new Date(2022, 0, 1);
+        const endDate = new Date();
+        const randomDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
+        data.date = randomDate.toLocaleDateString();
+
+        data.score = generateScore(data.outcome.trim());
+        matches.push(data);
+
+        const [home, away] = data.match.split(" vs ");
+        if (home && away) {
+          teamSet.add(home.trim());
+          teamSet.add(away.trim());
+        }
+      }
+    });
+
+    const teamList = Array.from(teamSet).sort();
+    populateDropdowns(teamList);
+    loader.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745;"></i> Fetched ${matches.length} matches from server`;
+
+    // Cache to localStorage
+    localStorage.setItem("matchData", JSON.stringify({ matches, teams: teamList }));
+    localStorage.setItem("matchDataTimestamp", now.toString());
+  } catch (error) {
+    loader.innerHTML = `<i class="fas fa-exclamation-circle" style="color: #dc3545;"></i> Error loading matches: ${error.message}`;
+    console.error(error);
+  }
+}
+
+    function populateDropdowns(teams) {
+      const team1Select = document.getElementById("team1Select");
+      const team2Select = document.getElementById("team2Select");
+      
+      // Clear existing options except the first placeholder
+      team1Select.innerHTML = '<option value="">Select a team</option>';
+      team2Select.innerHTML = '<option value="">Select a team</option>';
+
+      teams.forEach(team => {
+        const opt1 = document.createElement("option");
+        opt1.value = opt1.textContent = team;
+        team1Select.appendChild(opt1);
+
+        const opt2 = document.createElement("option");
+        opt2.value = opt2.textContent = team;
+        team2Select.appendChild(opt2);
+      });
+    }
+
+    function displayHistory(history) {
+      const historyOutput = document.getElementById("historyOutput");
+      
+      if (history.length === 0) {
+        historyOutput.innerHTML = `
+          <div class="empty-history">
+            <i class="fas fa-exclamation-triangle" style="font-size: 2.5rem; margin-bottom: 15px; color: #ffc107;"></i>
+            <p>No historical matches found between these teams</p>
+          </div>
+        `;
+        return;
+      }
+      
+      let historyHTML = '';
+      
+      history.forEach(match => {
+        const [home, away] = match.match.split(" vs ");
+        const outcomeClass = match.outcome.trim() === "1" ? "outcome-home" : 
+                            match.outcome.trim() === "2" ? "outcome-away" : "outcome-draw";
+        const outcomeText = match.outcome.trim() === "1" ? "Home Win" : 
+                           match.outcome.trim() === "2" ? "Away Win" : "Draw";
+        
+        // Split score for coloring
+        const [homeGoals, awayGoals] = match.score.split("-");
+        
+        // Get odds classes
+        const oddsHomeClass = getOddsClass(match.odds1);
+        const oddsDrawClass = getOddsClass(match.oddsX);
+        const oddsAwayClass = getOddsClass(match.odds2);
+        
+        historyHTML += `
+          <div class="history-item">
+            <div class="match-teams">${home} vs ${away}</div>
+            <div class="match-date">${match.date || "N/A"}</div>
+            <div class="match-outcome ${outcomeClass}">${outcomeText}</div>
+            <div class="match-score">
+              <span class="home-goal">${homeGoals}</span> - <span class="away-goal">${awayGoals}</span>
+            </div>
+            <div class="match-odds">
+              <span class="odds-value ${oddsHomeClass}">${match.odds1.toFixed(2)}</span>
+              <span class="odds-value ${oddsDrawClass}">${match.oddsX.toFixed(2)}</span>
+              <span class="odds-value ${oddsAwayClass}">${match.odds2.toFixed(2)}</span>
+            </div>
+          </div>
+        `;
+      });
+      
+      historyOutput.innerHTML = historyHTML;
+    }
+
+    function displayCommonScores(commonScores) {
+      if (commonScores.length === 0) return '';
+      
+      // Create cards for top 3 common scores
+      let scoresHTML = `
+        <div class="section-title">
+          <i class="fas fa-star"></i> Most Common Scores
+        </div>
+        <div class="common-scores-container">
+      `;
+      
+      commonScores.slice(0, 3).forEach(score => {
+        scoresHTML += `
+          <div class="common-score-card">
+            <div class="common-score-value">${score.score}</div>
+            <div class="common-score-count">${score.count} matches</div>
+          </div>
+        `;
+      });
+      
+      scoresHTML += `</div>`;
+      
+      // Add a grid of all common scores
+      scoresHTML += `
+        <div class="section-title">
+          <i class="fas fa-list-ol"></i> All Score Occurrences
+        </div>
+        <div class="score-grid">
+      `;
+      
+      commonScores.forEach(score => {
+        scoresHTML += `
+          <div class="score-item">
+            <div class="score-display">${score.score}</div>
+            <div class="score-frequency">${score.count} times</div>
+          </div>
+        `;
+      });
+      
+      scoresHTML += `</div>`;
+      
+      return scoresHTML;
+    }
+
+    function displayCommonOpponents(opponentsAnalysis, team1, team2) {
+      if (opponentsAnalysis.length === 0) return '';
+      
+      let opponentsHTML = `
+        <div class="section-title">
+          <i class="fas fa-users"></i> Common Opponents Analysis
+        </div>
+        <div class="common-opponents">
+          <div class="opponent-item" style="font-weight:bold; background:#f8f9fa;">
+            <span>Opponent</span>
+            <div class="opponent-stats">
+              <div class="opponent-stat">${team1}</div>
+              <div class="opponent-stat">${team2}</div>
+              <div class="opponent-stat">Difference</div>
+            </div>
+          </div>
+      `;
+      
+      opponentsAnalysis.forEach(opponent => {
+        const diffClass = opponent.pointDifference > 0 ? "style='color:#28a745;'" : 
+                         opponent.pointDifference < 0 ? "style='color:#dc3545;'" : "";
+        
+        opponentsHTML += `
+          <div class="opponent-item">
+            <div class="opponent-name">${opponent.opponent}</div>
+            <div class="opponent-stats">
+              <div class="opponent-stat">
+                <div class="opponent-value">${opponent.team1.points}</div>
+                <div class="opponent-label">Points</div>
+              </div>
+              <div class="opponent-stat">
+                <div class="opponent-value">${opponent.team2.points}</div>
+                <div class="opponent-label">Points</div>
+              </div>
+              <div class="opponent-stat">
+                <div class="opponent-value" ${diffClass}>${opponent.pointDifference}</div>
+                <div class="opponent-label">Points Diff</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      opponentsHTML += `</div>`;
+      
+      return opponentsHTML;
+    }
+
+    function displayMarkets(markets) {
+  return `
+    <div class="section-title">
+      <i class="fas fa-chart-bar"></i> Market Predictions
+    </div>
+    <div class="markets-container">
+      <div class="market-card">
+        <div class="market-title"><i class="fas fa-exchange-alt"></i> GG (Both Teams to Score)</div>
+        <div class="market-value">${markets.ggPercentage}%</div>
+        <div class="market-label">Probability both teams will score</div>
+      </div>
+      
+      <div class="market-card over25">
+        <div class="market-title"><i class="fas fa-futbol"></i> Over 2.5 Goals</div>
+        <div class="market-value">${markets.over25Percentage}%</div>
+        <div class="market-label">Probability of 3+ goals in match</div>
+      </div>
+
+      <div class="market-card">
+        <div class="market-title"><i class="fas fa-random"></i> Double Chance</div>
+        <div class="market-value">${markets.doubleChance}</div>
+        <div class="market-label">Safer 2-outcome prediction</div>
+      </div>
+
+      <div class="market-card">
+        <div class="market-title"><i class="fas fa-tasks"></i> Goals Range</div>
+        <div class="market-value">${markets.goalsRange}</div>
+        <div class="market-label">Most likely goal bracket</div>
+      </div>
+
+      <div class="market-card">
+        <div class="market-title"><i class="fas fa-level-up-alt"></i> Asian Handicap</div>
+        <div class="market-value">${markets.asianHandicap}</div>
+        <div class="market-label">Handicap suggestion based on strength</div>
+      </div>
+
+      <div class="market-card">
+        <div class="market-title"><i class="fas fa-bolt"></i> BTTS + Result</div>
+        <div class="market-value">${markets.bttsResult}</div>
+        <div class="market-label">Combo of GG/NG with outcome</div>
+      </div>
+    </div>
+  `;
+}
+
+    function displayTeamPerformance(team1, team2, history) {
+      if (history.length === 0) return '';
+      
+      // Calculate team1 stats
+      let team1Wins = 0, team1Draws = 0, team1Losses = 0;
+      let team1GoalsFor = 0, team1GoalsAgainst = 0;
+      
+      history.forEach(match => {
+        const [home, away] = match.match.split(" vs ");
+        const [homeGoals, awayGoals] = match.score.split("-").map(Number);
+        
+        if (home.trim() === team1) {
+          team1GoalsFor += homeGoals;
+          team1GoalsAgainst += awayGoals;
+          
+          if (match.outcome.trim() === "1") team1Wins++;
+          else if (match.outcome.trim() === "2") team1Losses++;
+          else team1Draws++;
+        } else if (away.trim() === team1) {
+          team1GoalsFor += awayGoals;
+          team1GoalsAgainst += homeGoals;
+          
+          if (match.outcome.trim() === "2") team1Wins++;
+          else if (match.outcome.trim() === "1") team1Losses++;
+          else team1Draws++;
+        }
+      });
+      
+      // Calculate team2 stats
+      let team2Wins = 0, team2Draws = 0, team2Losses = 0;
+      let team2GoalsFor = 0, team2GoalsAgainst = 0;
+      
+      history.forEach(match => {
+        const [home, away] = match.match.split(" vs ");
+        const [homeGoals, awayGoals] = match.score.split("-").map(Number);
+        
+        if (home.trim() === team2) {
+          team2GoalsFor += homeGoals;
+          team2GoalsAgainst += awayGoals;
+          
+          if (match.outcome.trim() === "1") team2Wins++;
+          else if (match.outcome.trim() === "2") team2Losses++;
+          else team2Draws++;
+        } else if (away.trim() === team2) {
+          team2GoalsFor += awayGoals;
+          team2GoalsAgainst += homeGoals;
+          
+          if (match.outcome.trim() === "2") team2Wins++;
+          else if (match.outcome.trim() === "1") team2Losses++;
+          else team2Draws++;
+        }
+      });
+      
+      return `
+        <div class="section-title">
+          <i class="fas fa-tachometer-alt"></i> Team Performance in Head-to-Head
+        </div>
+        <div class="performance-container">
+          <div class="performance-card">
+            <div class="performance-header">
+              <i class="fas fa-home"></i> ${team1}
+            </div>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">${team1Wins}</div>
+                <div class="stat-label">Wins</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${team1Draws}</div>
+                <div class="stat-label">Draws</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${team1Losses}</div>
+                <div class="stat-label">Losses</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${team1GoalsFor}</div>
+                <div class="stat-label">Goals For</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${team1GoalsAgainst}</div>
+                <div class="stat-label">Goals Against</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${(team1GoalsFor - team1GoalsAgainst)}</div>
+                <div class="stat-label">Goal Difference</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="performance-card">
+            <div class="performance-header">
+              <i class="fas fa-away"></i> ${team2}
+            </div>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">${team2Wins}</div>
+                <div class="stat-label">Wins</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${team2Draws}</div>
+                <div class="stat-label">Draws</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${team2Losses}</div>
+                <div class="stat-label">Losses</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${team2GoalsFor}</div>
+                <div class="stat-label">Goals For</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${team2GoalsAgainst}</div>
+                <div class="stat-label">Goals Against</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${(team2GoalsFor - team2GoalsAgainst)}</div>
+                <div class="stat-label">Goal Difference</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    
+function bayesianAdjust(actualRate, n, prior = 0.33, m = 10) {
+  return ((actualRate * n) + (prior * m)) / (n + m);
+}
+function findTeamOddsMatches(team1, team2, enteredOdds, matchData, range = 0.15) {
+  const { o1, oX, o2 } = enteredOdds;
+
+  return matchData.filter(m => {
+    const match = m.match.toLowerCase();
+    const teamsMatch =
+      match.includes(team1.toLowerCase()) && match.includes(team2.toLowerCase());
+
+    const oddsMatch =
+      Math.abs(m.odds1 - o1) <= range &&
+      Math.abs(m.oddsX - oX) <= range &&
+      Math.abs(m.odds2 - o2) <= range;
+
+    return teamsMatch && oddsMatch && m.score;
+  });
+}function analyzeOddsOutcome(matches) {
+  let count1 = 0, countX = 0, count2 = 0;
+  let gg = 0, over25 = 0;
+  let goals0_1 = 0, goals2_3 = 0, goals4plus = 0;
+
+  matches.forEach(m => {
+    const outcome = m.outcome.trim();
+    if (outcome === "1") count1++;
+    else if (outcome === "X") countX++;
+    else if (outcome === "2") count2++;
+
+    const [homeGoals, awayGoals] = m.score.split("-").map(Number);
+    const totalGoals = homeGoals + awayGoals;
+
+    if (homeGoals > 0 && awayGoals > 0) gg++;
+    if (totalGoals > 2) over25++;
+
+    if (totalGoals <= 1) goals0_1++;
+    else if (totalGoals <= 3) goals2_3++;
+    else goals4plus++;
+  });
+
+  const total = matches.length || 1;
+
+  return {
+    count: total,
+    win1: ((count1 / total) * 100).toFixed(1),
+    draw: ((countX / total) * 100).toFixed(1),
+    win2: ((count2 / total) * 100).toFixed(1),
+    gg: ((gg / total) * 100).toFixed(1),
+    over25: ((over25 / total) * 100).toFixed(1),
+    range: {
+      "0–1 Goals": goals0_1,
+      "2–3 Goals": goals2_3,
+      "4+ Goals": goals4plus
+    }
+  };
+}
+    
+    function searchOdds(minOdds) {
+      if (!minOdds || minOdds < 1) {
+        displayHistory(currentHistory);
+        return;
+      }
+      
+      const filtered = currentHistory.filter(match => {
+        return match.odds1 >= minOdds || match.oddsX >= minOdds || match.odds2 >= minOdds;
+      });
+      
+      displayHistory(filtered);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadMatches();
+      
+// Utility 
+function findGlobalOddsMatches(enteredOdds, matchData, range = 0.15) {
+  const { o1, oX, o2 } = enteredOdds;
+
+  return matchData.filter(m => {
+    return (
+      Math.abs(m.odds1 - o1) <= range &&
+      Math.abs(m.oddsX - oX) <= range &&
+      Math.abs(m.odds2 - o2) <= range
+    );
+  });
+}
+
+document.getElementById("predictBtn").addEventListener("click", () => {
+  const team1 = document.getElementById("team1Select").value;
+  const team2 = document.getElementById("team2Select").value;
+
+  if (!team1 || !team2 || team1 === team2) {
+    document.getElementById("predictionOutput").innerHTML = `
+      <div class="prediction-error">
+        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #dc3545; margin-bottom: 15px;"></i>
+        <h3 style="color: #dc3545;">Selection Error</h3>
+        <p>Please select two different teams</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Odds input
+  const enteredOdds = {
+    o1: parseFloat(document.getElementById("inputOdds1").value),
+    oX: parseFloat(document.getElementById("inputOddsX").value),
+    o2: parseFloat(document.getElementById("inputOdds2").value)
+  };
+
+  // Historical head-to-head matches
+  const history = matches.filter(m => {
+    const match = m.match.toLowerCase();
+    return match.includes(team1.toLowerCase()) && match.includes(team2.toLowerCase());
+  });
+
+  // Team-specific odds pattern
+  const relevantMatches = findTeamOddsMatches(team1, team2, enteredOdds, matches);
+  const patternStats = analyzeOddsOutcome(relevantMatches);
+
+  document.getElementById("similarOddsInfo").textContent =
+    `📊 ${relevantMatches.length} historical matches found with similar odds`;
+
+  // Global odds pattern
+  const globalOddsMatches = findGlobalOddsMatches(enteredOdds, matches);
+  const globalOddsStats = analyzeOddsOutcome(globalOddsMatches);
+
+  // Show suggestions
+  document.getElementById("suggestionsCard").style.display = "block";
+  document.getElementById("suggestionContent").innerHTML = `
+    <p><strong>🔍 Based on ${patternStats.count} past ${team1} vs ${team2} matches with similar odds:</strong></p>
+    <ul>
+      <li>🏆 ${team1} win: ${patternStats.win1}%</li>
+      <li>🤝 Draw: ${patternStats.draw}%</li>
+      <li>📉 ${team2} win: ${patternStats.win2}%</li>
+      <li>🎯 GG: ${patternStats.gg}%, Over 2.5: ${patternStats.over25}%</li>
+      <li>⚽ Goal Ranges:
+        <ul>
+          <li>0–1 goals: ${patternStats.range["0–1 Goals"]}</li>
+          <li>2–3 goals: ${patternStats.range["2–3 Goals"]}</li>
+          <li>4+ goals: ${patternStats.range["4+ Goals"]}</li>
+        </ul>
+      </li>
+    </ul>
+    <hr style="margin: 15px 0;">
+    <p><strong>🌍 Global Odds Performance for Similar Odds:</strong></p>
+    <ul>
+      <li>🏠 Home wins: ${globalOddsStats.win1}%</li>
+      <li>🤝 Draws: ${globalOddsStats.draw}%</li>
+      <li>🚀 Away wins: ${globalOddsStats.win2}%</li>
+      <li>🎯 GG (Both score): ${globalOddsStats.gg}%</li>
+      <li>📈 Over 2.5: ${globalOddsStats.over25}%</li>
+    </ul>
+    <p style="color: #888;">(Based on ${globalOddsStats.count} matches globally)</p>
+  `;
+
+  // Display match history
+  currentHistory = history;
+  displayHistory(history);
+
+  // Opponent comparison
+  const opponentsAnalysis = analyzeCommonOpponents(team1, team2, matches);
+
+  // Final AI analysis
+  const result = analyzeMatch(team1, team2, history, enteredOdds, globalOddsStats);
+
+  displayPrediction(
+    team1,
+    team2,
+    history,
+    result.prediction,
+    result.p1,
+    result.p2,
+    result.pd,
+    result.commonScores,
+    opponentsAnalysis,
+    result.markets
+  );
+});
+
+// Reset button
+document.getElementById("resetBtn").addEventListener("click", () => {
+  document.getElementById("team1Select").selectedIndex = 0;
+  document.getElementById("team2Select").selectedIndex = 0;
+  document.getElementById("similarOddsInfo").textContent = '';
+  document.getElementById("oddsSearch").value = '';
+  document.getElementById("suggestionContent").innerHTML = '';
+  document.getElementById("suggestionsCard").style.display = "none";
+  document.getElementById("predictionOutput").innerHTML = `
+    <div class="prediction-placeholder">
+      <i class="fas fa-poll-h" style="font-size: 3rem; color: #dee2e6; margin-bottom: 15px;"></i>
+      <p>Select two teams and click "Predict Outcome" to see the prediction</p>
+    </div>
+  `;
+  document.getElementById("historyOutput").innerHTML = `
+    <div class="empty-history">
+      <i class="fas fa-inbox" style="font-size: 2.5rem; margin-bottom: 15px;"></i>
+      <p>No match history to display</p>
+    </div>
+  `;
+});
+
+
+      document.getElementById("searchBtn").addEventListener("click", () => {
+        const minOdds = parseFloat(document.getElementById("oddsSearch").value);
+        searchOdds(minOdds);
+      });
+
+      document.getElementById("oddsSearch").addEventListener("keyup", (e) => {
+        if (e.key === "Enter") {
+          const minOdds = parseFloat(document.getElementById("oddsSearch").value);
+          searchOdds(minOdds);
+        }
+      });
+      window.addEventListener("load", () => {
+  setTimeout(() => {
+    const loader = document.getElementById("pageLoader");
+    loader.style.opacity = "0";
+    loader.style.visibility = "hidden";
+    setTimeout(() => loader.remove(), 600);
+  }, 5000);
+});
+    });
+  
+function analyzeMatch(team1, team2, history, enteredOdds, globalOddsStats) {
+  if (history.length === 0) {
+    return {
+      prediction: "Insufficient Data",
+      p1: "0.0",
+      p2: "0.0",
+      pd: "0.0",
+      commonScores: [],
+      markets: {
+        ggPercentage: "0.0",
+        over25Percentage: "0.0",
+        doubleChance: "N/A",
+        goalsRange: "N/A",
+        asianHandicap: "N/A",
+        bttsResult: "N/A"
+      }
+    };
+  }
+
+  const impliedProbs = oddsToProbabilities(
+    enteredOdds.o1,
+    enteredOdds.oX,
+    enteredOdds.o2
+  );
+
+  let team1Score = 0, team2Score = 0, drawScore = 0;
+  const scoreCounts = {};
+
+  for (const match of history) {
+    const [score1, score2] = match.score.split("-").map(Number);
+    const outcome = match.outcome.trim();
+    if (outcome === "1") team1Score++;
+    else if (outcome === "2") team2Score++;
+    else drawScore++;
+
+    const key = `${score1}-${score2}`;
+    scoreCounts[key] = (scoreCounts[key] || 0) + 1;
+  }
+
+  const total = team1Score + team2Score + drawScore || 1;
+  const rawP1 = team1Score / total;
+  const rawP2 = team2Score / total;
+  const rawPD = drawScore / total;
+  const n = history.length;
+
+  const p1Hist = bayesianAdjust(rawP1, n) * 100;
+  const p2Hist = bayesianAdjust(rawP2, n) * 100;
+  const pdHist = bayesianAdjust(rawPD, n) * 100;
+
+  // ⚠️ NEW: Blend in global odds stats
+  const finalP1 = (
+    p1Hist * 0.4 + impliedProbs.p1 * 0.3 + parseFloat(globalOddsStats.win1) * 0.3
+  ).toFixed(1);
+
+  const finalPD = (
+    pdHist * 0.4 + impliedProbs.pX * 0.3 + parseFloat(globalOddsStats.draw) * 0.3
+  ).toFixed(1);
+
+  const finalP2 = (
+    p2Hist * 0.4 + impliedProbs.p2 * 0.3 + parseFloat(globalOddsStats.win2) * 0.3
+  ).toFixed(1);
+
+  // Determine final prediction
+  const mostLikely = Math.max(finalP1, finalPD, finalP2);
+  const prediction = mostLikely == finalP1 ? team1 :
+                     mostLikely == finalP2 ? team2 : "Draw";
+
+  // Common scores
+  const sortedScores = Object.entries(scoreCounts)
+    .map(([score, count]) => ({ score, count }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    prediction,
+    p1: finalP1,
+    pd: finalPD,
+    p2: finalP2,
+    commonScores: sortedScores,
+    markets: analyzeMarkets(history, team1, team2, finalP1, finalPD, finalP2)
+  };
+}
+
+function displayPrediction(team1, team2, history, prediction, p1, p2, pd, commonScores, opponentsAnalysis, markets) {
+  const container = document.getElementById("predictionOutput");
+  container.innerHTML = `
+    <div class="prediction-header">Predicted Outcome</div>
+    <div class="prediction-result win-prediction">${prediction}</div>
+
+    <div class="section-title"><i class="fas fa-percentage"></i> Win Probabilities</div>
+    <div class="probability-container">
+      <div class="probability-card team1-probability">
+        <div class="probability-title">${team1} Win</div>
+        <div class="probability-value">${p1}%</div>
+      </div>
+      <div class="probability-card draw-probability">
+        <div class="probability-title">Draw</div>
+        <div class="probability-value">${pd}%</div>
+      </div>
+      <div class="probability-card team2-probability">
+        <div class="probability-title">${team2} Win</div>
+        <div class="probability-value">${p2}%</div>
+      </div>
+    </div>
+
+    ${displayMarkets(markets)}
+    ${displayTeamPerformance(team1, team2, history)}
+    ${displayCommonOpponents(opponentsAnalysis, team1, team2)}
+    ${displayCommonScores(commonScores)}
+  `;
+
+
+
+  document.getElementById("predictionOutput").innerHTML = predictionHTML;
+}
+</script>
+<script>
+  const timerDisplay = document.getElementById("timer");
+
+  // Unique countdown key for fifo.html
+  const countdownKey = "countdown_end_time_fifo";
+  let endTime = parseInt(localStorage.getItem(countdownKey));
+
+  // If no valid end time, set new 1-hour countdown
+  if (!endTime || isNaN(endTime)) {
+    console.warn("No valid countdown found. Creating new 1-hour countdown.");
+    endTime = Date.now() + 60 * 60 * 1000; // 1 hour
+    localStorage.setItem(countdownKey, endTime);
+  }
+
+  console.log("Countdown ends at:", new Date(endTime).toLocaleTimeString());
+
+  function updateCountdown() {
+    const now = Date.now();
+    const remaining = endTime - now;
+
+    if (remaining <= 0) {
+      timerDisplay.textContent = "Expired";
+      localStorage.removeItem(countdownKey);
+      timerDisplay.style.background = "#333";
+      timerDisplay.style.color = "#ff4444";
+      timerDisplay.style.fontSize = "2.5rem";
+
+      setTimeout(() => {
+        window.location.href = "Vip.html";
+      }, 2000);
+    } else {
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+      timerDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      requestAnimationFrame(updateCountdown);
+    }
+  }
+
+  updateCountdown();
+</script>
+
+</body>
+</html>
