@@ -2132,7 +2132,7 @@ function displayPrediction(team1, team2, history, prediction, p1, p2, pd, common
 
   if (!endTime || isNaN(endTime) || Date.now() >= endTime) {
     console.warn("Subscription invalid or expired. Redirecting to vip.html...");
-    window.location.href = "vip.html";
+    window.location.href = "Vip.html";
   } else {
     console.log("Access granted until:", new Date(endTime).toLocaleString());
     updateCountdown();
@@ -2146,7 +2146,7 @@ function displayPrediction(team1, team2, history, prediction, p1, p2, pd, common
       timerDisplay.textContent = "Expired";
       localStorage.removeItem(countdownKey);
       setTimeout(() => {
-        window.location.href = "vip.html";
+        window.location.href = "Vip.html";
       }, 2000);
     } else {
       const hours = Math.floor(remaining / (1000 * 60 * 60));
