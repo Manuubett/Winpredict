@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Subscription - M-PESA Payment</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></svg>');
+      opacity: 0.3;
+      z-index: -1;
+    }
+    
+    .watermark {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      opacity: 0.2;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      transform: rotate(-15deg);
+      z-index: 0;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 800px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .payment-header {
+      background: linear-gradient(to right, #2c3e50, #1a2a6c);
+      color: white;
+      padding: 25px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .payment-header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    
+    .payment-header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .payment-instructions {
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+      padding: 20px;
+    }
+    
+    .payment-instructions h2 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+    }
+    
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    
+    .step {
+      flex: 0 0 calc(33.333% - 20px);
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      border-top: 4px solid #3498db;
+      transition: transform 0.3s ease;
+    }
+    
+    .step:hover {
+      transform: translateY(-5px);
+    }
+    
+    .step i {
+      font-size: 2.5rem;
+      color: #3498db;
+      margin-bottom: 15px;
+    }
+    
+    .step h3 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+    
+    .step p {
+      color: #6c757d;
+      font-size: 0.95rem;
+    }
+    
+    .payment-details {
+      background: white;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      border-left: 4px solid #27ae60;
+    }
+    
+    .payment-details h3 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .payment-details h3 i {
+      color: #27ae60;
+    }
+    
+    .detail-row {
+      display: flex;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    
+    .detail-label {
+      font-weight: 600;
+      width: 45%;
+      color: #2c3e50;
+    }
+    
+    .detail-value {
+      width: 55%;
+      font-weight: 500;
+      color: #1a2a6c;
+    }
+    
+    .subscription-form {
+      padding: 30px;
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 1.1rem;
+    }
+    
+    .form-group select, .form-group input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    
+    .form-group select:focus, .form-group input:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    .submit-btn {
+      background: linear-gradient(to right, #27ae60, #2ecc71);
+      color: white;
+      border: none;
+      padding: 16px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+    }
+    
+    .submit-btn:disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    #status {
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    
+    .loading {
+      background-color: #fef9e7;
+      color: #f39c12;
+      border: 1px solid #f39c12;
+    }
+    
+    .success {
+      background-color: #e8f8f0;
+      color: #27ae60;
+      border: 1px solid #27ae60;
+    }
+    
+    .error {
+      background-color: #fdedec;
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+    }
+    
+    .signature {
+      text-align: center;
+      padding: 20px;
+      background: #2c3e50;
+      color: white;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .steps {
+        flex-direction: column;
+      }
+      
+      .step {
+        flex: 0 0 100%;
+        margin-bottom: 15px;
+      }
+      
+      .payment-header h1 {
+        font-size: 1.8rem;
+      }
+    }
+    
+    .highlight {
+      color: #e74c3c;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="watermark">
+    BETT KE | The Dev
+  </div>
+  
+  <div class="container">
+    <div class="payment-header">
+      <h1><i class="fas fa-lock"></i> Secure Subscription Payment</h1>
+      <p>Complete your payment using M-PESA to access premium services</p>
+    </div>
+    
+    <div class="payment-instructions">
+      <h2><i class="fas fa-info-circle"></i> Payment Instructions</h2>
+      
+      <div class="steps">
+        <div class="step">
+          <i class="fas fa-mobile-alt"></i>
+          <h3>Step 1: Initiate Payment</h3>
+          <p>Go to M-PESA menu on your phone and select "Send Money"</p>
+        </div>
+        
+        <div class="step">
+          <i class="fas fa-phone-alt"></i>
+          <h3>Step 2: Enter Details</h3>
+          <p>Enter phone number <span class="highlight">0797612155</span> and amount</p>
+        </div>
+        
+        <div class="step">
+          <i class="fas fa-key"></i>
+          <h3>Step 3: Confirm</h3>
+          <p>Enter your M-PESA PIN and confirm the transaction</p>
+        </div>
+      </div>
+      
+      <div class="payment-details">
+        <h3><i class="fas fa-money-check-alt"></i> Payment Information</h3>
+        
+        <div class="detail-row">
+          <div class="detail-label">Payment Method:</div>
+          <div class="detail-value">M-PESA Send Money</div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="detail-label">Recipient Name:</div>
+          <div class="detail-value">BETT KE</div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="detail-label">Phone Number:</div>
+          <div class="detail-value">0797612155</div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="detail-label">Transaction Type:</div>
+          <div class="detail-value">Business Payment</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="subscription-form">
+      <h2 style="color: #2c3e50; margin-bottom: 25px; text-align: center;">
+        <i class="fas fa-user-plus"></i> Subscription Details
+      </h2>
+      
+      <div class="form-group">
+        <label for="duration"><i class="fas fa-clock"></i> Duration</label>
+        <select id="duration">
+          <option value="1">1 Hour - 25 Ksh</option>
+          <option value="2">2 Hours - 35 Ksh</option>
+          <option value="3">3 Hours - 45 Ksh</option>
+          <option value="4">4 Hours - 55 Ksh</option>
+          <option value="6">6 Hours - 60 Ksh</option>
+          <option value="7">7 Hours - 70 Ksh</option>
+          <option value="8">8 Hours - 80 Ksh</option>
+          <option value="9">9 Hours - 90 Ksh</option>
+          <option value="10">10 Hours - 100 Ksh</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="name"><i class="fas fa-user"></i> Your Full Name</label>
+        <input type="text" id="name" placeholder="Enter your full name as per ID">
+      </div>
+      
+      <div class="form-group">
+        <label for="phone"><i class="fas fa-phone"></i> M-PESA Phone Number</label>
+        <input type="text" id="phone" placeholder="07XXXXXXXX">
+      </div>
+      
+      <button id="submitBtn" class="submit-btn" onclick="submitSubscription()">
+        <i class="fas fa-paper-plane"></i> Submit Payment Request
+      </button>
+      
+      <div id="status"></div>
+    </div>
+    
+    <div class="signature">
+      Secured by BETT KE | The Developer
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getDatabase, ref, set, get, child
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKtfTZ5j3KYvHynIV5vfNKpclbEmrU794",
+      authDomain: "community-caa4a.firebaseapp.com",
+      databaseURL: "https://community-caa4a-default-rtdb.firebaseio.com",
+      projectId: "community-caa4a",
+      storageBucket: "community-caa4a.appspot.com",
+      messagingSenderId: "51051822203",
+      appId: "1:51051822203:web:0cd43a4e1f23594f0a36de",
+      measurementId: "G-MC69F9YXC3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const statusDiv = document.getElementById('status');
+    const submitBtn = document.getElementById('submitBtn');
+    let isSubmitting = false;
+
+    // Check for saved phone on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedPhone = localStorage.getItem('sub_phone');
+      const savedDuration = localStorage.getItem('sub_duration');
+
+      if (savedPhone && savedDuration) {
+        statusDiv.innerText = "Checking your subscription status...";
+        statusDiv.className = "loading";
+        pollForVerification(savedPhone, savedDuration);
+      }
+    });
+
+    window.submitSubscription = async function() {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const duration = document.getElementById('duration').value;
+
+      if (!name || !phone) {
+        statusDiv.innerText = "Please complete all required fields.";
+        statusDiv.className = "error";
+        return;
+      }
+
+      if (!/^07\d{8}$/.test(phone)) {
+        statusDiv.innerText = "Please enter a valid Kenyan phone number (07XXXXXXXX).";
+        statusDiv.className = "error";
+        return;
+      }
+
+      if (isSubmitting) return;
+
+      isSubmitting = true;
+      submitBtn.disabled = true;
+      statusDiv.innerText = "Processing your subscription request...";
+      statusDiv.className = "loading";
+
+      const subRef = ref(db, `subscriptions/${phone}`);
+
+      try {
+        await set(subRef, {
+          name,
+          phone,
+          duration: Number(duration),
+          verified: false,
+          submittedAt: Date.now()
+        });
+
+        localStorage.setItem('sub_phone', phone);
+        localStorage.setItem('sub_duration', duration);
+
+        statusDiv.innerText = "Subscription request received. Awaiting payment verification...";
+        statusDiv.className = "loading";
+
+        pollForVerification(phone, duration);
+
+      } catch (err) {
+        statusDiv.innerText = "Error processing request. Please try again.";
+        statusDiv.className = "error";
+        submitBtn.disabled = false;
+        isSubmitting = false;
+        console.error("Firebase error:", err);
+      }
+    };
+
+    function pollForVerification(phone, duration) {
+      const checkInterval = setInterval(async () => {
+        try {
+          const snap = await get(child(ref(db), `subscriptions/${phone}`));
+          
+          if (snap.exists() && snap.val().verified === true) {
+            clearInterval(checkInterval);
+
+            const endTime = Date.now() + Number(duration) * 60 * 60 * 1000;
+            localStorage.setItem(`sub_timer_${phone}`, endTime);
+
+            statusDiv.innerText = "Payment verified! Preparing to redirect...";
+            statusDiv.className = "success";
+
+            // Clear cache for future submissions
+            localStorage.removeItem('sub_phone');
+            localStorage.removeItem('sub_duration');
+            
+            // Reset form for next submission
+            setTimeout(() => {
+              document.getElementById('name').value = '';
+              document.getElementById('phone').value = '';
+              document.getElementById('duration').value = '1';
+              submitBtn.disabled = false;
+              isSubmitting = false;
+              
+              // Redirect to service page
+              window.location.href = "Tom2.html";
+            }, 2000);
+          }
+        } catch (error) {
+          console.error("Verification polling error:", error);
+          clearInterval(checkInterval);
+          statusDiv.innerText = "Verification check failed. Please refresh the page.";
+          statusDiv.className = "error";
+          submitBtn.disabled = false;
+          isSubmitting = false;
+        }
+      }, 10000);
+    }
+  </script>
+</body>
+</html>
