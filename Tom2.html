@@ -851,41 +851,51 @@ Team D"></textarea>
     }
 
     function findSafeMatches() {
-      const matches = loadMatches();
-      const safeMatches = [];
-      const allTeams = [...new Set(matches.flatMap(m => [m.homeTeam, m.awayTeam]))];
-      
-      allTeams.forEach(team => {
-        const teamMatches = matches.filter(m => m.homeTeam === team || m.awayTeam === team)
-                                 .sort((a,b) => new Date(b.date) - new Date(a.date));
-        
-        if (teamMatches.length >= 3) {
-          const lastThree = teamMatches.slice(0, 3);
-          
-          // Check for consistent patterns
-          const bttsConsistent = lastThree.every(m => m.homeScore > 0 && m.awayScore > 0);
-          const over25Consistent = lastThree.every(m => m.homeScore + m.awayScore > 2.5);
-          const winStreak = lastThree.every(m => 
-            (m.homeTeam === team && m.homeScore > m.awayScore) || 
-            (m.awayTeam === team && m.awayScore > m.homeScore));
-          const cleanSheets = lastThree.every(m => 
-            (m.homeTeam === team && m.awayScore === 0) || 
-            (m.awayTeam === team && m.homeScore === 0));
-          
-          if (bttsConsistent || over25Consistent || winStreak || cleanSheets) {
-            safeMatches.push({
-              team,
-              pattern: bttsConsistent ? "BTTS Yes" :
-                       over25Consistent ? "Over 2.5" :
-                       winStreak ? "Winning Streak" : "Clean Sheets",
-              matches: lastThree
-            });
-          }
-        }
+  const matches = loadMatches();
+  const safeMatches = [];
+  const allTeams = [...new Set(matches.flatMap(m => [m.homeTeam, m.awayTeam]))];
+
+  allTeams.forEach(team => {
+    const teamMatches = matches
+      .filter(m => m.homeTeam === team || m.awayTeam === team)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    if (teamMatches.length < 3) return;
+
+    const last3 = teamMatches.slice(0, 3);
+    const scored = last3.map(m => (m.homeTeam === team ? m.homeScore : m.awayScore));
+    const conceded = last3.map(m => (m.homeTeam === team ? m.awayScore : m.homeScore));
+    const results = last3.map((m, i) => {
+      const s = scored[i], c = conceded[i];
+      return s > c ? 'W' : s < c ? 'L' : 'D';
+    });
+
+    const totalGoals = last3.map((m) => m.homeScore + m.awayScore);
+
+    const patterns = [];
+
+    if (last3.every(m => m.homeScore > 0 && m.awayScore > 0)) patterns.push("BTTS Yes");
+    if (totalGoals.every(t => t > 2.5)) patterns.push("Over 2.5 Goals");
+    if (totalGoals.every(t => t > 3.5)) patterns.push("Over 3.5 Goals");
+    if (totalGoals.every(t => t < 2.5)) patterns.push("Under 2.5 Goals");
+    if (scored.every(g => g > 0)) patterns.push("Scoring Streak");
+    if (scored.every(g => g === 0)) patterns.push("Fail to Score");
+    if (conceded.every(g => g === 0)) patterns.push("Clean Sheets");
+    if (results.every(r => r === 'W')) patterns.push("Winning Streak");
+    if (results.every(r => r === 'L')) patterns.push("Losing Streak");
+    if (results.every(r => r === 'D')) patterns.push("Draw Streak");
+
+    patterns.forEach(pat => {
+      safeMatches.push({
+        team,
+        pattern: pat,
+        matches: last3
       });
-      
-      return safeMatches;
-    }
+    });
+  });
+
+  return safeMatches;
+}
 
     function displaySafeMatches() {
       const safeMatches = findSafeMatches();
