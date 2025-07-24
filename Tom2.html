@@ -1123,6 +1123,31 @@ function shockGap(matches) {
       a.click();
       URL.revokeObjectURL(url);
     }
+    function addToStorage() {
+  const input = document.getElementById('resultsInput').value;
+  if (!input.trim()) {
+    alert('Please enter match data first');
+    return;
+  }
+
+  const parsedMatches = parseInput(input);
+  if (parsedMatches.length === 0) {
+    alert('No valid matches found in input. Format should be:\nTeam A\n2\n1\nTeam B\nTeam C\n0\n3\nTeam D');
+    return;
+  }
+
+  const addedCount = saveMatches(parsedMatches);
+  document.getElementById('resultsInput').value = '';
+  showMatchCount();
+  loadTeams();
+  
+  alert(`Successfully added ${addedCount} new match${addedCount !== 1 ? 'es' : ''}.`);
+  
+  // Clear the input field if successful
+  if (addedCount > 0) {
+    document.getElementById('resultsInput').value = '';
+  }
+}
 
     function uploadData(event) {
       const file = event.target.files[0];
