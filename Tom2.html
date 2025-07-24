@@ -459,49 +459,7 @@ Team D"></textarea>
   <button class="btn btn-danger" onclick="showTutorial()" style="background: #FF0000; border: none; padding: 12px 25px; font-size: 1.1rem;">
     <i class="fab fa-youtube"></i> Watch Quick Tutorial
   </button>
-</div>
-
-<!-- Add this modal at the bottom of your HTML (before the closing body tag) -->
-<div id="tutorialModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
-  <div style="background: white; padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
-    <button onclick="closeTutorial()" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; color: #FF0000;">×</button>
-    <h2 style="color: #FF0000; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-      <i class="fab fa-youtube"></i> How to Use Predictor
-    </h2>
-    
-    <!-- YouTube Shorts Embed -->
-    <div style="position: relative; padding-bottom: 177.78%; height: 0; overflow: hidden; margin-bottom: 20px; border-radius: 8px; overflow: hidden;">
-      <iframe id="youtubeVideo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
-              src="" 
-              frameborder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-              allowfullscreen></iframe>
-    </div>
-    
-    <div style="background: #FFF8E1; padding: 15px; border-radius: 8px; border-left: 4px solid #FFD700; margin-top: 20px;">
-      <h3 style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: #333;">
-        <i class="fas fa-bell" style="color: #FF0000;"></i> Get More Predictions
-      </h3>
-      <p style="margin-bottom: 15px; line-height: 1.5;">Subscribe to <strong>@candle-o1p</strong> for weekly football predictions and exclusive tips!</p>
-      <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center;">
-        <a href="https://www.youtube.com/@candle-o1p?sub_confirmation=1" 
-           target="_blank" 
-           class="btn" 
-           style="background: #FF0000; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;">
-          <i class="fab fa-youtube"></i> Subscribe Now
-        </a>
-        <button onclick="closeTutorial()" class="btn btn-warning" style="padding: 10px 20px;">
-          Maybe Later
-        </button>
-      </div>
-      <p style="margin-top: 15px; font-size: 0.9em; color: #666; text-align: center;">
-        <i class="fas fa-lock" style="margin-right: 5px;"></i> We never spam or share your data
-      </p>
-    </div>
-  </div>
-</div>
-<!-- ✅ Add this inside <body> of Tom2.html -->
-<div id="expiredModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+</div><div id="expiredModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
   <div style="background:#fff; padding:30px; max-width:320px; text-align:center; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.3);">
     <h3 style="color:#e53935;">Subscription Expired</h3>
     <p style="margin:15px 0;">Your access has ended.<br>Please subscribe again to continue.</p>
@@ -566,6 +524,56 @@ Team D"></textarea>
     }
   });
 </script>
+
+<!-- Add this modal at the bottom of your HTML (before the closing body tag) -->
+<div id="tutorialModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+  <div style="background: white; padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
+    <button onclick="closeTutorial()" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; color: #FF0000;">×</button>
+    <h2 style="color: #FF0000; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+      <i class="fab fa-youtube"></i> How to Use Predictor
+    </h2>
+    
+    <!-- YouTube Shorts Embed -->
+    <div style="position: relative; padding-bottom: 177.78%; height: 0; overflow: hidden; margin-bottom: 20px; border-radius: 8px; overflow: hidden;">
+      <iframe id="youtubeVideo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
+              src="" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+    </div>
+    
+    <div style="background: #FFF8E1; padding: 15px; border-radius: 8px; border-left: 4px solid #FFD700; margin-top: 20px;">
+      <h3 style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: #333;">
+        <i class="fas fa-bell" style="color: #FF0000;"></i> Get More Predictions
+      </h3>
+      <p style="margin-bottom: 15px; line-height: 1.5;">Subscribe to <strong>@candle-o1p</strong> for weekly football predictions and exclusive tips!</p>
+      <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center;">
+        <a href="https://www.youtube.com/@candle-o1p?sub_confirmation=1" 
+           target="_blank" 
+           class="btn" 
+           style="background: #FF0000; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;">
+          <i class="fab fa-youtube"></i> Subscribe Now
+        </a>
+        <button onclick="closeTutorial()" class="btn btn-warning" style="padding: 10px 20px;">
+          Maybe Later
+        </button>
+      </div>
+      <p style="margin-top: 15px; font-size: 0.9em; color: #666; text-align: center;">
+        <i class="fas fa-lock" style="margin-right: 5px;"></i> We never spam or share your data
+      </p>
+    </div>
+  </div>
+</div>
+<!-- ✅ Add this inside <body> of Tom2.html -->
+<div id="expiredModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:#fff; padding:30px; max-width:320px; text-align:center; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.3);">
+    <h3 style="color:#e53935;">Subscription Expired</h3>
+    <p style="margin:15px 0;">Your access has ended.<br>Please subscribe again to continue.</p>
+    <button onclick="redirectToSubscribe()" style="padding:10px 20px; background:#4caf50; color:#fff; border:none; border-radius:5px; font-weight:bold;">Subscribe Again</button>
+  </div>
+</div>
+
+
 
 <script>
   // YouTube Tutorial Functions
@@ -714,16 +722,38 @@ Team D"></textarea>
       });
       localStorage.setItem(ELO_KEY, JSON.stringify(eloRatings));
     }
+    function lastShockIndex(team, matches) {
+  const teamGames = matches
+    .filter(m => m.homeTeam === team || m.awayTeam === team)
+    .reverse();
+
+  for (let i = 0; i < teamGames.length; i++) {
+    if (isShocking(teamGames[i])) return i;
+  }
+  return teamGames.length; // no shock in history
+}
 
     function loadMatches() {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     }
+    function isShocking(match) {
+  const totalGoals = match.homeScore + match.awayScore;
+  const goalDiff = Math.abs(match.homeScore - match.awayScore);
+  return totalGoals >= 5 || goalDiff >= 3;
+}
+function shockGap(matches) {
+  const reversed = [...matches].reverse();
+  for (let i = 0; i < reversed.length; i++) {
+    if (isShocking(reversed[i])) return i;
+  }
+  return matches.length;
+}
 
     function factorial(n) {
       return n <= 1 ? 1 : n * factorial(n - 1);
     }
 
-    function predictScoreline(team1, team2, matches) {
+    function predictScoreline(team1, team2, matches, shouldTriggerShock)  {
       const team1Stats = analyzeTeam(team1, matches);
       const team2Stats = analyzeTeam(team2, matches);
 
@@ -744,6 +774,14 @@ Team D"></textarea>
           scoreProbabilities[`${i}-${j}`] = poisson(lambda1, i) * poisson(lambda2, j);
         }
       }
+      if (shouldTriggerShock) {
+  const shockScores = ["4-2", "3-3", "5-1", "1-5", "2-4", "1-4"];
+  shockScores.forEach(s => {
+    if (!scoreProbabilities[s]) {
+      scoreProbabilities[s] = 0.05 + Math.random() * 0.03;
+    }
+  });
+}
 
       return Object.entries(scoreProbabilities)
         .sort((a, b) => b[1] - a[1])
@@ -859,22 +897,22 @@ Team D"></textarea>
     const teamMatches = matches
       .filter(m => m.homeTeam === team || m.awayTeam === team)
       .sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    if (teamMatches.length < 3) return;
 
-    const last3 = teamMatches.slice(0, 3);
-    const scored = last3.map(m => (m.homeTeam === team ? m.homeScore : m.awayScore));
-    const conceded = last3.map(m => (m.homeTeam === team ? m.awayScore : m.homeScore));
-    const results = last3.map((m, i) => {
+    if (teamMatches.length < 5) return; // skip teams with fewer than 5 matches
+
+    const recentMatches = teamMatches.slice(0, 5); // or use 6 for last 6 matches
+    const scored = recentMatches.map(m => (m.homeTeam === team ? m.homeScore : m.awayScore));
+    const conceded = recentMatches.map(m => (m.homeTeam === team ? m.awayScore : m.homeScore));
+    const results = recentMatches.map((m, i) => {
       const s = scored[i], c = conceded[i];
       return s > c ? 'W' : s < c ? 'L' : 'D';
     });
 
-    const totalGoals = last3.map((m) => m.homeScore + m.awayScore);
+    const totalGoals = recentMatches.map((m) => m.homeScore + m.awayScore);
 
     const patterns = [];
 
-    if (last3.every(m => m.homeScore > 0 && m.awayScore > 0)) patterns.push("BTTS Yes");
+    if (recentMatches.every(m => m.homeScore > 0 && m.awayScore > 0)) patterns.push("BTTS Yes");
     if (totalGoals.every(t => t > 2.5)) patterns.push("Over 2.5 Goals");
     if (totalGoals.every(t => t > 3.5)) patterns.push("Over 3.5 Goals");
     if (totalGoals.every(t => t < 2.5)) patterns.push("Under 2.5 Goals");
@@ -889,7 +927,7 @@ Team D"></textarea>
       safeMatches.push({
         team,
         pattern: pat,
-        matches: last3
+        matches: recentMatches
       });
     });
   });
@@ -898,45 +936,152 @@ Team D"></textarea>
 }
 
     function displaySafeMatches() {
-      const safeMatches = findSafeMatches();
-      const out = document.getElementById('safeMatchesOutput');
-      
-      if (safeMatches.length === 0) {
-        out.innerHTML = "<div class='safe-match'>No safe matches found with consistent patterns.</div>";
-        return;
-      }
-      
-      let output = "<h3 class='result-title'><i class='fas fa-shield-alt'></i> Safe Matches Found</h3>";
-      
-      safeMatches.forEach(item => {
-        output += `<div class='safe-match'>
-          <strong>${item.team}</strong> 
-          <span class='pattern-badge'>${item.pattern}</span>
-          <div class='match-detail'>`;
-        
-        item.matches.forEach(m => {
-          output += `<div>${m.homeTeam} ${m.homeScore}-${m.awayScore} ${m.awayTeam}</div>`;
-        });
-        
-        output += `</div></div>`;
-      });
-      
-      out.innerHTML = output;
-    }
+  const matches = loadMatches();
+  const safeMatches = [];
+  const allTeams = [...new Set(matches.flatMap(m => [m.homeTeam, m.awayTeam]))];
 
-    function addToStorage() {
-      const input = document.getElementById('resultsInput').value;
-      const parsed = parseInput(input);
-      if (parsed.length === 0) {
-        alert('No valid match data found.');
-        return;
+  allTeams.forEach(team => {
+    const teamMatches = matches
+      .filter(m => m.homeTeam === team || m.awayTeam === team)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (teamMatches.length < 5) return;
+
+    const recentMatches = teamMatches.slice(0, 5);
+    const scored = recentMatches.map(m => (m.homeTeam === team ? m.homeScore : m.awayScore));
+    const conceded = recentMatches.map(m => (m.homeTeam === team ? m.awayScore : m.homeScore));
+    const results = recentMatches.map((m, i) => {
+      const s = scored[i], c = conceded[i];
+      return s > c ? 'W' : s < c ? 'L' : 'D';
+    });
+
+    const totalGoals = recentMatches.map(m => m.homeScore + m.awayScore);
+
+    const patterns = [];
+
+    if (recentMatches.every(m => m.homeScore > 0 && m.awayScore > 0)) patterns.push("💣 BTTS Yes");
+    if (totalGoals.every(t => t > 2.5)) patterns.push("🔥 Over 2.5 Goals");
+    if (totalGoals.every(t => t > 3.5)) patterns.push("🚀 Over 3.5 Goals");
+    if (totalGoals.every(t => t < 2.5)) patterns.push("⚽ Under 2.5 Goals");
+    if (scored.every(g => g > 0)) patterns.push("🎯 Scoring Streak");
+    if (scored.every(g => g === 0)) patterns.push("🚫 Fail to Score");
+    if (conceded.every(g => g === 0)) patterns.push("🧤 Clean Sheets");
+    if (results.every(r => r === 'W')) patterns.push("🏆 Winning Streak");
+    if (results.every(r => r === 'L')) patterns.push("🔻 Losing Streak");
+    if (results.every(r => r === 'D')) patterns.push("⚖️ Draw Streak");
+
+    const shockGap = lastShockIndex(team, teamMatches);
+    const losingStreak = results.every(r => r === 'L');
+    const winningStreak = results.every(r => r === 'W');
+
+    const note = shockGap <= 1
+      ? "⚠️ Pattern just broken – expect changes"
+      : losingStreak
+      ? "🔁 Lost 5 games – potential rebound soon"
+      : shockGap < 3
+      ? "🟡 Trend may shift – recent volatility"
+      : "✅ Strong trend detected";
+
+    const predictFutureMessage = (results, pattern, shockGap) => {
+      const losses = results.filter(r => r === 'L').length;
+      const wins = results.filter(r => r === 'W').length;
+
+      if (shockGap <= 1) {
+        return "🔮 Pattern broken – future results may be volatile.";
       }
-      const addedCount = saveMatches(parsed);
-      document.getElementById('resultsInput').value = '';
-      alert(`Added ${addedCount} new matches.`);
-      loadTeams();
-      showMatchCount();
-    }
+      if (pattern.includes("Under 2.5") && shockGap > 2) {
+        return "🔮 Trend may continue as low-scoring unless a shock occurs.";
+      }
+      if (losses >= 5) {
+        return "🔮 Losing streak detected – draw or win possible next.";
+      }
+      if (wins >= 5) {
+        return "🔮 Winning trend strong – draw/loss risk increases.";
+      }
+      if (pattern.includes("BTTS")) {
+        return "🔮 Expect both teams to score again unless trend breaks.";
+      }
+      return "🔄 Future result uncertain – monitor next match closely.";
+    };
+
+    const forecastNextPossibility = (pattern, recentMatches, results) => {
+      const lastMatch = recentMatches[0];
+      const totalGoals = lastMatch.homeScore + lastMatch.awayScore;
+      const btts = lastMatch.homeScore > 0 && lastMatch.awayScore > 0;
+      const lastResult = results[0];
+
+      if (pattern.includes("Under 2.5") && totalGoals >= 3) {
+        return "📈 Possibility: Over 2.5 Goals in next 2–3 games";
+      }
+      if (pattern.includes("Over 2.5") && totalGoals < 2) {
+        return "📉 Possibility: Under 2.5 Goals might return soon";
+      }
+      if (pattern.includes("BTTS") && !btts) {
+        return "📉 Possibility: One-sided scores likely next";
+      }
+      if (pattern.includes("Fail to Score") && totalGoals > 0) {
+        return "📈 Possibility: Team may start scoring regularly";
+      }
+      if (pattern.includes("Winning") && lastResult === 'L') {
+        return "🔁 Possibility: Draw or another loss next";
+      }
+      if (pattern.includes("Losing") && lastResult === 'W') {
+        return "📈 Possibility: Winning form may begin";
+      }
+      return "🔄 Pattern may continue or shift depending on opponent";
+    };
+
+    patterns.forEach(pat => {
+      safeMatches.push({
+        team,
+        pattern: pat,
+        matches: recentMatches,
+        note,
+        predictionNote: predictFutureMessage(results, pat, shockGap),
+        possibilityForecast: forecastNextPossibility(pat, recentMatches, results)
+      });
+    });
+  });
+
+  const out = document.getElementById('safeMatchesOutput');
+
+  if (safeMatches.length === 0) {
+    out.innerHTML = "<div class='safe-match'>No safe matches found with consistent patterns.</div>";
+    return;
+  }
+
+  let output = "<h3 class='result-title'><i class='fas fa-shield-alt'></i> Safe Matches Found</h3>";
+
+  safeMatches.forEach(item => {
+    const noteColor = item.note.includes("⚠️") ? "#e53935"
+      : item.note.includes("🔁") ? "#fb8c00"
+      : item.note.includes("🟡") ? "#fbc02d"
+      : "#4caf50";
+
+    output += `<div class='safe-match'>
+      <strong>${item.team}</strong>
+      <span class='pattern-badge' title="Pattern from last 5 games">${item.pattern}</span>
+      <div class='match-detail'>`;
+
+    item.matches.forEach(m => {
+      output += `<div>${m.homeTeam} ${m.homeScore}-${m.awayScore} ${m.awayTeam}</div>`;
+    });
+
+    output += `</div>
+      <div style="margin-top: 10px; font-style: italic; color: ${noteColor};">
+        ${item.note}
+      </div>
+      <div style="color:#6a1b9a; margin-top: 5px;">
+        ${item.predictionNote}
+      </div>
+      <div style="color:#00796b; margin-top: 5px;">
+        ${item.possibilityForecast}
+      </div>
+    </div>`;
+  });
+
+  out.innerHTML = output;
+}
 
     function clearStorage() {
       if (confirm('Clear all saved data?')) {
@@ -998,15 +1143,24 @@ Team D"></textarea>
     }
 
     function showSmartPrediction() {
-      const t1 = document.getElementById('team1').value;
-      const t2 = document.getElementById('team2').value;
-      const matches = loadMatches();
-      const out = document.getElementById('output');
-      
-      if (!t1 || !t2 || t1 === t2) {
-        out.innerHTML = '<div class="prediction-section">Please select two different teams.</div>';
-        return;
-      }
+  const t1 = document.getElementById('team1').value;
+  const t2 = document.getElementById('team2').value;
+  
+  const matches = loadMatches();
+  const out = document.getElementById('output');
+
+  const team1ShockGap = lastShockIndex(t1, matches);
+  const team2ShockGap = lastShockIndex(t2, matches);
+  const avgShockGap = (team1ShockGap + team2ShockGap) / 2;
+
+  const shouldTriggerShock = avgShockGap >= 5; // Custom threshold
+
+  if (!t1 || !t2 || t1 === t2) {
+    out.innerHTML = '<div class="prediction-section">Please select two different teams.</div>';
+    return;
+  }
+
+  // ... rest of the function continues as is ...
 
       // Head-to-head
       const h2h = matches.filter(m => 
@@ -1025,7 +1179,7 @@ Team D"></textarea>
       const eloWinProbability = 1 / (1 + Math.pow(10, -eloDifference / 400));
 
       // Scoreline prediction
-      const likelyScores = predictScoreline(t1, t2, matches);
+      const likelyScores = predictScoreline(t1, t2, matches, shouldTriggerShock);
 
       // Expected goals
       const t1xG = estimateXG(t1, matches);
