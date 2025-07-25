@@ -468,63 +468,6 @@ Team D"></textarea>
 </div>
 
 
-<script>
-  function startCountdown(endTime) {
-    const countdownEl = document.getElementById('countdown');
-
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const remaining = endTime - now;
-
-      if (remaining <= 0) {
-        clearInterval(interval);
-        countdownEl.innerText = "Subscription expired.";
-        showExpiryPopup(); // 👈 Show the modern popup instead of alert
-        return;
-      }
-
-      const hrs = Math.floor(remaining / (1000 * 60 * 60));
-      const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-      const secs = Math.floor((remaining % (1000 * 60)) / 1000);
-
-      countdownEl.innerText = `Time Left: ${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
-    }, 1000);
-  }
-
-  function pad(num) {
-    return num.toString().padStart(2, '0');
-  }
-
-  function showExpiryPopup() {
-    const modal = document.getElementById('expiredModal');
-    modal.style.display = 'flex';
-
-    // Clear localStorage
-    const phone = localStorage.getItem('sub_phone');
-    if (phone) localStorage.removeItem('sub_timer_' + phone);
-    localStorage.removeItem('sub_phone');
-    localStorage.removeItem('sub_duration');
-  }
-
-  function redirectToSubscribe() {
-    window.location.href = "Subscription 2.html";
-  }
-
-  // Run on page load
-  window.addEventListener('DOMContentLoaded', () => {
-    const phone = localStorage.getItem('sub_phone');
-    const end = localStorage.getItem('sub_timer_' + phone);
-
-    if (!phone || !end) {
-      showExpiryPopup(); // 👈 Use popup if data is missing
-    } else if (Date.now() < Number(end)) {
-      startCountdown(Number(end));
-    } else {
-      showExpiryPopup(); // 👈 Use popup if expired
-    }
-  });
-</script>
-
 <!-- Add this modal at the bottom of your HTML (before the closing body tag) -->
 <div id="tutorialModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
   <div style="background: white; padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
@@ -1035,16 +978,34 @@ function shockGap(matches) {
     };
 
     patterns.forEach(pat => {
+      const lastMatch = recentMatches[0];
+      const lastTotalGoals = lastMatch.homeScore + lastMatch.awayScore;
+      let isBroken = false;
+
+      if (pat.includes("Under 2.5") && lastTotalGoals > 2.5) isBroken = true;
+      if (pat.includes("Over 2.5") && lastTotalGoals < 2.5) isBroken = true;
+      if (pat.includes("BTTS") && (lastMatch.homeScore === 0 || lastMatch.awayScore === 0)) isBroken = true;
+
+      const volatility = calculateVolatility(team, matches);
+      const shockGap = lastShockIndex(team, teamMatches);
+      const isHighVolatility = volatility > 1.5;
+      const volatilityText = isHighVolatility ? "⚠️ High Volatility" : "Stable";
+      const shockForecast = forecastShockRisk(team, recentMatches, volatility, shockGap);
+
       safeMatches.push({
-        team,
-        pattern: pat,
+        steam,
+        pattern: pat + (isBroken ? " ❌" : ""),
         matches: recentMatches,
         note,
         predictionNote: predictFutureMessage(results, pat, shockGap),
-        possibilityForecast: forecastNextPossibility(pat, recentMatches, results)
+        possibilityForecast: forecastNextPossibility(pat, recentMatches, results),
+        volatilityNote: volatilityText,
+        shockForecast
       });
     });
   });
+
+  
 
   const out = document.getElementById('safeMatchesOutput');
 
@@ -1080,7 +1041,8 @@ function shockGap(matches) {
       <div style="color:#00796b; margin-top: 5px;">
         ${item.possibilityForecast}
       </div>
-    </div>`;
+    </div>
+`;
   });
 
   out.innerHTML = output;
@@ -1430,6 +1392,27 @@ function runUncertaintyScan() {
     ).slice(0, 10);
     
     if (teamMatches.length < 5) return;
+    const volatility = calculateVolatility(team, matches);
+if (volatility > 1.5) {
+  uncertainties.push({
+    team,
+    type: UNCERTAINTY_TRIGGERS.UNUSUAL_PATTERN,
+    message: `${team} shows ⚠️ HIGH VOLATILITY (${volatility})`,
+    matches: teamMatches.slice(0, 5)
+  });
+}
+    const recentMatch = teamMatches[0];
+const totalGoals = recentMatch.homeScore + recentMatch.awayScore;
+const wasUnder25Pattern = teamMatches.slice(1, 6).every(m => m.homeScore + m.awayScore < 2.5);
+
+if (wasUnder25Pattern && totalGoals > 2.5) {
+  uncertainties.push({
+    team,
+    type: UNCERTAINTY_TRIGGERS.SHOCK_RESULT,
+    message: `${team} broke their Under 2.5 Goals pattern ❌`,
+    matches: [recentMatch]
+  });
+}
     
     const shocks = detectRecentShocks(team, teamMatches);
     if (shocks >= 2) {
@@ -1483,8 +1466,21 @@ function detectStreakBreaks(team, matches) {
         match: matches[0]
       };
     }
-  }
+  } 
   return null;
+}
+
+
+function forecastShockRisk(team, recentMatches, volatility, shockGap) {
+  const last = recentMatches[0];
+  const totalGoals = last.homeScore + last.awayScore;
+  const bigWin = Math.abs(last.homeScore - last.awayScore) >= 3;
+
+  if (volatility > 1.8) return "⚠️ High volatility – expect surprise results soon.";
+  if (shockGap <= 2) return "⚠️ Recent shock detected – trend may not be stable.";
+  if (totalGoals >= 5 || bigWin) return "📈 Big win detected – shock follow-up possible.";
+  if (shockGap > 5 && volatility < 1.2) return "🧘 Low risk – consistent form lately.";
+  return "🔄 Monitor closely – mild shock risk remains.";
 }
 
 function detectUnusualPatterns(team, matches) {
@@ -1562,6 +1558,13 @@ function computeTeamAverages(matches) {
             avgConceded: totalConceded / teamMatches.length
         };
     });
+}
+function calculateVolatility(team, matches) {
+  const last5 = matches.slice(0, 5);
+  const goalTotals = last5.map(m => m.homeScore + m.awayScore);
+  const mean = goalTotals.reduce((a,b) => a+b, 0) / goalTotals.length;
+  const variance = goalTotals.map(g => Math.pow(g - mean, 2)).reduce((a,b) => a+b, 0) / goalTotals.length;
+  return Math.sqrt(variance).toFixed(2);
 }
   </script>
 </body>
