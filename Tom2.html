@@ -671,10 +671,13 @@ Team D"></textarea>
     
     // Initialize the app
     document.addEventListener('DOMContentLoaded', function() {
-      loadTeams();
-      showMatchCount();
-    });
+  loadTeams();
+  showMatchCount();
 
+  const matches = loadMatches();          // ✅ Load
+  computeTeamAverages(matches);           // ✅ Compute stats
+  runUncertaintyScan();                   // ✅ Scan for shock results
+});
     function parseInput(rawText) {
       const lines = rawText.trim().split('\n');
       const parsed = [];
@@ -1372,6 +1375,214 @@ function shockGap(matches) {
 
       out.innerHTML = output;
     }
+    function showUncertaintyAlert(uncertainties) {
+  const modal = document.getElementById('uncertaintyModal');
+  const content = document.getElementById('uncertaintyContent');
+  
+  let html = `<p>Our system detected these potential uncertainties in recent matches:</p>`;
+  
+  uncertainties.forEach(uncertainty => {
+    const icon = uncertainty.type === UNCERTAINTY_TRIGGERS.SHOCK_RESULT ? 'fa-bolt' :
+                uncertainty.type === UNCERTAINTY_TRIGGERS.STREAK_BREAK ? 'fa-chart-line' :
+                'fa-question-circle';
+    
+    html += `<div style="background:#fff8e1; border-left:4px solid #ffa000; padding:15px; margin:10px 0; border-radius:0 8px 8px 0;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <i class="fas ${icon}" style="color:#d32f2f;"></i>
+            <strong>${uncertainty.message}</strong>
+        </div>
+        <div style="font-size:0.9em;">
+            ${uncertainty.matches.map(m => 
+                `${m.homeTeam} ${m.homeScore}-${m.awayScore} ${m.awayTeam}`
+            ).join('<br>')}
+        </div>
+    </div>`;
+  });
+  
+  html += `<p style="margin-top:20px; font-size:0.9em; color:#666;">
+      <i class="fas fa-lightbulb"></i> These detections may affect future match predictions
+  </p>`;
+  
+  content.innerHTML = html;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeUncertaintyModal() {
+  document.getElementById('uncertaintyModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+const UNCERTAINTY_TRIGGERS = {
+  SHOCK_RESULT: 1,
+  STREAK_BREAK: 2,
+  UNUSUAL_PATTERN: 3
+};
+
+function runUncertaintyScan() {
+  const matches = loadMatches();
+  const allTeams = [...new Set(matches.flatMap(m => [m.homeTeam, m.awayTeam]))];
+  const uncertainties = [];
+  
+  allTeams.forEach(team => {
+    const teamMatches = matches.filter(m => 
+        m.homeTeam === team || m.awayTeam === team
+    ).slice(0, 10);
+    
+    if (teamMatches.length < 5) return;
+    
+    const shocks = detectRecentShocks(team, teamMatches);
+    if (shocks >= 2) {
+        uncertainties.push({
+            team,
+            type: UNCERTAINTY_TRIGGERS.SHOCK_RESULT,
+            message: `${team} has ${shocks} shock results in last 10 matches`,
+            matches: teamMatches.slice(0, shocks)
+        });
+    }
+    
+    const streakBreak = detectStreakBreaks(team, teamMatches);
+    if (streakBreak) {
+        uncertainties.push({
+            team,
+            type: UNCERTAINTY_TRIGGERS.STREAK_BREAK,
+            message: `${team}'s ${streakBreak.streakType} streak just ended`,
+            matches: [streakBreak.match]
+        });
+    }
+    
+    const unusual = detectUnusualPatterns(team, teamMatches);
+    if (unusual) {
+        uncertainties.push({
+            team,
+            type: UNCERTAINTY_TRIGGERS.UNUSUAL_PATTERN,
+            message: `${team} showing unusual ${unusual.pattern}`,
+            matches: unusual.matches
+        });
+    }
+  });
+  
+  if (uncertainties.length > 0) {
+    showUncertaintyAlert(uncertainties);
+  }
+}
+function detectStreakBreaks(team, matches) {
+  const results = matches.map(m => {
+    const isHome = m.homeTeam === team;
+    return isHome ? 
+        (m.homeScore > m.awayScore ? 'W' : m.homeScore < m.awayScore ? 'L' : 'D') :
+        (m.awayScore > m.homeScore ? 'W' : m.awayScore < m.homeScore ? 'L' : 'D');
+  });
+
+  if (results.length > 1 && results[0] !== results[1]) {
+    const streakLength = results.slice(1).findIndex(r => r !== results[1]) + 1 || results.length - 1;
+    if (streakLength >= 3) {
+      return {
+        streakType: results[1] === 'W' ? 'winning' : 
+                    results[1] === 'L' ? 'losing' : 'draw',
+        match: matches[0]
+      };
+    }
+  }
+  return null;
+}
+
+function detectUnusualPatterns(team, matches) {
+  const stats = analyzeTeam(team, matches);
+
+  if (stats.scored.every(g => g > 0)) {
+    const lastMatch = matches[0];
+    const wasScoreless = (lastMatch.homeTeam === team && lastMatch.homeScore === 0) ||
+                         (lastMatch.awayTeam === team && lastMatch.awayScore === 0);
+    if (wasScoreless) {
+      return {
+        pattern: "scoreless game after scoring streak",
+        matches: [lastMatch]
+      };
+    }
+  }
+
+  return null;
+}
+
+function detectRecentShocks(team, matches) {
+  return matches.filter(isShocking).length;
+}
+function detectRecentShocks(team, matches) {
+    return matches.filter(match => {
+        const isHome = match.homeTeam === team;
+        const scored = isHome ? match.homeScore : match.awayScore;
+        const conceded = isHome ? match.awayScore : match.homeScore;
+        const totalGoals = scored + conceded;
+        
+        // Safety checks
+        if (!eloRatings[team] || !eloRatings[match.homeTeam] || !eloRatings[match.awayTeam]) return false;
+        if (!teamAverages[team]) return false;
+
+        return (
+            // Big margin shocks
+            (scored - conceded >= 3) || 
+            (conceded - scored >= 3) ||
+
+            // High scoring total
+            (totalGoals >= 5) ||
+
+            // Upsets against significantly lower-rated teams
+            (isHome && (eloRatings[team] - eloRatings[match.awayTeam]) > 200 && scored < conceded) ||
+            (!isHome && (eloRatings[match.homeTeam] - eloRatings[team]) > 200 && scored > conceded) ||
+
+            // Anomalies in typical scoring behavior
+            (scored === 0 && teamAverages[team].avgScored > 1.5) ||
+            (conceded === 0 && teamAverages[team].avgConceded > 1.5)
+        );
+    }).length;
+}
+
+const teamAverages = {};
+
+function computeTeamAverages(matches) {
+    const teams = [...new Set(matches.flatMap(m => [m.homeTeam, m.awayTeam]))];
+    teams.forEach(team => {
+        const teamMatches = matches.filter(m => m.homeTeam === team || m.awayTeam === team);
+        if (teamMatches.length === 0) return;
+
+        let totalScored = 0, totalConceded = 0;
+        teamMatches.forEach(m => {
+            if (m.homeTeam === team) {
+                totalScored += m.homeScore;
+                totalConceded += m.awayScore;
+            } else {
+                totalScored += m.awayScore;
+                totalConceded += m.homeScore;
+            }
+        });
+
+        teamAverages[team] = {
+            avgScored: totalScored / teamMatches.length,
+            avgConceded: totalConceded / teamMatches.length
+        };
+    });
+}
   </script>
 </body>
+<div id="uncertaintyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; justify-content:center; align-items:center;">
+  <div style="background:white; border-radius:10px; padding:25px; max-width:600px; width:90%; max-height:90vh; overflow-y:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h3 style="color:#d32f2f; margin:0;">
+        <i class="fas fa-exclamation-triangle"></i> Uncertainty Detected
+      </h3>
+      <button onclick="closeUncertaintyModal()" style="background:none; border:none; font-size:20px; cursor:pointer;">×</button>
+    </div>
+    
+    <div id="uncertaintyContent">
+      <!-- Dynamic content will be inserted here -->
+    </div>
+    
+    <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+      <button onclick="closeUncertaintyModal()" class="btn btn-primary" style="padding:10px 20px;">
+        Acknowledge
+      </button>
+    </div>
+  </div>
+</div>
 </html>
