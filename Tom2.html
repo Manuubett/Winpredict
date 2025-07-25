@@ -468,63 +468,6 @@ Team D"></textarea>
 </div>
 
 
-<script>
-  function startCountdown(endTime) {
-    const countdownEl = document.getElementById('countdown');
-
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const remaining = endTime - now;
-
-      if (remaining <= 0) {
-        clearInterval(interval);
-        countdownEl.innerText = "Subscription expired.";
-        showExpiryPopup(); // 👈 Show the modern popup instead of alert
-        return;
-      }
-
-      const hrs = Math.floor(remaining / (1000 * 60 * 60));
-      const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-      const secs = Math.floor((remaining % (1000 * 60)) / 1000);
-
-      countdownEl.innerText = `Time Left: ${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
-    }, 1000);
-  }
-
-  function pad(num) {
-    return num.toString().padStart(2, '0');
-  }
-
-  function showExpiryPopup() {
-    const modal = document.getElementById('expiredModal');
-    modal.style.display = 'flex';
-
-    // Clear localStorage
-    const phone = localStorage.getItem('sub_phone');
-    if (phone) localStorage.removeItem('sub_timer_' + phone);
-    localStorage.removeItem('sub_phone');
-    localStorage.removeItem('sub_duration');
-  }
-
-  function redirectToSubscribe() {
-    window.location.href = "Subscription 2.html";
-  }
-
-  // Run on page load
-  window.addEventListener('DOMContentLoaded', () => {
-    const phone = localStorage.getItem('sub_phone');
-    const end = localStorage.getItem('sub_timer_' + phone);
-
-    if (!phone || !end) {
-      showExpiryPopup(); // 👈 Use popup if data is missing
-    } else if (Date.now() < Number(end)) {
-      startCountdown(Number(end));
-    } else {
-      showExpiryPopup(); // 👈 Use popup if expired
-    }
-  });
-</script>
-
 <!-- Add this modal at the bottom of your HTML (before the closing body tag) -->
 <div id="tutorialModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
   <div style="background: white; padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
